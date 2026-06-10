@@ -1,0 +1,100 @@
+﻿package com.example.rpg.domain.exercise
+
+import com.example.rpg.domain.pose.BodyLandmark
+import com.example.rpg.domain.pose.BodyLandmarkName
+import com.example.rpg.domain.pose.PoseFrame
+import com.example.rpg.domain.pose.PoseTrackingState
+import kotlin.math.acos
+import kotlin.math.sqrt
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+
+/**
+ * Detects complete squat repetitions from hip-knee-ankle angles.
+ * A repetition is counted only after the user stands, squats below the configured knee angle, and stands again.
+ */
+class SquatDetector(
+    private val config: SquatDetectorConfig = SquatDetectorConfig(),
+) : ExerciseDetector {
+    private enum class Phase { WAITING_FOR_STAND, STANDING, BOTTOM }
+
+    private val mutableEvents = MutableSharedFlow<ExerciseEvent>(
+        extraBufferCapacity = config.eventBufferCapacity,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    private var isRunning = false
+    private var phase = Phase.WAITING_FOR_STAND
+    private var repetitionCount = 0
+
+    override val exerciseType: ExerciseType = ExerciseType.SQUAT
+    override val events: SharedFlow<ExerciseEvent> = mutableEvents.asSharedFlow()
+
+    override fun start() {
+        isRunning = true
+    }
+
+    override fun stop() {
+        isRunning = false
+    }
+
+    override fun reset() {
+        repetitionCount = 0
+        phase = Phase.WAITING_FOR_STAND
+    }
+
+    override fun processPoseFrame(frame: PoseFrame) {
+        if (!isRunning || frame.trackingState != PoseTrackingState.TRACKING) return
+
+        val kneeAngle = averageVisibleKneeAngle(frame) ?: return
+        val isStanding = kneeAngle >= config.standingKneeAngleDegrees
+        val isAtBottom = kneeAngle <= config.squatKneeAngleDegrees
+
+        when (phase) {
+            Phase.WAITING_FOR_STAND -> if (isStanding) phase = Phase.STANDING
+            Phase.STANDING -> if (isAtBottom) {
+                phase = Phase.BOTTOM
+                mutableEvents.tryEmit(ExerciseEvent.ExerciseStarted(exerciseType))
+            }
+            Phase.BOTTOM -> if (isStanding) {
+                repetitionCount += 1
+                phase = Phase.STANDING
+                mutableEvents.tryEmit(ExerciseEvent.RepetitionCompleted(exerciseType, repetitionCount))
+                mutableEvents.tryEmit(ExerciseEvent.ExerciseFinished(exerciseType))
+            }
+        }
+    }
+
+    private fun averageVisibleKneeAngle(frame: PoseFrame): Float? {
+        val left = kneeAngle(
+            frame.landmark(BodyLandmarkName.LEFT_HIP),
+            frame.landmark(BodyLandmarkName.LEFT_KNEE),
+            frame.landmark(BodyLandmarkName.LEFT_ANKLE),
+        )
+        val right = kneeAngle(
+            frame.landmark(BodyLandmarkName.RIGHT_HIP),
+            frame.landmark(BodyLandmarkName.RIGHT_KNEE),
+            frame.landmark(BodyLandmarkName.RIGHT_ANKLE),
+        )
+        val angles = listOfNotNull(left, right)
+        return if (angles.isEmpty()) null else angles.average().toFloat()
+    }
+
+    private fun kneeAngle(hip: BodyLandmark?, knee: BodyLandmark?, ankle: BodyLandmark?): Float? {
+        if (hip == null || knee == null || ankle == null) return null
+        if (listOf(hip, knee, ankle).any { it.visibility < config.minLandmarkVisibility }) return null
+
+        val vectorHipX = hip.x - knee.x
+        val vectorHipY = hip.y - knee.y
+        val vectorAnkleX = ankle.x - knee.x
+        val vectorAnkleY = ankle.y - knee.y
+        val dot = vectorHipX * vectorAnkleX + vectorHipY * vectorAnkleY
+        val hipLength = sqrt(vectorHipX * vectorHipX + vectorHipY * vectorHipY)
+        val ankleLength = sqrt(vectorAnkleX * vectorAnkleX + vectorAnkleY * vectorAnkleY)
+        if (hipLength == 0f || ankleLength == 0f) return null
+
+        val cosine = (dot / (hipLength * ankleLength)).coerceIn(-1f, 1f)
+        return Math.toDegrees(acos(cosine).toDouble()).toFloat()
+    }
+}
