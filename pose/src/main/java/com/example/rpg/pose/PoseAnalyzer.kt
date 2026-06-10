@@ -2,9 +2,7 @@ package com.example.rpg.pose
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.os.SystemClock
-import androidx.camera.core.ImageProxy
 import com.example.rpg.domain.pose.BodyLandmark
 import com.example.rpg.domain.pose.BodyLandmarkName
 import com.example.rpg.domain.pose.PoseFrame
@@ -21,7 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Adapter around MediaPipe Pose Landmarker.
- * It converts camera frames to domain pose frames and keeps MediaPipe details out of game and UI logic.
+ * It converts image frames to domain pose frames and keeps MediaPipe details out of game and UI logic.
  */
 class PoseAnalyzer(
     context: Context,
@@ -43,26 +41,22 @@ class PoseAnalyzer(
     val poseFrame: StateFlow<PoseFrame> = mutablePoseFrame.asStateFlow()
 
     /**
-     * Runs asynchronous pose detection for one CameraX frame.
+     * Runs asynchronous pose detection for one frame.
      */
-    fun analyze(imageProxy: ImageProxy, mirrorForFrontCamera: Boolean = true) {
+    fun analyze(bitmap: Bitmap, timestampMs: Long = SystemClock.uptimeMillis()): Boolean {
         if (!isProcessingFrame.compareAndSet(false, true)) {
-            imageProxy.close()
-            return
+            return false
         }
 
         try {
-            val bitmap = imageProxy.toBitmap()
-                .rotate(imageProxy.imageInfo.rotationDegrees.toFloat())
-                .maybeMirror(mirrorForFrontCamera)
             val mpImage = BitmapImageBuilder(bitmap).build()
-            poseLandmarker.detectAsync(mpImage, SystemClock.uptimeMillis())
+            poseLandmarker.detectAsync(mpImage, timestampMs)
         } catch (_: Exception) {
             mutablePoseFrame.value = mutablePoseFrame.value.copy(trackingState = PoseTrackingState.ERROR)
             isProcessingFrame.set(false)
-        } finally {
-            imageProxy.close()
+            return false
         }
+        return true
     }
 
     override fun close() {
@@ -115,15 +109,4 @@ class PoseAnalyzer(
         isProcessingFrame.set(false)
     }
 
-    private fun Bitmap.rotate(degrees: Float): Bitmap {
-        if (degrees == 0f) return this
-        val matrix = Matrix().apply { postRotate(degrees) }
-        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
-    }
-
-    private fun Bitmap.maybeMirror(enabled: Boolean): Bitmap {
-        if (!enabled) return this
-        val matrix = Matrix().apply { postScale(-1f, 1f, width / 2f, height / 2f) }
-        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
-    }
 }

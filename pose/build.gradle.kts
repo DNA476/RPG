@@ -22,7 +22,6 @@ android {
 
 dependencies {
     implementation(project(":domain"))
-    implementation(libs.androidx.camera.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.mediapipe.tasks.vision)
 }
