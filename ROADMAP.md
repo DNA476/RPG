@@ -1,7 +1,7 @@
 # Roadmap
 
 This roadmap is ordered by dependency and risk, not by marketing priority.
-Statuses describe repository state as of 2026-06-10.
+Statuses describe repository state as of 2026-06-11.
 
 ## Completed Foundation
 
@@ -17,6 +17,16 @@ Statuses describe repository state as of 2026-06-10.
 - [x] Implement a training boss, HP flow, victory, and reset.
 - [x] Add debug frame-source abstraction.
 - [x] Add debug video input mode for deterministic manual testing.
+- [x] Add a visible goblin enemy and synchronized hit-reaction animation.
+- [x] Add a main menu with seven exercise cards and explicit selection.
+- [x] Add scalable exercise content models and a central `ExerciseCatalog`.
+- [x] Add `ExerciseDetectorFactory` with a ready squat detector and safe
+  experimental placeholders.
+- [x] Calculate damage from the selected exercise configuration.
+- [x] Add menu -> battle -> victory -> menu navigation.
+- [x] Add a debug-only simulated repetition action.
+- [x] Add unit coverage for detector construction, squat repetition, catalog
+  completeness, configured damage, and victory.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
@@ -52,7 +62,7 @@ do not count as valid attacks.
 
 ## Then: Scalable Session Architecture
 
-- [ ] Introduce `ExerciseDetectorRegistry` or a detector coordinator.
+- [x] Introduce detector factory/registry construction.
 - [ ] Introduce a session configuration model.
 - [ ] Extract battle/session construction from `BattleViewModel`.
 - [ ] Depend on narrow frame/pose contracts at the UI boundary.
@@ -67,7 +77,8 @@ changes across the ViewModel and UI.
 ## Content And Game Expansion
 
 - [ ] Implement and validate lunge detection.
-- [ ] Implement and validate jump detection only after safety/UX review.
+- [ ] Implement and validate push-up, pull-up, crunch, jumping-jack, and plank
+  detection.
 - [ ] Add distinct attack feedback for basic, heavy, and critical attacks.
 - [ ] Add multiple enemies and configurable encounters.
 - [ ] Add enemy phases or exercise prompts.

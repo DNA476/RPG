@@ -11,7 +11,7 @@ FrameSource (:app)
 PoseAnalyzer (:pose)
     -> StateFlow<PoseFrame>
 ExerciseDetector (:domain)
-    -> SharedFlow<ExerciseEvent>
+    -> SharedFlow<ExerciseEvent> + StateFlow<ExerciseDetectionResult>
 BattleSession (:game)
     -> StateFlow<BattleSnapshot>
 BattleViewModel (:app)
@@ -31,6 +31,7 @@ Responsibilities:
 - Android lifecycle and runtime permission handling.
 - CameraX and debug video frame sources.
 - ViewModel orchestration and conversion to UI state.
+- State-driven navigation between menu, battle, and victory.
 - Construction of current repository, detector, analyzer, and battle objects.
 
 Key files:
@@ -71,8 +72,10 @@ Responsibilities:
 
 - Stable pose and landmark models.
 - Exercise identifiers and event contracts.
+- Exercise content model, difficulty, and detector status.
 - Exercise detector interface.
 - Stateful squat recognition and its configuration.
+- Detector factory and safe experimental detector placeholders.
 
 This module must not know about Compose, CameraX, MediaPipe, enemies, or damage.
 
@@ -84,7 +87,7 @@ Responsibilities:
 
 - Enemy and player models.
 - Exercise-to-attack mapping.
-- Damage calculation.
+- Damage calculation from the selected `ExerciseConfig`.
 - Battle state transitions and immutable snapshots.
 
 `BattleSession` reacts to completed repetitions only. It must remain usable in
@@ -99,6 +102,8 @@ Responsibilities:
 - Enemy repository contracts and current in-memory implementation.
 - Exercise configuration repository contracts and current in-memory
   implementation.
+- `ExerciseCatalog`, the single source of truth for names, descriptions, base
+  damage, difficulty, and detector status.
 
 This is the future home for JSON, Room, or remote-backed implementations. The
 game and domain modules should not depend on concrete storage.
@@ -118,23 +123,24 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 
 ## Runtime Flow
 
-1. `BattleViewModel.start()` starts `SquatDetector` and moves the battle to
-   `TRACKING`.
-2. `CameraPreview` selects a `FrameSource`.
-3. `CameraFrameSource` converts CameraX frames to correctly oriented/mirrored
+1. `FitnessRpgApp` opens `MainMenuScreen`.
+2. The player selects an `ExerciseConfig` from `ExerciseCatalog`.
+3. `BattleViewModel.startBattle()` creates the matching detector through
+   `ExerciseDetectorFactory` and creates a `BattleSession` for that config.
+4. `CameraPreview` selects a `FrameSource`.
+5. `CameraFrameSource` converts CameraX frames to correctly oriented/mirrored
    bitmaps, or `VideoFileFrameSource` decodes a test video.
-4. `PoseAnalyzer.analyze()` sends an accepted bitmap to MediaPipe.
-5. MediaPipe results become `PoseFrame` values.
-6. While tracking, `BattleViewModel` starts the battle and passes frames to
-   `SquatDetector`.
-7. The detector state machine recognizes standing -> bottom -> standing and
+6. `PoseAnalyzer.analyze()` sends an accepted bitmap to MediaPipe.
+7. MediaPipe results become `PoseFrame` values.
+8. While tracking, `BattleViewModel` passes frames to the selected detector.
+9. The ready squat detector recognizes standing -> bottom -> standing and
    emits `RepetitionCompleted`.
-8. `BattleSession` maps the exercise to an attack, calculates damage, mutates
-   boss HP, and publishes a `BattleSnapshot`.
-9. `BattleViewModel` combines pose, detector, and battle information into
+10. `BattleSession` calculates damage from `ExerciseConfig.baseDamage`, mutates
+    boss HP, and publishes a `BattleSnapshot`.
+11. `BattleViewModel` increments `hitEventId` for every completed attack and
+   combines pose, detector, battle, and presentation information into
    `BattleUiState`.
-10. Compose renders camera/video, skeleton, boss HP, counters, status, damage,
-    and victory state.
+12. Compose renders battle feedback and switches to `VictoryScreen` at zero HP.
 
 ## State Ownership
 
@@ -142,21 +148,22 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 - Each `ExerciseDetector` owns its movement phase and repetition count.
 - `BattleSession` owns enemy HP, repetition total, and game state.
 - `BattleViewModel` owns presentation messages and the aggregated UI model.
+- `EnemyCombatant` owns transient shake, red-flash, and slash animation state.
 - Compose components render state and should not contain domain decisions.
 
 ## Extension Rules
 
 ### Add an exercise
 
-1. Add or reuse an `ExerciseType`.
-2. Implement an `ExerciseDetector` and dedicated config in `:domain`.
-3. Expose the config through `:data`.
-4. Map the exercise to an attack in `:game`.
-5. Register the detector in app orchestration.
-6. Add synthetic pose-frame unit tests before tuning against real video.
+1. Add the `ExerciseType`.
+2. Add one `ExerciseConfig` entry to `ExerciseCatalog`.
+3. Implement an `ExerciseDetector` in `:domain`.
+4. Register it in `ExerciseDetectorFactory`.
+5. Add synthetic pose-frame tests before tuning against real video.
 
-When multiple exercises are active, introduce a detector registry/coordinator
-instead of adding more hard-coded collectors to `BattleViewModel`.
+Base damage is configured only in `ExerciseCatalog`. Future critical hits,
+equipment, combos, player stats, and enemy weaknesses belong in
+`DamageCalculator`, not in detectors or Compose.
 
 ### Add an enemy
 
@@ -187,5 +194,5 @@ stable and inject implementations from `:app`.
 - Boss state exposes a mutable domain object inside snapshots.
 - No clock abstraction exists for transient UI messages.
 - Error information is flattened to tracking state or display strings.
-- There is no formal session/config model describing selected exercises, enemy,
-  target duration, or difficulty.
+- The selected exercise is held by `BattleViewModel`; a formal session config is
+  still needed for exercise switching, Auto Mode, and Free Battle Mode.

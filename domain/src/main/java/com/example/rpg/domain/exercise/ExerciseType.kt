@@ -5,6 +5,10 @@
  */
 enum class ExerciseType {
     SQUAT,
+    PUSH_UP,
+    PULL_UP,
+    CRUNCH,
     LUNGE,
-    JUMP,
+    JUMPING_JACK,
+    PLANK,
 }

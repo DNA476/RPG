@@ -12,6 +12,7 @@ data class BattleSnapshot(
     val boss: Boss,
     val playerStats: PlayerStats,
     val completedRepetitions: Int,
+    val totalDamage: Int,
     val lastDamage: Int?,
     val lastAttackType: AttackType?,
 )

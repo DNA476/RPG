@@ -8,8 +8,11 @@ import kotlin.math.acos
 import kotlin.math.sqrt
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Detects complete squat repetitions from hip-knee-ankle angles.
@@ -24,12 +27,16 @@ class SquatDetector(
         extraBufferCapacity = config.eventBufferCapacity,
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
+    private val mutableResult = MutableStateFlow(
+        ExerciseDetectionResult(stateLabel = "Встаньте прямо перед камерой"),
+    )
     private var isRunning = false
     private var phase = Phase.WAITING_FOR_STAND
     private var repetitionCount = 0
 
     override val exerciseType: ExerciseType = ExerciseType.SQUAT
     override val events: SharedFlow<ExerciseEvent> = mutableEvents.asSharedFlow()
+    override val result: StateFlow<ExerciseDetectionResult> = mutableResult.asStateFlow()
 
     override fun start() {
         isRunning = true
@@ -37,33 +44,84 @@ class SquatDetector(
 
     override fun stop() {
         isRunning = false
+        mutableResult.value = mutableResult.value.copy(stateLabel = "Детектор остановлен")
     }
 
     override fun reset() {
         repetitionCount = 0
         phase = Phase.WAITING_FOR_STAND
+        mutableResult.value = ExerciseDetectionResult(stateLabel = "Встаньте прямо перед камерой")
     }
 
     override fun processPoseFrame(frame: PoseFrame) {
         if (!isRunning || frame.trackingState != PoseTrackingState.TRACKING) return
 
-        val kneeAngle = averageVisibleKneeAngle(frame) ?: return
+        val kneeAngle = averageVisibleKneeAngle(frame)
+        if (kneeAngle == null) {
+            mutableResult.value = ExerciseDetectionResult(
+                stateLabel = "Колени не видны полностью",
+                debugInfo = "Required hip, knee, and ankle landmarks are not visible",
+            )
+            return
+        }
         val isStanding = kneeAngle >= config.standingKneeAngleDegrees
         val isAtBottom = kneeAngle <= config.squatKneeAngleDegrees
 
         when (phase) {
-            Phase.WAITING_FOR_STAND -> if (isStanding) phase = Phase.STANDING
+            Phase.WAITING_FOR_STAND -> {
+                mutableResult.value = ExerciseDetectionResult(
+                    stateLabel = if (isStanding) "Готово к приседанию" else "Выпрямите ноги",
+                    confidence = frameConfidence(frame),
+                    debugInfo = "kneeAngle=$kneeAngle",
+                )
+                if (isStanding) phase = Phase.STANDING
+            }
             Phase.STANDING -> if (isAtBottom) {
                 phase = Phase.BOTTOM
+                mutableResult.value = ExerciseDetectionResult(
+                    stateLabel = "Нижняя точка достигнута",
+                    confidence = frameConfidence(frame),
+                    debugInfo = "kneeAngle=$kneeAngle",
+                )
                 mutableEvents.tryEmit(ExerciseEvent.ExerciseStarted(exerciseType))
+            } else {
+                mutableResult.value = ExerciseDetectionResult(
+                    stateLabel = "Опускайтесь ниже",
+                    confidence = frameConfidence(frame),
+                    debugInfo = "kneeAngle=$kneeAngle",
+                )
             }
             Phase.BOTTOM -> if (isStanding) {
                 repetitionCount += 1
                 phase = Phase.STANDING
+                mutableResult.value = ExerciseDetectionResult(
+                    repetitionCompleted = true,
+                    stateLabel = "Повтор засчитан",
+                    confidence = frameConfidence(frame),
+                    debugInfo = "kneeAngle=$kneeAngle; repetitions=$repetitionCount",
+                )
                 mutableEvents.tryEmit(ExerciseEvent.RepetitionCompleted(exerciseType, repetitionCount))
                 mutableEvents.tryEmit(ExerciseEvent.ExerciseFinished(exerciseType))
+            } else {
+                mutableResult.value = ExerciseDetectionResult(
+                    stateLabel = "Вернитесь в стойку",
+                    confidence = frameConfidence(frame),
+                    debugInfo = "kneeAngle=$kneeAngle",
+                )
             }
         }
+    }
+
+    private fun frameConfidence(frame: PoseFrame): Float {
+        val required = listOf(
+            BodyLandmarkName.LEFT_HIP,
+            BodyLandmarkName.LEFT_KNEE,
+            BodyLandmarkName.LEFT_ANKLE,
+            BodyLandmarkName.RIGHT_HIP,
+            BodyLandmarkName.RIGHT_KNEE,
+            BodyLandmarkName.RIGHT_ANKLE,
+        ).mapNotNull(frame::landmark)
+        return if (required.isEmpty()) 0f else required.map { it.visibility }.average().toFloat()
     }
 
     private fun averageVisibleKneeAngle(frame: PoseFrame): Float? {

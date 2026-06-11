@@ -8,7 +8,12 @@ import com.example.rpg.domain.exercise.ExerciseType
 class DefaultExerciseAttackMapper : ExerciseAttackMapper {
     override fun map(exerciseType: ExerciseType): AttackType = when (exerciseType) {
         ExerciseType.SQUAT -> AttackType.BasicAttack
-        ExerciseType.LUNGE -> AttackType.HeavyAttack
-        ExerciseType.JUMP -> AttackType.CriticalAttack
+        ExerciseType.CRUNCH -> AttackType.BasicAttack
+        ExerciseType.LUNGE,
+        ExerciseType.PUSH_UP,
+        ExerciseType.JUMPING_JACK,
+        ExerciseType.PLANK,
+        -> AttackType.HeavyAttack
+        ExerciseType.PULL_UP -> AttackType.CriticalAttack
     }
 }

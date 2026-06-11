@@ -1,4 +1,4 @@
-﻿package com.example.rpg.ui.screens
+package com.example.rpg.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,13 +20,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-/**
- * Victory state screen shown after the boss reaches zero HP.
- */
 @Composable
 fun VictoryScreen(
-    completedSquats: Int,
-    onRestart: () -> Unit,
+    bossName: String,
+    exerciseName: String,
+    completedRepetitions: Int,
+    totalDamage: Int,
+    onBackToMenu: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -45,23 +45,33 @@ fun VictoryScreen(
             modifier = Modifier.padding(28.dp),
         ) {
             Text(
-                text = "Victory",
+                text = "Победа!",
                 color = Color(0xFFFFD166),
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Black,
             )
             Text(
-                text = "Training Dummy побежден. Корректных приседаний: $completedSquats.",
-                color = Color.White.copy(alpha = 0.88f),
+                text = "$bossName побежден",
+                color = Color.White,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = "$exerciseName\nПовторов: $completedRepetitions\nОбщий урон: $totalDamage",
+                color = Color.White.copy(alpha = 0.84f),
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
             Button(
-                onClick = onRestart,
+                onClick = onBackToMenu,
                 shape = RoundedCornerShape(18.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFD166), contentColor = Color(0xFF111111)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFFD166),
+                    contentColor = Color(0xFF111111),
+                ),
             ) {
-                Text("Новый бой")
+                Text("Вернуться в меню")
             }
         }
     }

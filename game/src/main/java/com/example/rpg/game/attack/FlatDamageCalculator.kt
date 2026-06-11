@@ -1,10 +1,16 @@
 ﻿package com.example.rpg.game.attack
 
+import com.example.rpg.domain.exercise.ExerciseConfig
+import com.example.rpg.game.enemy.Enemy
 import com.example.rpg.game.player.PlayerStats
 
 /**
- * MVP damage calculator. It keeps squat damage equal to 1 while leaving a clear extension point for RPG scaling.
+ * MVP damage calculator that leaves extension points for stats, equipment, combos, and enemy weaknesses.
  */
 class FlatDamageCalculator : DamageCalculator {
-    override fun calculate(attackType: AttackType, playerStats: PlayerStats): Int = attackType.baseDamage
+    override fun calculate(
+        exercise: ExerciseConfig,
+        playerStats: PlayerStats,
+        enemy: Enemy,
+    ): Int = exercise.baseDamage
 }

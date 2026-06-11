@@ -9,4 +9,5 @@ kotlin {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":game"))
+    testImplementation(libs.junit)
 }

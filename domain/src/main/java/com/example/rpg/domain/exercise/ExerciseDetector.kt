@@ -2,6 +2,7 @@
 
 import com.example.rpg.domain.pose.PoseFrame
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Generic contract for real-time exercise detectors.
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.SharedFlow
 interface ExerciseDetector {
     val exerciseType: ExerciseType
     val events: SharedFlow<ExerciseEvent>
+    val result: StateFlow<ExerciseDetectionResult>
 
     /**
      * Enables frame processing.

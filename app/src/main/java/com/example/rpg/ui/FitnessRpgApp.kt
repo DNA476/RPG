@@ -1,33 +1,37 @@
-﻿package com.example.rpg.ui
+package com.example.rpg.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.example.rpg.game.battle.GameState
 import com.example.rpg.ui.screens.BattleScreen
+import com.example.rpg.ui.screens.MainMenuScreen
 import com.example.rpg.ui.screens.VictoryScreen
+import com.example.rpg.ui.viewmodel.AppScreen
 import com.example.rpg.ui.viewmodel.BattleViewModel
 
-/**
- * Root Compose app that switches between MVP game states.
- */
 @Composable
 fun FitnessRpgApp(viewModel: BattleViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.start()
-    }
-
-    when (uiState.gameState) {
-        GameState.VICTORY -> VictoryScreen(
-            completedSquats = uiState.completedSquats,
-            onRestart = viewModel::resetBattle,
+    when (uiState.screen) {
+        AppScreen.MAIN_MENU -> MainMenuScreen(
+            exercises = uiState.exercises,
+            selectedExercise = uiState.selectedExercise,
+            onExerciseSelected = viewModel::selectExercise,
+            onStartBattle = viewModel::startBattle,
         )
-        else -> BattleScreen(
+        AppScreen.BATTLE -> BattleScreen(
             uiState = uiState,
             poseAnalyzer = viewModel.poseAnalyzer,
+            onBackToMenu = viewModel::returnToMenu,
+            onSimulateRepetition = viewModel::simulateRepetition,
+        )
+        AppScreen.VICTORY -> VictoryScreen(
+            bossName = uiState.bossName,
+            exerciseName = uiState.selectedExercise?.displayName.orEmpty(),
+            completedRepetitions = uiState.completedRepetitions,
+            totalDamage = uiState.totalDamage,
+            onBackToMenu = viewModel::returnToMenu,
         )
     }
 }

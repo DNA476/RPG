@@ -1,6 +1,7 @@
 ﻿package com.example.rpg.game.battle
 
 import com.example.rpg.domain.exercise.ExerciseEvent
+import com.example.rpg.domain.exercise.ExerciseConfig
 import com.example.rpg.game.attack.DamageCalculator
 import com.example.rpg.game.attack.DefaultExerciseAttackMapper
 import com.example.rpg.game.attack.ExerciseAttackMapper
@@ -17,11 +18,13 @@ import kotlinx.coroutines.flow.asStateFlow
  */
 class BattleSession(
     private var boss: Boss,
+    private val exercise: ExerciseConfig,
     private val playerStats: PlayerStats = PlayerStats(),
     private val exerciseAttackMapper: ExerciseAttackMapper = DefaultExerciseAttackMapper(),
     private val damageCalculator: DamageCalculator = FlatDamageCalculator(),
 ) {
     private var completedRepetitions = 0
+    private var totalDamage = 0
     private val mutableState = MutableStateFlow(createSnapshot(GameState.IDLE, null, null))
 
     val state: StateFlow<BattleSnapshot> = mutableState.asStateFlow()
@@ -49,11 +52,13 @@ class BattleSession(
     fun handleExerciseEvent(event: ExerciseEvent) {
         if (mutableState.value.gameState == GameState.VICTORY || mutableState.value.gameState == GameState.DEFEAT) return
         if (event !is ExerciseEvent.RepetitionCompleted) return
+        if (event.exerciseType != exercise.type) return
 
         val attackType = exerciseAttackMapper.map(event.exerciseType)
-        val damage = damageCalculator.calculate(attackType, playerStats)
+        val damage = damageCalculator.calculate(exercise, playerStats, boss)
         boss.receiveDamage(damage)
         completedRepetitions = event.repetitionCount
+        totalDamage += damage
 
         val nextState = if (boss.isDefeated()) GameState.VICTORY else GameState.BATTLE
         mutableState.value = createSnapshot(nextState, damage, attackType)
@@ -65,6 +70,7 @@ class BattleSession(
     fun reset(newBoss: Boss) {
         boss = newBoss
         completedRepetitions = 0
+        totalDamage = 0
         mutableState.value = createSnapshot(GameState.IDLE, null, null)
     }
 
@@ -77,6 +83,7 @@ class BattleSession(
         boss = boss,
         playerStats = playerStats,
         completedRepetitions = completedRepetitions,
+        totalDamage = totalDamage,
         lastDamage = lastDamage,
         lastAttackType = lastAttackType,
     )

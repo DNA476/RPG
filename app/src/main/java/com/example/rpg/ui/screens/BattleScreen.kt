@@ -8,12 +8,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,10 +27,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.rpg.BuildConfig
 import com.example.rpg.pose.PoseAnalyzer
 import com.example.rpg.ui.components.BossHealthBar
 import com.example.rpg.ui.components.CameraPreview
-import com.example.rpg.ui.components.DamagePopup
+import com.example.rpg.ui.components.EnemyCombatant
 import com.example.rpg.ui.components.SkeletonOverlay
 import com.example.rpg.ui.viewmodel.BattleUiState
 
@@ -37,6 +42,8 @@ import com.example.rpg.ui.viewmodel.BattleUiState
 fun BattleScreen(
     uiState: BattleUiState,
     poseAnalyzer: PoseAnalyzer,
+    onBackToMenu: () -> Unit,
+    onSimulateRepetition: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -70,11 +77,19 @@ fun BattleScreen(
                 maxHp = uiState.bossMaxHp,
                 modifier = Modifier.fillMaxWidth(),
             )
-            DamagePopup(
-                message = uiState.damageMessage,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+            EnemyCombatant(
+                hitEventId = uiState.hitEventId,
+                damageMessage = uiState.damageMessage,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth(0.82f)
+                    .height(390.dp),
             )
-            BattleHud(uiState = uiState)
+            BattleHud(
+                uiState = uiState,
+                onBackToMenu = onBackToMenu,
+                onSimulateRepetition = onSimulateRepetition,
+            )
         }
     }
 }
@@ -85,6 +100,8 @@ fun BattleScreen(
 @Composable
 fun BattleHud(
     uiState: BattleUiState,
+    onBackToMenu: () -> Unit,
+    onSimulateRepetition: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -96,14 +113,27 @@ fun BattleHud(
             modifier = Modifier.padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            val exercise = uiState.selectedExercise
+            Text(
+                text = exercise?.displayName.orEmpty(),
+                color = Color(0xFFFFD166),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = "Урон: ${exercise?.baseDamage ?: 0}  •  " +
+                    "${exercise?.difficulty?.name.orEmpty()}  •  ${exercise?.detectorStatus?.name.orEmpty()}",
+                color = Color.White.copy(alpha = 0.72f),
+                style = MaterialTheme.typography.labelLarge,
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                StatBlock(label = "Приседания", value = uiState.completedSquats.toString())
+                StatBlock(label = "Повторы", value = uiState.completedRepetitions.toString())
                 Spacer(modifier = Modifier.width(12.dp))
-                StatBlock(label = "Состояние", value = uiState.gameState.name)
+                StatBlock(label = "Общий урон", value = uiState.totalDamage.toString())
             }
             Text(
                 text = uiState.exerciseStatus,
@@ -116,6 +146,24 @@ fun BattleHud(
                 color = Color.White.copy(alpha = 0.72f),
                 style = MaterialTheme.typography.bodyMedium,
             )
+            if (BuildConfig.DEBUG) {
+                Button(
+                    onClick = onSimulateRepetition,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFFD166),
+                        contentColor = Color(0xFF111111),
+                    ),
+                ) {
+                    Text("Simulate repetition")
+                }
+            }
+            OutlinedButton(
+                onClick = onBackToMenu,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Назад в меню")
+            }
         }
     }
 }

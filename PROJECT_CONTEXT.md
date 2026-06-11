@@ -21,12 +21,21 @@ The repository is an MVP/prototype, not a production-ready application.
 - UI: Jetpack Compose.
 - Camera: CameraX with the front camera.
 - Pose estimation: MediaPipe Pose Landmarker, processed locally on the device.
-- Implemented exercise: squat.
-- Implemented encounter: one training boss with 10 HP.
-- Current combat rule: one valid squat maps to a basic attack with flat damage.
+- App entry point: exercise selection menu.
+- Exercise catalog: squat, push-up, pull-up, crunch, lunge, jumping jack, and
+  plank.
+- Ready detector: squat.
+- Experimental placeholders: all other catalog exercises. They safely consume
+  tracking state but do not count live-camera repetitions yet.
+- Implemented encounter: one goblin boss with 10 HP.
+- Current combat rule: one valid repetition deals the selected exercise's
+  configured base damage.
 - Current end state: victory after the boss reaches zero HP.
+- A valid hit shakes the goblin, flashes it red, and overlays a white sword slash.
 - Persistence, accounts, progression, audio, analytics, and backend are absent.
 - Debug builds can switch between live camera input and a looping video asset.
+- Debug builds expose `Simulate repetition` to test every exercise, damage,
+  counters, and victory without camera input.
 
 ## Source Of Truth
 
@@ -37,8 +46,12 @@ first:
 - `app/src/main/java/com/example/rpg/ui/viewmodel/BattleViewModel.kt` for runtime
   orchestration.
 - `pose/src/main/java/com/example/rpg/pose/PoseAnalyzer.kt` for pose inference.
+- `data/src/main/java/com/example/rpg/data/exercise/ExerciseCatalog.kt` for
+  exercise content and base damage.
+- `domain/src/main/java/com/example/rpg/domain/exercise/ExerciseDetectorFactory.kt`
+  for detector construction.
 - `domain/src/main/java/com/example/rpg/domain/exercise/SquatDetector.kt` for
-  repetition recognition.
+  ready repetition recognition.
 - `game/src/main/java/com/example/rpg/game/battle/BattleSession.kt` for combat.
 - `data/src/main/java/com/example/rpg/data` for current content/config sources.
 
@@ -73,7 +86,9 @@ first:
 - Squat detection uses 2D knee angles and landmark visibility only.
 - There is no temporal smoothing, minimum movement duration, cooldown, or form
   quality score.
-- Only one detector is wired directly into `BattleViewModel`.
+- Only squat has a calibrated movement state machine.
+- Experimental detectors report tracking feedback but require exercise-specific
+  recognition and calibration.
 - Dependencies are manually constructed; there is no DI framework.
 - Enemy and exercise configurations are in memory.
 - Automated coverage is currently limited to generated placeholder tests.
@@ -84,15 +99,12 @@ first:
 
 ## Near-Term Direction
 
-The next useful milestone is a reliable vertical slice:
+The next useful milestone is reliable detection beyond the menu/combat slice:
 
-- start a session;
-- acquire and explain tracking state;
 - count squats reliably across common camera positions;
-- damage and defeat an enemy;
-- reset cleanly;
+- implement and calibrate one experimental detector at a time;
 - validate the same flow with deterministic recorded video;
-- cover detector and combat rules with unit tests.
+- add ViewModel and Compose navigation tests.
 
 Progression systems and content breadth should follow reliability, not precede
 it.

@@ -9,15 +9,15 @@ import com.example.rpg.game.enemy.Boss
 class InMemoryEnemyRepository : EnemyRepository {
     private val enemies = listOf(
         EnemyConfig(
-            id = "training_dummy",
-            name = "Training Dummy",
+            id = "goblin",
+            name = "Goblin",
             maxHp = 10,
-            imageResource = "training_dummy",
+            imageResource = "goblin_enemy",
         ),
     )
 
     override fun getTrainingBoss(): Boss {
-        val config = enemies.first { it.id == "training_dummy" }
+        val config = enemies.first { it.id == "goblin" }
         return Boss(
             id = config.id,
             name = config.name,

@@ -15,7 +15,8 @@ start, pause, or navigate the session, not replace the exercise.
 ## Current Core Loop
 
 ```text
-Start session
+Choose exercise
+-> start battle
 -> stand in camera view
 -> enter squat
 -> return to standing
@@ -25,20 +26,22 @@ Start session
 -> victory
 ```
 
-Current MVP rules:
+Current rules:
 
-- Exercise: squat.
+- The menu offers seven exercises.
+- Squat is ready for live pose detection; the other six are experimental.
 - Valid cycle: standing -> squat bottom -> standing.
 - One valid repetition produces one attack.
-- Squat maps to `BasicAttack`.
-- Damage uses `FlatDamageCalculator`.
-- Training boss starts with 10 HP.
+- Damage equals the selected exercise's configured base damage: squat/crunch 1,
+  lunge/push-up/jumping jack/plank 2, pull-up 3.
+- Goblin boss starts with 10 HP.
+- Every successful attack triggers damage text, a sword slash, red flash, and
+  short enemy shake.
 - There is no player damage, timer, stamina, combo, failure, reward, or
   progression loop yet.
 
-The code already reserves `LUNGE`, `JUMP`, heavy attacks, critical attacks,
-`DEFEAT`, player stats, equipment, and skills, but these are not complete player
-features.
+Debug builds can simulate a repetition, allowing every configured exercise and
+damage value to complete the battle before its live detector is ready.
 
 ## Design Principles
 
@@ -131,7 +134,8 @@ branches.
 
 Required high-level states:
 
-- idle: session has not started;
+- main menu: exercise selection;
+- idle: selected session has not started;
 - tracking: camera/model is acquiring the player;
 - battle: valid exercise input can damage the enemy;
 - paused: future state for interruption and safety;

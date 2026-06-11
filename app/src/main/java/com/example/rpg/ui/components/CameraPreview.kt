@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -185,48 +183,20 @@ private fun DebugFrameInputSwitcher(
     onInputModeChange: (FrameInputMode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        modifier = modifier,
-        color = Color(0xCC111111),
-        shape = MaterialTheme.shapes.large,
-    ) {
-        Column(
-            modifier = Modifier.padding(10.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = "Debug input",
-                color = Color.White.copy(alpha = 0.72f),
-                style = MaterialTheme.typography.labelMedium,
-            )
-            InputModeButton(
-                text = "Camera mode",
-                selected = inputMode == FrameInputMode.Camera,
-                onClick = { onInputModeChange(FrameInputMode.Camera) },
-            )
-            InputModeButton(
-                text = "Video test mode",
-                selected = inputMode == FrameInputMode.VideoTest,
-                onClick = { onInputModeChange(FrameInputMode.VideoTest) },
-            )
-        }
+    val nextMode = when (inputMode) {
+        FrameInputMode.Camera -> FrameInputMode.VideoTest
+        FrameInputMode.VideoTest -> FrameInputMode.Camera
     }
-}
-
-@Composable
-private fun InputModeButton(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
-    if (selected) {
-        Button(onClick = onClick) {
-            Text(text)
-        }
-    } else {
-        OutlinedButton(onClick = onClick) {
-            Text(text)
-        }
+    Button(
+        onClick = { onInputModeChange(nextMode) },
+        modifier = modifier,
+    ) {
+        Text(
+            text = when (inputMode) {
+                FrameInputMode.Camera -> "CAM"
+                FrameInputMode.VideoTest -> "VIDEO"
+            },
+        )
     }
 }
 
