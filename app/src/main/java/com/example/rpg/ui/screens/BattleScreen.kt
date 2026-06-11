@@ -78,6 +78,8 @@ fun BattleScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
             EnemyCombatant(
+                imageResource = uiState.bossImageResource,
+                enemyName = uiState.bossName,
                 hitEventId = uiState.hitEventId,
                 damageMessage = uiState.damageMessage,
                 modifier = Modifier
@@ -126,6 +128,16 @@ fun BattleHud(
                 color = Color.White.copy(alpha = 0.72f),
                 style = MaterialTheme.typography.labelLarge,
             )
+            val enemy = uiState.selectedEnemy
+            Text(
+                text = when (exercise?.type) {
+                    enemy?.weakness?.exerciseType -> "Слабость врага: урон ×1.5"
+                    enemy?.resistance?.exerciseType -> "Сопротивление врага: урон ×0.75"
+                    else -> "Отношение врага: нейтральное"
+                },
+                color = Color.White.copy(alpha = 0.72f),
+                style = MaterialTheme.typography.labelLarge,
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -142,7 +154,22 @@ fun BattleHud(
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "Tracking: ${uiState.trackingState.name}",
+                text = if (uiState.debuffSecondsRemaining > 0) {
+                    "${uiState.enemyAbilityMessage} · ещё ${uiState.debuffSecondsRemaining} сек."
+                } else {
+                    "Атака врага через ${uiState.enemyAttackSecondsRemaining} сек."
+                },
+                color = if (uiState.debuffSecondsRemaining > 0) {
+                    Color(0xFFFF7B72)
+                } else {
+                    Color.White.copy(alpha = 0.72f)
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "Сила атаки: ${(uiState.playerAttackMultiplier * 100).toInt()}% · " +
+                    "Tracking: ${uiState.trackingState.name}",
                 color = Color.White.copy(alpha = 0.72f),
                 style = MaterialTheme.typography.bodyMedium,
             )

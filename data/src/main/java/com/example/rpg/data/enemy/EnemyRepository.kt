@@ -1,13 +1,10 @@
-﻿package com.example.rpg.data.enemy
+package com.example.rpg.data.enemy
 
+import com.example.rpg.domain.exercise.ExerciseType
 import com.example.rpg.game.enemy.Boss
 
-/**
- * Source of enemy and boss configurations.
- */
 interface EnemyRepository {
-    /**
-     * Returns the first boss used by the MVP battle.
-     */
-    fun getTrainingBoss(): Boss
+    fun getRandomChoices(exerciseType: ExerciseType, count: Int = 3): List<EnemyConfig>
+
+    fun createBoss(id: String): Boss
 }

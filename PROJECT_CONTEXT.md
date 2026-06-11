@@ -27,9 +27,18 @@ The repository is an MVP/prototype, not a production-ready application.
 - Ready detector: squat.
 - Experimental placeholders: all other catalog exercises. They safely consume
   tracking state but do not count live-camera repetitions yet.
-- Implemented encounter: one goblin boss with 10 HP.
-- Current combat rule: one valid repetition deals the selected exercise's
-  configured base damage.
+- Encounter selection: after choosing an exercise, the player receives three
+  random enemies and chooses one. The trio has no refresh action and is cached
+  for that exercise during the current app session.
+- Enemy catalog: four goblin roles and two hound variants with distinct HP,
+  portraits, weaknesses, resistances, and weakening abilities.
+- Matchmaking guarantees at least one offered enemy is not resistant to the
+  selected exercise.
+- Current combat rule: one valid repetition applies exercise base damage,
+  enemy affinity, and any active attack debuff. Final damage is never below 1.
+- Enemy weakness multiplier: `1.5x`; resistance multiplier: `0.75x`.
+- Enemies attack every 15 seconds and reduce outgoing player damage by 25% for
+  10 seconds. Player HP and defeat are not implemented.
 - Current end state: victory after the boss reaches zero HP.
 - A valid hit shakes the goblin, flashes it red, and overlays a white sword slash.
 - Persistence, accounts, progression, audio, analytics, and backend are absent.
@@ -48,6 +57,8 @@ first:
 - `pose/src/main/java/com/example/rpg/pose/PoseAnalyzer.kt` for pose inference.
 - `data/src/main/java/com/example/rpg/data/exercise/ExerciseCatalog.kt` for
   exercise content and base damage.
+- `data/src/main/java/com/example/rpg/data/enemy/InMemoryEnemyRepository.kt` for
+  enemy content and random encounter selection.
 - `domain/src/main/java/com/example/rpg/domain/exercise/ExerciseDetectorFactory.kt`
   for detector construction.
 - `domain/src/main/java/com/example/rpg/domain/exercise/SquatDetector.kt` for
@@ -63,6 +74,9 @@ first:
 - Repetition: a complete valid movement cycle, not a single pose.
 - Attack mapping: conversion from an exercise type to an attack type.
 - Battle session: game state for one enemy encounter.
+- Affinity: an exercise-specific weakness or resistance multiplier.
+- Enemy ability: a timed action that currently applies a temporary attack
+  reduction instead of damaging player HP.
 - Frame source: producer of bitmaps for pose analysis, currently camera or debug
   video.
 
@@ -72,6 +86,8 @@ first:
 - Combat must consume domain exercise events, not camera or MediaPipe objects.
 - MediaPipe and CameraX types must not leak into `:domain` or `:game`.
 - Damage is applied only for `ExerciseEvent.RepetitionCompleted`.
+- Enemy selection must never offer only resistant enemies.
+- Resistances reduce damage but never create full immunity.
 - A squat is counted only after the sequence standing -> bottom -> standing.
 - Pose processing is local; do not introduce a server dependency without an
   explicit product decision.
@@ -91,6 +107,8 @@ first:
   recognition and calibration.
 - Dependencies are manually constructed; there is no DI framework.
 - Enemy and exercise configurations are in memory.
+- Enemy attack timing is fixed at 15 seconds. The policy boundary exists, but
+  exercise difficulty and player fitness are not yet inputs.
 - Automated coverage is currently limited to generated placeholder tests.
 - Camera, rotation, mirroring, video decoding, and MediaPipe behavior require
   device or emulator validation.

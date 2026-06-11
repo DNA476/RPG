@@ -16,6 +16,7 @@ start, pause, or navigate the session, not replace the exercise.
 
 ```text
 Choose exercise
+-> choose one of three random enemies
 -> start battle
 -> stand in camera view
 -> enter squat
@@ -34,7 +35,13 @@ Current rules:
 - One valid repetition produces one attack.
 - Damage equals the selected exercise's configured base damage: squat/crunch 1,
   lunge/push-up/jumping jack/plank 2, pull-up 3.
-- Goblin boss starts with 10 HP.
+- Six normal enemies currently exist with 10-20 HP.
+- Each enemy has one weakness (`1.5x`) and one resistance (`0.75x`).
+- The offered trio always contains at least one neutral or vulnerable matchup.
+- There is no reroll action for the offered enemies.
+- Every 15 seconds the enemy uses an ability that reduces player attack by 25%
+  for 10 seconds. This replaces player HP for the current prototype.
+- Damage cannot fall below 1, so resistance never makes a battle impossible.
 - Every successful attack triggers damage text, a sword slash, red flash, and
   short enemy shake.
 - There is no player damage, timer, stamina, combo, failure, reward, or
@@ -71,6 +78,17 @@ not from requiring risky movement.
 The initial target experience is a short encounter with a visible endpoint.
 Long-term progression can connect multiple encounters after one battle is
 reliable and satisfying.
+
+### Tactical Choice Without Traps
+
+The enemy screen should make the relevant matchup understandable before battle.
+Cards show only two tactical facts for the selected exercise:
+
+- whether the enemy is weak, resistant, or neutral;
+- the enemy's timed weakening ability.
+
+Full immunity is intentionally excluded. A player should be able to finish any
+offered battle with the exercise they already selected.
 
 ### Explain Failure
 
@@ -119,6 +137,8 @@ advice or injury claims from pose landmarks.
 Potential session-level variables:
 
 - enemy HP;
+- enemy weakness and resistance;
+- enemy attack interval and debuff duration;
 - damage per valid repetition;
 - selected exercise set;
 - target repetitions;
@@ -159,7 +179,7 @@ The current `GameState` contains all except paused and explicit error.
 ## Open Design Decisions
 
 - Is the primary mode fixed-repetition, fixed-time, or enemy-HP based?
-- Should enemies attack, and what fair action prevents or mitigates damage?
+- How should exercise difficulty and player fitness affect enemy attack timing?
 - How should calibration change thresholds without rewarding unsafe depth?
 - Will one session use one exercise or prompted exercise sequences?
 - Which progression rewards are functional versus cosmetic?

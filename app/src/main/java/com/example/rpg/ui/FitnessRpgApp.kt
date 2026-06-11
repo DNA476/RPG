@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.rpg.ui.screens.BattleScreen
+import com.example.rpg.ui.screens.EnemySelectionScreen
 import com.example.rpg.ui.screens.MainMenuScreen
 import com.example.rpg.ui.screens.VictoryScreen
 import com.example.rpg.ui.viewmodel.AppScreen
@@ -18,7 +19,15 @@ fun FitnessRpgApp(viewModel: BattleViewModel) {
             exercises = uiState.exercises,
             selectedExercise = uiState.selectedExercise,
             onExerciseSelected = viewModel::selectExercise,
+            onContinue = viewModel::openEnemySelection,
+        )
+        AppScreen.ENEMY_SELECTION -> EnemySelectionScreen(
+            exercise = requireNotNull(uiState.selectedExercise),
+            enemies = uiState.enemyChoices,
+            selectedEnemy = uiState.selectedEnemy,
+            onEnemySelected = viewModel::selectEnemy,
             onStartBattle = viewModel::startBattle,
+            onBack = viewModel::returnToExerciseSelection,
         )
         AppScreen.BATTLE -> BattleScreen(
             uiState = uiState,

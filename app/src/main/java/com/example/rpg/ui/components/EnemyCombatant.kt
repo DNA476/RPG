@@ -32,6 +32,8 @@ private const val HIT_ANIMATION_DURATION_MS = 420
  */
 @Composable
 fun EnemyCombatant(
+    imageResource: String,
+    enemyName: String,
     hitEventId: Long,
     damageMessage: String?,
     modifier: Modifier = Modifier,
@@ -82,8 +84,8 @@ fun EnemyCombatant(
         contentAlignment = Alignment.Center,
     ) {
         Image(
-            painter = painterResource(R.drawable.goblin_enemy),
-            contentDescription = "Goblin enemy",
+            painter = painterResource(enemyDrawableResource(imageResource)),
+            contentDescription = enemyName,
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(
                 color = Color(

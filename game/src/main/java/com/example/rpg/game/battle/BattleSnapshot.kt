@@ -13,6 +13,7 @@ data class BattleSnapshot(
     val playerStats: PlayerStats,
     val completedRepetitions: Int,
     val totalDamage: Int,
+    val playerAttackMultiplier: Float,
     val lastDamage: Int?,
     val lastAttackType: AttackType?,
 )

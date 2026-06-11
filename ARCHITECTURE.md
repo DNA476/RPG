@@ -32,6 +32,7 @@ Responsibilities:
 - CameraX and debug video frame sources.
 - ViewModel orchestration and conversion to UI state.
 - State-driven navigation between menu, battle, and victory.
+- Enemy choice UI and coroutine-driven presentation timers.
 - Construction of current repository, detector, analyzer, and battle objects.
 
 Key files:
@@ -86,8 +87,11 @@ Framework-light combat domain.
 Responsibilities:
 
 - Enemy and player models.
+- Exercise affinities and enemy ability models.
 - Exercise-to-attack mapping.
-- Damage calculation from the selected `ExerciseConfig`.
+- Damage calculation from exercise config, enemy affinity, and temporary player
+  attack modifiers.
+- Replaceable enemy attack timing policy.
 - Battle state transitions and immutable snapshots.
 
 `BattleSession` reacts to completed repetitions only. It must remain usable in
@@ -100,6 +104,7 @@ Content and configuration sources.
 Responsibilities:
 
 - Enemy repository contracts and current in-memory implementation.
+- Random three-enemy selection with a fair-matchup guarantee.
 - Exercise configuration repository contracts and current in-memory
   implementation.
 - `ExerciseCatalog`, the single source of truth for names, descriptions, base
@@ -125,29 +130,35 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 
 1. `FitnessRpgApp` opens `MainMenuScreen`.
 2. The player selects an `ExerciseConfig` from `ExerciseCatalog`.
-3. `BattleViewModel.startBattle()` creates the matching detector through
-   `ExerciseDetectorFactory` and creates a `BattleSession` for that config.
-4. `CameraPreview` selects a `FrameSource`.
-5. `CameraFrameSource` converts CameraX frames to correctly oriented/mirrored
+3. `BattleViewModel.openEnemySelection()` obtains and caches three random enemy
+   configs for the selected exercise.
+4. The player chooses one enemy; `startBattle()` creates its `Boss`, detector,
+   and `BattleSession`.
+5. `CameraPreview` selects a `FrameSource`.
+6. `CameraFrameSource` converts CameraX frames to correctly oriented/mirrored
    bitmaps, or `VideoFileFrameSource` decodes a test video.
-6. `PoseAnalyzer.analyze()` sends an accepted bitmap to MediaPipe.
-7. MediaPipe results become `PoseFrame` values.
-8. While tracking, `BattleViewModel` passes frames to the selected detector.
-9. The ready squat detector recognizes standing -> bottom -> standing and
+7. `PoseAnalyzer.analyze()` sends an accepted bitmap to MediaPipe.
+8. MediaPipe results become `PoseFrame` values.
+9. While tracking, `BattleViewModel` passes frames to the selected detector.
+10. The ready squat detector recognizes standing -> bottom -> standing and
    emits `RepetitionCompleted`.
-10. `BattleSession` calculates damage from `ExerciseConfig.baseDamage`, mutates
-    boss HP, and publishes a `BattleSnapshot`.
-11. `BattleViewModel` increments `hitEventId` for every completed attack and
+11. `BattleSession` calculates damage from base damage, affinity, and current
+    attack multiplier, mutates HP, and publishes a `BattleSnapshot`.
+12. A ViewModel timer uses `EnemyAttackTimingPolicy`; every 15 seconds it applies
+    the selected enemy's 25% attack reduction for 10 seconds.
+13. `BattleViewModel` increments `hitEventId` for every completed attack and
    combines pose, detector, battle, and presentation information into
    `BattleUiState`.
-12. Compose renders battle feedback and switches to `VictoryScreen` at zero HP.
+14. Compose renders battle feedback and switches to `VictoryScreen` at zero HP.
 
 ## State Ownership
 
 - `PoseAnalyzer` owns the latest pose frame and inference busy flag.
 - Each `ExerciseDetector` owns its movement phase and repetition count.
 - `BattleSession` owns enemy HP, repetition total, and game state.
-- `BattleViewModel` owns presentation messages and the aggregated UI model.
+- `BattleSession` owns the active player attack multiplier.
+- `BattleViewModel` owns navigation, encounter choices, timer jobs,
+  presentation messages, and the aggregated UI model.
 - `EnemyCombatant` owns transient shake, red-flash, and slash animation state.
 - Compose components render state and should not contain domain decisions.
 
@@ -167,8 +178,13 @@ equipment, combos, player stats, and enemy weaknesses belong in
 
 ### Add an enemy
 
-Add content through `EnemyRepository`. Avoid branching UI or battle code on
-specific enemy IDs unless a real mechanic requires a typed capability.
+1. Add an `EnemyConfig` to `InMemoryEnemyRepository`.
+2. Provide HP, portrait resource name, one weakness, one resistance, and one
+   ability.
+3. Add the portrait mapping in `EnemyAssets.kt`.
+4. Add selection and damage tests for any new mechanic.
+
+Do not branch combat code on enemy IDs. Add a typed ability or affinity instead.
 
 ### Add persistence
 
@@ -193,6 +209,8 @@ stable and inject implementations from `:app`.
 - The UI depends on concrete `PoseAnalyzer` rather than a narrow input contract.
 - Boss state exposes a mutable domain object inside snapshots.
 - No clock abstraction exists for transient UI messages.
+- Enemy attack scheduling currently runs in `BattleViewModel`; move it to a
+  lifecycle-aware encounter coordinator when pause/resume is introduced.
 - Error information is flattened to tracking state or display strings.
 - The selected exercise is held by `BattleViewModel`; a formal session config is
   still needed for exercise switching, Auto Mode, and Free Battle Mode.

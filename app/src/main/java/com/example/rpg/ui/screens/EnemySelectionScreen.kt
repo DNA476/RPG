@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,16 +22,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.rpg.data.enemy.EnemyConfig
 import com.example.rpg.domain.exercise.ExerciseConfig
-import com.example.rpg.domain.exercise.ExerciseType
-import com.example.rpg.ui.components.ExerciseCard
+import com.example.rpg.ui.components.EnemyChoiceCard
 
 @Composable
-fun MainMenuScreen(
-    exercises: List<ExerciseConfig>,
-    selectedExercise: ExerciseConfig?,
-    onExerciseSelected: (ExerciseType) -> Unit,
-    onContinue: () -> Unit,
+fun EnemySelectionScreen(
+    exercise: ExerciseConfig,
+    enemies: List<EnemyConfig>,
+    selectedEnemy: EnemyConfig?,
+    onEnemySelected: (String) -> Unit,
+    onStartBattle: () -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -38,7 +41,7 @@ fun MainMenuScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    listOf(Color(0xFF17352B), Color(0xFF0E1714), Color(0xFF080A09)),
+                    listOf(Color(0xFF2C2116), Color(0xFF111714), Color(0xFF080A09)),
                 ),
             )
             .statusBarsPadding(),
@@ -49,56 +52,51 @@ fun MainMenuScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             item {
-                Column(
-                    modifier = Modifier.padding(vertical = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = "FitRPG",
+                        text = "Выбери противника",
                         color = Color(0xFFFFD166),
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Black,
                     )
                     Text(
-                        text = "Побеждай врагов, выполняя реальные упражнения перед камерой",
-                        color = Color.White.copy(alpha = 0.82f),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    Text(
-                        text = "Выбери тренировку",
-                        color = Color.White,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 14.dp),
+                        text = "Упражнение: ${exercise.displayName}. Тройка фиксируется без обновления.",
+                        color = Color.White.copy(alpha = 0.78f),
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
             }
-            items(exercises, key = { it.type.name }) { exercise ->
-                ExerciseCard(
-                    exercise = exercise,
-                    selected = exercise.type == selectedExercise?.type,
-                    onClick = { onExerciseSelected(exercise.type) },
+            items(enemies, key = { it.id }) { enemy ->
+                EnemyChoiceCard(
+                    enemy = enemy,
+                    exerciseType = exercise.type,
+                    selected = enemy.id == selectedEnemy?.id,
+                    onClick = { onEnemySelected(enemy.id) },
                 )
             }
         }
         Button(
-            onClick = onContinue,
-            enabled = selectedExercise != null,
+            onClick = onStartBattle,
+            enabled = selectedEnemy != null,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 18.dp),
+                .padding(horizontal = 20.dp),
             shape = RoundedCornerShape(18.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFFFD166),
                 contentColor = Color(0xFF111111),
             ),
-            contentPadding = PaddingValues(vertical = 16.dp),
+            contentPadding = PaddingValues(vertical = 15.dp),
         ) {
-            Text(
-                text = "Выбрать противника",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-            )
+            Text("Начать бой", fontWeight = FontWeight.Bold)
+        }
+        OutlinedButton(
+            onClick = onBack,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+        ) {
+            Text("Назад к упражнениям")
         }
     }
 }

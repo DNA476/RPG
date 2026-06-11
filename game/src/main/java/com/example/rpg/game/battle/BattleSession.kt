@@ -25,6 +25,7 @@ class BattleSession(
 ) {
     private var completedRepetitions = 0
     private var totalDamage = 0
+    private var playerAttackMultiplier = 1f
     private val mutableState = MutableStateFlow(createSnapshot(GameState.IDLE, null, null))
 
     val state: StateFlow<BattleSnapshot> = mutableState.asStateFlow()
@@ -55,7 +56,12 @@ class BattleSession(
         if (event.exerciseType != exercise.type) return
 
         val attackType = exerciseAttackMapper.map(event.exerciseType)
-        val damage = damageCalculator.calculate(exercise, playerStats, boss)
+        val damage = damageCalculator.calculate(
+            exercise = exercise,
+            playerStats = playerStats,
+            enemy = boss,
+            playerAttackMultiplier = playerAttackMultiplier,
+        )
         boss.receiveDamage(damage)
         completedRepetitions = event.repetitionCount
         totalDamage += damage
@@ -71,7 +77,14 @@ class BattleSession(
         boss = newBoss
         completedRepetitions = 0
         totalDamage = 0
+        playerAttackMultiplier = 1f
         mutableState.value = createSnapshot(GameState.IDLE, null, null)
+    }
+
+    fun setPlayerAttackMultiplier(multiplier: Float) {
+        if (mutableState.value.gameState == GameState.VICTORY) return
+        playerAttackMultiplier = multiplier.coerceIn(0f, 1f)
+        mutableState.value = createSnapshot(mutableState.value.gameState, null, null)
     }
 
     private fun createSnapshot(
@@ -84,6 +97,7 @@ class BattleSession(
         playerStats = playerStats,
         completedRepetitions = completedRepetitions,
         totalDamage = totalDamage,
+        playerAttackMultiplier = playerAttackMultiplier,
         lastDamage = lastDamage,
         lastAttackType = lastAttackType,
     )

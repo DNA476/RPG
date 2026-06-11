@@ -27,12 +27,19 @@ Statuses describe repository state as of 2026-06-11.
 - [x] Add a debug-only simulated repetition action.
 - [x] Add unit coverage for detector construction, squat repetition, catalog
   completeness, configured damage, and victory.
+- [x] Add six configurable enemies with generated portraits.
+- [x] Add fixed random three-enemy selection after exercise selection.
+- [x] Guarantee at least one non-resistant matchup in every trio.
+- [x] Add exercise weaknesses and non-blocking resistances.
+- [x] Add timed enemy abilities that reduce player attack instead of player HP.
+- [x] Add an extensible enemy attack timing policy.
+- [x] Add `CODEX_RULES.md` for repository-wide development and delivery rules.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
 - [ ] Add unit tests for `SquatDetector` with synthetic pose sequences.
-- [ ] Add unit tests for `BattleSession`, attack mapping, damage, victory, and
-  reset.
+- [x] Add unit tests for `BattleSession`, tactical damage, victory, and enemy
+  selection fairness.
 - [ ] Add a committed or documented test-video workflow for debug builds.
 - [ ] Verify camera rotation and front-camera mirroring on representative
   devices.
@@ -64,6 +71,9 @@ do not count as valid attacks.
 
 - [x] Introduce detector factory/registry construction.
 - [ ] Introduce a session configuration model.
+- [ ] Extract enemy attack scheduling from `BattleViewModel`.
+- [ ] Use exercise difficulty and an optional player fitness profile in
+  `EnemyAttackTimingPolicy`.
 - [ ] Extract battle/session construction from `BattleViewModel`.
 - [ ] Depend on narrow frame/pose contracts at the UI boundary.
 - [ ] Add pause/resume/stop lifecycle.
@@ -80,7 +90,7 @@ changes across the ViewModel and UI.
 - [ ] Implement and validate push-up, pull-up, crunch, jumping-jack, and plank
   detection.
 - [ ] Add distinct attack feedback for basic, heavy, and critical attacks.
-- [ ] Add multiple enemies and configurable encounters.
+- [x] Add multiple enemies and configurable encounters.
 - [ ] Add enemy phases or exercise prompts.
 - [ ] Define fair player damage/defeat rules, if defeat remains in scope.
 - [ ] Add rewards, experience, levels, and achievements.

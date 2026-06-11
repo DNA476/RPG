@@ -15,5 +15,6 @@ interface DamageCalculator {
         exercise: ExerciseConfig,
         playerStats: PlayerStats,
         enemy: Enemy,
+        playerAttackMultiplier: Float,
     ): Int
 }
