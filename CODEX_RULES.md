@@ -4,8 +4,8 @@ These rules apply to future work in this repository.
 
 ## Before Coding
 
-1. Read `PROJECT_CONTEXT.md`, `ARCHITECTURE.md`, `GAME_DESIGN.md`, and
-   `ROADMAP.md`.
+1. Read `PROJECT_CONTEXT.md`, `ARCHITECTURE.md`, `GAME_DESIGN.md`, `ROADMAP.md`,
+   and `IDEAS.md`.
 2. Inspect the current module structure, relevant implementations, tests, and
    `git status` before choosing an approach.
 3. Preserve existing user changes. Do not revert or overwrite unrelated work.
@@ -50,6 +50,8 @@ These rules apply to future work in this repository.
 - Update `PROJECT_CONTEXT.md`, `ARCHITECTURE.md`, `GAME_DESIGN.md`, and
   `ROADMAP.md` whenever product behavior, architecture, balance, or priorities
   change.
+- Record uncommitted product concepts in `IDEAS.md`; move them to `ROADMAP.md`
+  only when scope and completion criteria are clear.
 - Keep documentation factual and aligned with the code.
 - Review the final diff and exclude IDE-only or unrelated files.
 - Finish completed tasks with a concise commit describing the delivered
