@@ -29,6 +29,8 @@ Choose exercise
 
 Current rules:
 
+- On first launch, weight, height, and sex are requested but all fields may be
+  skipped.
 - The menu offers seven exercises.
 - Squat is ready for live pose detection; the other six are experimental.
 - Valid cycle: standing -> squat bottom -> standing.
@@ -46,6 +48,12 @@ Current rules:
   short enemy shake.
 - There is no player damage, timer, stamina, combo, failure, reward, or
   progression loop yet.
+- Every accepted live repetition is added immediately to local daily
+  statistics, even if the player leaves before victory.
+- Debug-simulated repetitions do not affect fitness history.
+- Statistics can be viewed for 7, 30, or 90 days and filtered by exercise.
+- Calories are explicitly approximate. Weight personalizes the estimate when
+  available; otherwise the UI states that a 70 kg default is used.
 
 Debug builds can simulate a repetition, allowing every configured exercise and
 damage value to complete the battle before its live detector is ready.
@@ -168,6 +176,7 @@ The current `GameState` contains all except paused and explicit error.
 ## Safety And Privacy
 
 - Pose inference currently stays on device.
+- The optional profile and fitness history stay on device.
 - Do not upload camera frames or body landmarks by default.
 - Provide a visible pause/stop path before introducing longer sessions.
 - Avoid medical promises or diagnosis.

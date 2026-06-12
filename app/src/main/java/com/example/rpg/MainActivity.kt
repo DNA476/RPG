@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            RPGTheme {
+            RPGTheme(darkTheme = true) {
                 val battleViewModel: BattleViewModel = viewModel(
                     factory = BattleViewModel.Factory(application),
                 )

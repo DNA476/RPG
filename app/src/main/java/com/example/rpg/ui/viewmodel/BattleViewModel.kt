@@ -1,15 +1,22 @@
 package com.example.rpg.ui.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.rpg.data.FitnessRepository
+import com.example.rpg.data.local.SharedPreferencesFitnessRepository
 import com.example.rpg.data.enemy.EnemyConfig
 import com.example.rpg.data.enemy.EnemyRepository
 import com.example.rpg.data.enemy.InMemoryEnemyRepository
 import com.example.rpg.data.exercise.ExerciseConfigRepository
 import com.example.rpg.data.exercise.InMemoryExerciseConfigRepository
+import com.example.rpg.data.profile.UserProfile
+import com.example.rpg.data.profile.UserSex
+import com.example.rpg.data.statistics.ExerciseCalorieEstimator
+import com.example.rpg.data.statistics.ExerciseStatisticsAggregator
 import com.example.rpg.domain.exercise.DetectorStatus
 import com.example.rpg.domain.exercise.ExerciseConfig
 import com.example.rpg.domain.exercise.ExerciseDetector
@@ -23,6 +30,7 @@ import com.example.rpg.game.battle.FixedEnemyAttackTimingPolicy
 import com.example.rpg.game.battle.GameState
 import com.example.rpg.game.player.PlayerStats
 import com.example.rpg.pose.PoseAnalyzer
+import java.time.LocalDate
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +45,10 @@ class BattleViewModel(
     application: Application,
     private val enemyRepository: EnemyRepository = InMemoryEnemyRepository(),
     private val exerciseConfigRepository: ExerciseConfigRepository = InMemoryExerciseConfigRepository(),
+    private val fitnessRepository: FitnessRepository = SharedPreferencesFitnessRepository(
+        application.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE),
+    ),
+    private val currentDate: () -> LocalDate = LocalDate::now,
 ) : AndroidViewModel(application) {
     private val exercises = exerciseConfigRepository.getAll()
     private val detectorFactory = ExerciseDetectorFactory(exerciseConfigRepository.getSquatConfig())
@@ -51,13 +63,25 @@ class BattleViewModel(
     private var enemyAttackJob: Job? = null
     private var debuffJob: Job? = null
     private var battleSession: BattleSession? = null
+    private var userProfile = fitnessRepository.loadProfile()
+    private var profileForm = userProfile.toForm()
+    private var statisticsPeriod = StatisticsPeriod.LAST_7_DAYS
+    private var statisticsExercise: ExerciseType? = null
+    private var statistics = StatisticsUiState()
+    private var screen = if (fitnessRepository.isOnboardingCompleted()) {
+        AppScreen.MAIN_MENU
+    } else {
+        AppScreen.ONBOARDING
+    }
     private val mutableUiState = MutableStateFlow(
         BattleUiState(
+            screen = screen,
             exercises = exercises,
             selectedExercise = selectedExercise,
+            userProfile = userProfile,
+            profileForm = profileForm,
         ),
     )
-    private var screen = AppScreen.MAIN_MENU
     private var latestPoseFrame: PoseFrame? = null
     private var exerciseStatus = "Выберите упражнение"
     private var damageMessage: String? = null
@@ -71,6 +95,106 @@ class BattleViewModel(
 
     init {
         observePoseFrames()
+        refreshStatistics()
+        publishUiState()
+    }
+
+    fun updateProfileWeight(value: String) {
+        profileForm = profileForm.copy(
+            weightText = value.filter { it.isDigit() || it == '.' || it == ',' },
+            weightError = false,
+        )
+        publishUiState()
+    }
+
+    fun updateProfileHeight(value: String) {
+        profileForm = profileForm.copy(
+            heightText = value.filter(Char::isDigit),
+            heightError = false,
+        )
+        publishUiState()
+    }
+
+    fun selectProfileSex(sex: UserSex?) {
+        profileForm = profileForm.copy(sex = sex)
+        publishUiState()
+    }
+
+    fun saveProfile() {
+        if (screen != AppScreen.ONBOARDING && screen != AppScreen.PROFILE) return
+        val parsedWeight = profileForm.weightText.replace(',', '.').toFloatOrNull()
+        val parsedHeight = profileForm.heightText.toIntOrNull()
+        val weightError = profileForm.weightText.isNotBlank() &&
+            (parsedWeight == null || parsedWeight !in MIN_WEIGHT_KG..MAX_WEIGHT_KG)
+        val heightError = profileForm.heightText.isNotBlank() &&
+            (parsedHeight == null || parsedHeight !in MIN_HEIGHT_CM..MAX_HEIGHT_CM)
+        if (weightError || heightError) {
+            profileForm = profileForm.copy(
+                weightError = weightError,
+                heightError = heightError,
+            )
+            publishUiState()
+            return
+        }
+
+        userProfile = UserProfile(
+            weightKg = parsedWeight,
+            heightCm = parsedHeight,
+            sex = profileForm.sex,
+        )
+        fitnessRepository.saveProfile(userProfile)
+        fitnessRepository.completeOnboarding()
+        screen = if (screen == AppScreen.ONBOARDING) AppScreen.MAIN_MENU else AppScreen.STATISTICS
+        refreshStatistics()
+        publishUiState()
+    }
+
+    fun skipOnboarding() {
+        if (screen != AppScreen.ONBOARDING) return
+        fitnessRepository.completeOnboarding()
+        screen = AppScreen.MAIN_MENU
+        publishUiState()
+    }
+
+    fun openStatistics() {
+        if (screen != AppScreen.MAIN_MENU) return
+        refreshStatistics()
+        screen = AppScreen.STATISTICS
+        publishUiState()
+    }
+
+    fun selectStatisticsPeriod(period: StatisticsPeriod) {
+        if (screen != AppScreen.STATISTICS) return
+        statisticsPeriod = period
+        refreshStatistics()
+        publishUiState()
+    }
+
+    fun selectStatisticsExercise(exerciseType: ExerciseType?) {
+        if (screen != AppScreen.STATISTICS) return
+        statisticsExercise = exerciseType
+        refreshStatistics()
+        publishUiState()
+    }
+
+    fun openProfile() {
+        if (screen != AppScreen.STATISTICS) return
+        profileForm = userProfile.toForm()
+        screen = AppScreen.PROFILE
+        publishUiState()
+    }
+
+    fun returnFromProfile() {
+        if (screen != AppScreen.PROFILE) return
+        profileForm = userProfile.toForm()
+        screen = AppScreen.STATISTICS
+        publishUiState()
+    }
+
+    fun returnFromStatistics() {
+        if (screen != AppScreen.STATISTICS) return
+        screen = AppScreen.MAIN_MENU
+        publishUiState()
     }
 
     fun selectExercise(type: ExerciseType) {
@@ -150,6 +274,7 @@ class BattleViewModel(
                 exerciseType = selectedExercise.type,
                 repetitionCount = nextCount,
             ),
+            recordStatistics = false,
         )
     }
 
@@ -245,13 +370,23 @@ class BattleViewModel(
         publishUiState()
     }
 
-    private fun handleCompletedRepetition(event: ExerciseEvent.RepetitionCompleted) {
+    private fun handleCompletedRepetition(
+        event: ExerciseEvent.RepetitionCompleted,
+        recordStatistics: Boolean = true,
+    ) {
         val session = battleSession ?: return
         if (session.state.value.gameState == GameState.TRACKING) {
             session.startBattle()
         }
+        val previousRepetitionCount = session.state.value.completedRepetitions
         session.handleExerciseEvent(event)
         val battle = session.state.value
+        if (recordStatistics && battle.completedRepetitions > previousRepetitionCount) {
+            fitnessRepository.recordRepetition(
+                exerciseType = event.exerciseType,
+                date = currentDate(),
+            )
+        }
         val damage = battle.lastDamage ?: return
         exerciseStatus = "Повтор засчитан"
         hitEventId += 1
@@ -298,6 +433,9 @@ class BattleViewModel(
             screen = screen,
             exercises = exercises,
             selectedExercise = selectedExercise,
+            userProfile = userProfile,
+            profileForm = profileForm,
+            statistics = statistics,
             enemyChoices = enemyChoices,
             selectedEnemy = enemy,
             gameState = battle?.gameState ?: GameState.IDLE,
@@ -319,11 +457,68 @@ class BattleViewModel(
         )
     }
 
+    private fun refreshStatistics() {
+        val today = currentDate()
+        val report = ExerciseStatisticsAggregator.aggregate(
+            entries = fitnessRepository.getDailyStatistics(),
+            today = today,
+            days = statisticsPeriod.days,
+            selectedExercise = statisticsExercise,
+        )
+        val chartPoints = report.dailyPoints.map {
+            StatisticsChartPoint(
+                date = it.date,
+                repetitions = it.repetitions,
+                activeSeconds = it.activeSeconds,
+            )
+        }
+        val exerciseNames = exercises.associate { it.type to it.displayName }
+        val summaries = report.totalsByExercise.map { total ->
+            ExerciseStatisticsSummary(
+                exerciseType = total.exerciseType,
+                displayName = exerciseNames.getValue(total.exerciseType),
+                repetitions = total.repetitions,
+                activeSeconds = total.activeSeconds,
+            )
+        }.sortedByDescending { it.repetitions + it.activeSeconds }
+
+        statistics = StatisticsUiState(
+            period = statisticsPeriod,
+            selectedExercise = statisticsExercise,
+            chartPoints = chartPoints,
+            exerciseSummaries = summaries,
+            totalRepetitions = report.totalRepetitions,
+            totalActiveSeconds = report.totalActiveSeconds,
+            estimatedCalories = ExerciseCalorieEstimator.estimateCalories(
+                statistics = report.selectedEntries,
+                weightKg = userProfile.weightKg,
+            ),
+            activeDays = report.activeDays,
+            usesDefaultWeight = userProfile.weightKg == null,
+        )
+    }
+
+    private fun UserProfile.toForm(): ProfileFormUiState = ProfileFormUiState(
+        weightText = weightKg?.let { weight ->
+            if (weight % 1f == 0f) weight.toInt().toString() else weight.toString()
+        }.orEmpty(),
+        heightText = heightCm?.toString().orEmpty(),
+        sex = sex,
+    )
+
     class Factory(
         private val application: Application,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             BattleViewModel(application) as T
+    }
+
+    companion object {
+        private const val PREFERENCES_NAME = "fitness_profile_and_statistics"
+        private const val MIN_WEIGHT_KG = 20f
+        private const val MAX_WEIGHT_KG = 300f
+        private const val MIN_HEIGHT_CM = 80
+        private const val MAX_HEIGHT_CM = 250
     }
 }

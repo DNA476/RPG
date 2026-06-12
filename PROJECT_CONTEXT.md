@@ -41,7 +41,12 @@ The repository is an MVP/prototype, not a production-ready application.
   10 seconds. Player HP and defeat are not implemented.
 - Current end state: victory after the boss reaches zero HP.
 - A valid hit shakes the goblin, flashes it red, and overlays a white sword slash.
-- Persistence, accounts, progression, audio, analytics, and backend are absent.
+- The first launch offers an optional local profile with weight, height, and sex.
+- A statistics screen shows daily exercise activity for 7, 30, or 90 days,
+  supports exercise filtering, and displays approximate calories.
+- Valid live-detector repetitions are persisted immediately as daily local
+  aggregates. Debug-simulated repetitions are intentionally excluded.
+- Accounts, progression, audio, analytics, and backend are absent.
 - Debug builds can switch between live camera input and a looping video asset.
 - Debug builds expose `Simulate repetition` to test every exercise, damage,
   counters, and victory without camera input.
@@ -65,6 +70,10 @@ first:
   ready repetition recognition.
 - `game/src/main/java/com/example/rpg/game/battle/BattleSession.kt` for combat.
 - `data/src/main/java/com/example/rpg/data` for current content/config sources.
+- `data/src/main/java/com/example/rpg/data/statistics` for fitness history
+  contracts and calorie estimation.
+- `app/src/main/java/com/example/rpg/data/local/SharedPreferencesFitnessRepository.kt`
+  for current Android-local persistence.
 
 ## Important Domain Language
 
@@ -95,6 +104,9 @@ first:
 - False positive repetitions are more harmful than occasionally missed
   repetitions because they break trust in both fitness tracking and combat.
 - Existing user changes in the worktree must not be discarded.
+- Debug-simulated repetitions must not affect user fitness statistics.
+- Calorie values must be presented as estimates, not measurements or medical
+  claims.
 
 ## Current Constraints And Risks
 
@@ -102,6 +114,10 @@ first:
 - Squat detection uses 2D knee angles and landmark visibility only.
 - There is no temporal smoothing, minimum movement duration, cooldown, or form
   quality score.
+- Calorie estimates use configured MET-like intensity and assumed repetition
+  duration because sessions do not yet track active exercise time precisely.
+- Local statistics use SharedPreferences daily aggregates and have no export,
+  backup UI, or migration to Room yet.
 - Only squat has a calibrated movement state machine.
 - Experimental detectors report tracking feedback but require exercise-specific
   recognition and calibration.

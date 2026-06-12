@@ -6,6 +6,8 @@ import androidx.compose.runtime.getValue
 import com.example.rpg.ui.screens.BattleScreen
 import com.example.rpg.ui.screens.EnemySelectionScreen
 import com.example.rpg.ui.screens.MainMenuScreen
+import com.example.rpg.ui.screens.ProfileScreen
+import com.example.rpg.ui.screens.StatisticsScreen
 import com.example.rpg.ui.screens.VictoryScreen
 import com.example.rpg.ui.viewmodel.AppScreen
 import com.example.rpg.ui.viewmodel.BattleViewModel
@@ -15,11 +17,40 @@ fun FitnessRpgApp(viewModel: BattleViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
     when (uiState.screen) {
+        AppScreen.ONBOARDING -> ProfileScreen(
+            form = uiState.profileForm,
+            isOnboarding = true,
+            onWeightChanged = viewModel::updateProfileWeight,
+            onHeightChanged = viewModel::updateProfileHeight,
+            onSexSelected = viewModel::selectProfileSex,
+            onSave = viewModel::saveProfile,
+            onSkip = viewModel::skipOnboarding,
+            onBack = {},
+        )
         AppScreen.MAIN_MENU -> MainMenuScreen(
             exercises = uiState.exercises,
             selectedExercise = uiState.selectedExercise,
             onExerciseSelected = viewModel::selectExercise,
             onContinue = viewModel::openEnemySelection,
+            onStatistics = viewModel::openStatistics,
+        )
+        AppScreen.STATISTICS -> StatisticsScreen(
+            statistics = uiState.statistics,
+            exercises = uiState.exercises,
+            onPeriodSelected = viewModel::selectStatisticsPeriod,
+            onExerciseSelected = viewModel::selectStatisticsExercise,
+            onEditProfile = viewModel::openProfile,
+            onBack = viewModel::returnFromStatistics,
+        )
+        AppScreen.PROFILE -> ProfileScreen(
+            form = uiState.profileForm,
+            isOnboarding = false,
+            onWeightChanged = viewModel::updateProfileWeight,
+            onHeightChanged = viewModel::updateProfileHeight,
+            onSexSelected = viewModel::selectProfileSex,
+            onSave = viewModel::saveProfile,
+            onSkip = {},
+            onBack = viewModel::returnFromProfile,
         )
         AppScreen.ENEMY_SELECTION -> EnemySelectionScreen(
             exercise = requireNotNull(uiState.selectedExercise),

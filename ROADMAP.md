@@ -1,7 +1,7 @@
 # Roadmap
 
 This roadmap is ordered by dependency and risk, not by marketing priority.
-Statuses describe repository state as of 2026-06-11.
+Statuses describe repository state as of 2026-06-13.
 
 ## Completed Foundation
 
@@ -34,6 +34,12 @@ Statuses describe repository state as of 2026-06-11.
 - [x] Add timed enemy abilities that reduce player attack instead of player HP.
 - [x] Add an extensible enemy attack timing policy.
 - [x] Add `CODEX_RULES.md` for repository-wide development and delivery rules.
+- [x] Add optional first-launch profile fields for weight, height, and sex.
+- [x] Persist accepted repetitions as local daily exercise aggregates.
+- [x] Add statistics with 7/30/90-day periods, exercise filtering, per-type
+  totals, and a daily chart.
+- [x] Add approximate calorie estimation with optional weight personalization.
+- [x] Keep debug-simulated repetitions out of fitness statistics.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
@@ -128,3 +134,9 @@ changes across the ViewModel and UI.
   milestone.
 - 2026-06-10: Use camera and debug video as interchangeable frame sources in
   debug builds.
+- 2026-06-13: Store the optional profile and daily activity locally without
+  accounts or camera uploads.
+- 2026-06-13: Record accepted live repetitions immediately; exclude debug
+  simulation from user statistics.
+- 2026-06-13: Present calories as estimates based on weight, configured
+  intensity, and assumed repetition duration.

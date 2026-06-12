@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,6 +32,7 @@ fun MainMenuScreen(
     selectedExercise: ExerciseConfig?,
     onExerciseSelected: (ExerciseType) -> Unit,
     onContinue: () -> Unit,
+    onStatistics: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -80,6 +82,19 @@ fun MainMenuScreen(
                     onClick = { onExerciseSelected(exercise.type) },
                 )
             }
+        }
+        OutlinedButton(
+            onClick = onStatistics,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            contentPadding = PaddingValues(vertical = 14.dp),
+        ) {
+            Text(
+                text = "Статистика",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
         }
         Button(
             onClick = onContinue,
