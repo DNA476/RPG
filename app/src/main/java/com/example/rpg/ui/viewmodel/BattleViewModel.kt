@@ -202,6 +202,18 @@ class BattleViewModel(
         publishUiState()
     }
 
+    fun openSettings() {
+        if (screen != AppScreen.MAIN_MENU) return
+        screen = AppScreen.SETTINGS
+        publishUiState()
+    }
+
+    fun returnFromSettings() {
+        if (screen != AppScreen.SETTINGS) return
+        screen = AppScreen.MAIN_MENU
+        publishUiState()
+    }
+
     fun selectExercise(type: ExerciseType) {
         if (screen != AppScreen.MAIN_MENU) return
         selectedExercise = exerciseConfigRepository.get(type)

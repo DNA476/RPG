@@ -60,6 +60,7 @@ fun MainMenuScreen(
     onContinue: () -> Unit,
     onStatistics: () -> Unit,
     onProfile: () -> Unit,
+    onSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -72,6 +73,7 @@ fun MainMenuScreen(
             MainMenuDrawer(
                 onStatistics = onStatistics,
                 onProfile = onProfile,
+                onSettings = onSettings,
             )
         },
     ) {
@@ -177,6 +179,7 @@ fun MainMenuScreen(
 private fun MainMenuDrawer(
     onStatistics: () -> Unit,
     onProfile: () -> Unit,
+    onSettings: () -> Unit,
 ) {
     ModalDrawerSheet(
         modifier = Modifier
@@ -205,6 +208,11 @@ private fun MainMenuDrawer(
                 label = { Text(stringResource(R.string.profile)) },
                 selected = false,
                 onClick = onProfile,
+            )
+            NavigationDrawerItem(
+                label = { Text(stringResource(R.string.settings)) },
+                selected = false,
+                onClick = onSettings,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(

@@ -17,6 +17,7 @@ enum class AppScreen {
     MAIN_MENU,
     STATISTICS,
     PROFILE,
+    SETTINGS,
     ENEMY_SELECTION,
     BATTLE,
     VICTORY,

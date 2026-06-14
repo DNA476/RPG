@@ -7,6 +7,7 @@ import com.example.rpg.ui.screens.BattleScreen
 import com.example.rpg.ui.screens.EnemySelectionScreen
 import com.example.rpg.ui.screens.MainMenuScreen
 import com.example.rpg.ui.screens.ProfileScreen
+import com.example.rpg.ui.screens.SettingsScreen
 import com.example.rpg.ui.screens.StatisticsScreen
 import com.example.rpg.ui.screens.VictoryScreen
 import com.example.rpg.ui.viewmodel.AppScreen
@@ -37,6 +38,7 @@ fun FitnessRpgApp(viewModel: BattleViewModel) {
             onContinue = viewModel::openEnemySelection,
             onStatistics = viewModel::openStatistics,
             onProfile = viewModel::openProfile,
+            onSettings = viewModel::openSettings,
         )
         AppScreen.STATISTICS -> StatisticsScreen(
             statistics = uiState.statistics,
@@ -54,6 +56,9 @@ fun FitnessRpgApp(viewModel: BattleViewModel) {
             onSave = viewModel::saveProfile,
             onSkip = {},
             onBack = viewModel::returnFromProfile,
+        )
+        AppScreen.SETTINGS -> SettingsScreen(
+            onBack = viewModel::returnFromSettings,
         )
         AppScreen.ENEMY_SELECTION -> EnemySelectionScreen(
             exercise = requireNotNull(uiState.selectedExercise),

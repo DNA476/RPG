@@ -32,10 +32,12 @@ Responsibilities:
 - CameraX and debug video frame sources.
 - ViewModel orchestration and conversion to UI state.
 - State-driven navigation between onboarding, menu, statistics, profile,
-  battle, and victory.
-- Main-menu-only navigation drawer for profile and statistics destinations.
-- Android string resources and stable content-ID mappings for device-selected
-  Russian, English, German, Spanish, French, and Portuguese localization.
+  settings, battle, and victory.
+- Main-menu-only navigation drawer for profile, statistics, and settings
+  destinations.
+- Android string resources and AppCompat per-app locales for device-selected or
+  explicitly selected Russian, English, German, Spanish, French, and Portuguese
+  localization.
 - Enemy choice UI and coroutine-driven presentation timers.
 - Construction of current repository, detector, analyzer, and battle objects.
 - SharedPreferences adapter for the optional user profile and daily fitness
@@ -48,6 +50,7 @@ Key files:
 - `ui/viewmodel/BattleViewModel.kt`
 - `ui/screens/BattleScreen.kt`
 - `ui/screens/ProfileScreen.kt`
+- `ui/screens/SettingsScreen.kt`
 - `ui/screens/StatisticsScreen.kt`
 - `data/local/SharedPreferencesFitnessRepository.kt`
 - `ui/components/CameraPreview.kt`
@@ -142,8 +145,9 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 
 1. On first launch, `FitnessRpgApp` opens `ProfileScreen`; every field is
    optional and the player may skip it.
-2. Later launches open `MainMenuScreen`, where a drawer links to profile and
-   statistics and a daily calorie card links directly to seven-day statistics.
+2. Later launches open `MainMenuScreen`, where a drawer links to profile,
+   statistics, and language settings and a daily calorie card links directly to
+   seven-day statistics.
 3. The player selects an `ExerciseConfig` from `ExerciseCatalog`.
 4. `BattleViewModel.openEnemySelection()` obtains and caches three random enemy
    configs for the selected exercise.

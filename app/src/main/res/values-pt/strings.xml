@@ -9,6 +9,10 @@
     <string name="skip">Ignorar</string>
     <string name="profile">Perfil</string>
     <string name="statistics">Estatísticas</string>
+    <string name="settings">Definições</string>
+    <string name="app_language">Idioma da aplicação</string>
+    <string name="app_language_description">Usa o idioma do dispositivo ou escolhe um idioma apenas para o FitRPG.</string>
+    <string name="language_system">Igual ao dispositivo</string>
     <string name="open_menu">Abrir menu</string>
     <string name="start_battle">Iniciar batalha</string>
     <string name="choose_opponent">Escolher adversário</string>

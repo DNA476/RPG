@@ -44,12 +44,12 @@ The repository is an MVP/prototype, not a production-ready application.
 - The first launch offers an optional local profile with weight, height, and sex.
 - A statistics screen shows daily exercise activity for 7, 30, or 90 days,
   supports exercise filtering, and displays approximate calories.
-- The main menu exposes profile and statistics through a top-left navigation
-  drawer. A clickable card shows today's approximate calories and opens the
-  seven-day statistics view.
-- The UI follows the device language and currently supports Russian, English,
-  German, Spanish, French, and Portuguese. Unsupported locales fall back to
-  Russian.
+- The main menu exposes profile, statistics, and settings through a top-left
+  navigation drawer. A clickable card shows today's approximate calories and
+  opens the seven-day statistics view.
+- Settings allow the player to follow the device language or explicitly choose
+  Russian, English, German, Spanish, French, or Portuguese. Unsupported device
+  locales fall back to Russian.
 - Valid live-detector repetitions are persisted immediately as daily local
   aggregates. Debug-simulated repetitions are intentionally excluded.
 - Accounts, progression, audio, analytics, and backend are absent.

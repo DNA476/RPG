@@ -42,6 +42,7 @@ Statuses describe repository state as of 2026-06-14.
 - [x] Keep debug-simulated repetitions out of fitness statistics.
 - [x] Move profile and statistics navigation into a main-menu drawer.
 - [x] Add a clickable main-menu card for today's approximate calories.
+- [x] Add settings with an in-app language selector.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
@@ -147,3 +148,5 @@ changes across the ViewModel and UI.
   retaining a visible daily calorie summary as the quick statistics entry.
 - 2026-06-14: Follow the device language with Russian as the fallback and
   support English, German, Spanish, French, and Portuguese resources.
+- 2026-06-14: Let players override the device language from settings while
+  retaining the system-language option.

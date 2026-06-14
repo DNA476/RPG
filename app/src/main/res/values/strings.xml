@@ -9,6 +9,16 @@
     <string name="skip">Пропустить</string>
     <string name="profile">Профиль</string>
     <string name="statistics">Статистика</string>
+    <string name="settings">Настройки</string>
+    <string name="app_language">Язык приложения</string>
+    <string name="app_language_description">Используйте язык устройства или выберите язык только для FitRPG.</string>
+    <string name="language_system">Как на устройстве</string>
+    <string name="language_russian" translatable="false">Русский</string>
+    <string name="language_english" translatable="false">English</string>
+    <string name="language_german" translatable="false">Deutsch</string>
+    <string name="language_spanish" translatable="false">Español</string>
+    <string name="language_french" translatable="false">Français</string>
+    <string name="language_portuguese" translatable="false">Português</string>
     <string name="open_menu">Открыть меню</string>
     <string name="start_battle">Начать бой</string>
     <string name="choose_opponent">Выбрать противника</string>
