@@ -33,6 +33,7 @@ Responsibilities:
 - ViewModel orchestration and conversion to UI state.
 - State-driven navigation between onboarding, menu, statistics, profile,
   battle, and victory.
+- Main-menu-only navigation drawer for profile and statistics destinations.
 - Enemy choice UI and coroutine-driven presentation timers.
 - Construction of current repository, detector, analyzer, and battle objects.
 - SharedPreferences adapter for the optional user profile and daily fitness
@@ -138,7 +139,8 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 
 1. On first launch, `FitnessRpgApp` opens `ProfileScreen`; every field is
    optional and the player may skip it.
-2. Later launches open `MainMenuScreen`.
+2. Later launches open `MainMenuScreen`, where a drawer links to profile and
+   statistics and a daily calorie card links directly to seven-day statistics.
 3. The player selects an `ExerciseConfig` from `ExerciseCatalog`.
 4. `BattleViewModel.openEnemySelection()` obtains and caches three random enemy
    configs for the selected exercise.
@@ -172,6 +174,7 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 - `BattleViewModel` owns navigation, encounter choices, timer jobs,
   presentation messages, profile form state, statistics filters, and the
   aggregated UI model.
+- `MainMenuScreen` owns only transient drawer open/closed state.
 - `SharedPreferencesFitnessRepository` owns the persisted profile, onboarding
   completion flag, and daily exercise aggregates.
 - `EnemyCombatant` owns transient shake, red-flash, and slash animation state.

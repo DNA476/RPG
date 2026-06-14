@@ -71,6 +71,8 @@ data class BattleUiState(
     val userProfile: UserProfile = UserProfile(),
     val profileForm: ProfileFormUiState = ProfileFormUiState(),
     val statistics: StatisticsUiState = StatisticsUiState(),
+    val todayEstimatedCalories: Int = 0,
+    val todayHasActivity: Boolean = false,
     val enemyChoices: List<EnemyConfig> = emptyList(),
     val selectedEnemy: EnemyConfig? = null,
     val gameState: GameState = GameState.IDLE,

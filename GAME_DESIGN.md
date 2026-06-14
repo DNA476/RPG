@@ -54,6 +54,10 @@ Current rules:
 - Statistics can be viewed for 7, 30, or 90 days and filtered by exercise.
 - Calories are explicitly approximate. Weight personalizes the estimate when
   available; otherwise the UI states that a 70 kg default is used.
+- The main menu has a top-left drawer containing profile and statistics.
+- A prominent main-menu card shows today's approximate calorie total and opens
+  the seven-day statistics view. With no activity it says that there is no
+  activity yet.
 
 Debug builds can simulate a repetition, allowing every configured exercise and
 damage value to complete the battle before its live detector is ready.

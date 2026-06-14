@@ -44,6 +44,9 @@ The repository is an MVP/prototype, not a production-ready application.
 - The first launch offers an optional local profile with weight, height, and sex.
 - A statistics screen shows daily exercise activity for 7, 30, or 90 days,
   supports exercise filtering, and displays approximate calories.
+- The main menu exposes profile and statistics through a top-left navigation
+  drawer. A clickable card shows today's approximate calories and opens the
+  seven-day statistics view.
 - Valid live-detector repetitions are persisted immediately as daily local
   aggregates. Debug-simulated repetitions are intentionally excluded.
 - Accounts, progression, audio, analytics, and backend are absent.

@@ -68,6 +68,8 @@ class BattleViewModel(
     private var statisticsPeriod = StatisticsPeriod.LAST_7_DAYS
     private var statisticsExercise: ExerciseType? = null
     private var statistics = StatisticsUiState()
+    private var todayEstimatedCalories = 0
+    private var todayHasActivity = false
     private var screen = if (fitnessRepository.isOnboardingCompleted()) {
         AppScreen.MAIN_MENU
     } else {
@@ -144,7 +146,7 @@ class BattleViewModel(
         )
         fitnessRepository.saveProfile(userProfile)
         fitnessRepository.completeOnboarding()
-        screen = if (screen == AppScreen.ONBOARDING) AppScreen.MAIN_MENU else AppScreen.STATISTICS
+        screen = AppScreen.MAIN_MENU
         refreshStatistics()
         publishUiState()
     }
@@ -158,6 +160,8 @@ class BattleViewModel(
 
     fun openStatistics() {
         if (screen != AppScreen.MAIN_MENU) return
+        statisticsPeriod = StatisticsPeriod.LAST_7_DAYS
+        statisticsExercise = null
         refreshStatistics()
         screen = AppScreen.STATISTICS
         publishUiState()
@@ -178,7 +182,7 @@ class BattleViewModel(
     }
 
     fun openProfile() {
-        if (screen != AppScreen.STATISTICS) return
+        if (screen != AppScreen.MAIN_MENU) return
         profileForm = userProfile.toForm()
         screen = AppScreen.PROFILE
         publishUiState()
@@ -187,7 +191,7 @@ class BattleViewModel(
     fun returnFromProfile() {
         if (screen != AppScreen.PROFILE) return
         profileForm = userProfile.toForm()
-        screen = AppScreen.STATISTICS
+        screen = AppScreen.MAIN_MENU
         publishUiState()
     }
 
@@ -263,6 +267,7 @@ class BattleViewModel(
         damageMessage = null
         enemyAbilityMessage = null
         exerciseStatus = "Выберите упражнение"
+        refreshStatistics()
         publishUiState()
     }
 
@@ -436,6 +441,8 @@ class BattleViewModel(
             userProfile = userProfile,
             profileForm = profileForm,
             statistics = statistics,
+            todayEstimatedCalories = todayEstimatedCalories,
+            todayHasActivity = todayHasActivity,
             enemyChoices = enemyChoices,
             selectedEnemy = enemy,
             gameState = battle?.gameState ?: GameState.IDLE,
@@ -459,12 +466,21 @@ class BattleViewModel(
 
     private fun refreshStatistics() {
         val today = currentDate()
+        val allEntries = fitnessRepository.getDailyStatistics()
         val report = ExerciseStatisticsAggregator.aggregate(
-            entries = fitnessRepository.getDailyStatistics(),
+            entries = allEntries,
             today = today,
             days = statisticsPeriod.days,
             selectedExercise = statisticsExercise,
         )
+        val todayEntries = allEntries.filter { it.date == today }
+        todayEstimatedCalories = ExerciseCalorieEstimator.estimateCalories(
+            statistics = todayEntries,
+            weightKg = userProfile.weightKg,
+        )
+        todayHasActivity = todayEntries.any {
+            it.repetitions > 0 || it.activeSeconds > 0
+        }
         val chartPoints = report.dailyPoints.map {
             StatisticsChartPoint(
                 date = it.date,

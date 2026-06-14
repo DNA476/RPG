@@ -1,7 +1,7 @@
 # Roadmap
 
 This roadmap is ordered by dependency and risk, not by marketing priority.
-Statuses describe repository state as of 2026-06-13.
+Statuses describe repository state as of 2026-06-14.
 
 ## Completed Foundation
 
@@ -40,6 +40,8 @@ Statuses describe repository state as of 2026-06-13.
   totals, and a daily chart.
 - [x] Add approximate calorie estimation with optional weight personalization.
 - [x] Keep debug-simulated repetitions out of fitness statistics.
+- [x] Move profile and statistics navigation into a main-menu drawer.
+- [x] Add a clickable main-menu card for today's approximate calories.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
@@ -140,3 +142,5 @@ changes across the ViewModel and UI.
   simulation from user statistics.
 - 2026-06-13: Present calories as estimates based on weight, configured
   intensity, and assumed repetition duration.
+- 2026-06-14: Keep profile and full statistics in a main-menu drawer while
+  retaining a visible daily calorie summary as the quick statistics entry.

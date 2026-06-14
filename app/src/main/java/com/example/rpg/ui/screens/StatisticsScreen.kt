@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
@@ -52,7 +50,6 @@ fun StatisticsScreen(
     exercises: List<ExerciseConfig>,
     onPeriodSelected: (StatisticsPeriod) -> Unit,
     onExerciseSelected: (ExerciseType?) -> Unit,
-    onEditProfile: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -69,22 +66,8 @@ fun StatisticsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                OutlinedButton(onClick = onBack) {
-                    Text("Назад")
-                }
-                Button(
-                    onClick = onEditProfile,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFFD166),
-                        contentColor = Color(0xFF111111),
-                    ),
-                ) {
-                    Text("Профиль")
-                }
+            OutlinedButton(onClick = onBack) {
+                Text("Назад")
             }
         }
         item {

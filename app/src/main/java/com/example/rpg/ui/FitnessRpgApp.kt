@@ -30,16 +30,19 @@ fun FitnessRpgApp(viewModel: BattleViewModel) {
         AppScreen.MAIN_MENU -> MainMenuScreen(
             exercises = uiState.exercises,
             selectedExercise = uiState.selectedExercise,
+            todayEstimatedCalories = uiState.todayEstimatedCalories,
+            todayHasActivity = uiState.todayHasActivity,
+            usesDefaultWeight = uiState.userProfile.weightKg == null,
             onExerciseSelected = viewModel::selectExercise,
             onContinue = viewModel::openEnemySelection,
             onStatistics = viewModel::openStatistics,
+            onProfile = viewModel::openProfile,
         )
         AppScreen.STATISTICS -> StatisticsScreen(
             statistics = uiState.statistics,
             exercises = uiState.exercises,
             onPeriodSelected = viewModel::selectStatisticsPeriod,
             onExerciseSelected = viewModel::selectStatisticsExercise,
-            onEditProfile = viewModel::openProfile,
             onBack = viewModel::returnFromStatistics,
         )
         AppScreen.PROFILE -> ProfileScreen(
