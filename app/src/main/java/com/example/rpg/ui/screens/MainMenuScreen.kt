@@ -38,10 +38,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.rpg.R
 import com.example.rpg.domain.exercise.ExerciseConfig
 import com.example.rpg.domain.exercise.ExerciseType
 import com.example.rpg.ui.components.ExerciseCard
@@ -62,6 +64,7 @@ fun MainMenuScreen(
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
+    val openMenuDescription = stringResource(R.string.open_menu)
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -102,7 +105,7 @@ fun MainMenuScreen(
                                     }
                                 },
                                 modifier = Modifier.semantics {
-                                    contentDescription = "Открыть меню"
+                                    contentDescription = openMenuDescription
                                 },
                             ) {
                                 HamburgerIcon()
@@ -116,7 +119,7 @@ fun MainMenuScreen(
                             )
                         }
                         Text(
-                            text = "Побеждай врагов, выполняя реальные упражнения перед камерой",
+                            text = stringResource(R.string.main_tagline),
                             color = Color.White.copy(alpha = 0.82f),
                             style = MaterialTheme.typography.titleMedium,
                         )
@@ -132,7 +135,7 @@ fun MainMenuScreen(
                 }
                 item {
                     Text(
-                        text = "Выбери тренировку",
+                        text = stringResource(R.string.choose_workout),
                         color = Color.White,
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
@@ -161,7 +164,7 @@ fun MainMenuScreen(
                 contentPadding = PaddingValues(vertical = 16.dp),
             ) {
                 Text(
-                    text = "Выбрать противника",
+                    text = stringResource(R.string.choose_opponent),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
@@ -194,18 +197,18 @@ private fun MainMenuDrawer(
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 24.dp),
             )
             NavigationDrawerItem(
-                label = { Text("Статистика") },
+                label = { Text(stringResource(R.string.statistics)) },
                 selected = false,
                 onClick = onStatistics,
             )
             NavigationDrawerItem(
-                label = { Text("Профиль") },
+                label = { Text(stringResource(R.string.profile)) },
                 selected = false,
                 onClick = onProfile,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Профиль и история тренировок хранятся только на устройстве.",
+                text = stringResource(R.string.local_data_note),
                 color = Color.White.copy(alpha = 0.62f),
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(horizontal = 12.dp),
@@ -234,22 +237,22 @@ private fun TodayCaloriesCard(
         ) {
             Text(
                 text = if (hasActivity) {
-                    "≈ $calories ккал сегодня"
+                    stringResource(R.string.today_calories, calories)
                 } else {
-                    "Сегодня ещё нет активности"
+                    stringResource(R.string.no_activity_today)
                 },
                 color = Color(0xFFFFD166),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Black,
             )
             Text(
-                text = "Оценка по выполненным упражнениям",
+                text = stringResource(R.string.calorie_estimate_subtitle),
                 color = Color.White.copy(alpha = 0.78f),
                 style = MaterialTheme.typography.bodyMedium,
             )
             if (usesDefaultWeight) {
                 Text(
-                    text = "Расчёт для условного веса 70 кг",
+                    text = stringResource(R.string.default_weight_short),
                     color = Color.White.copy(alpha = 0.58f),
                     style = MaterialTheme.typography.bodySmall,
                 )

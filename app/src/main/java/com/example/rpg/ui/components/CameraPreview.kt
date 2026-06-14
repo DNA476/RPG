@@ -31,11 +31,13 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.rpg.BuildConfig
+import com.example.rpg.R
 import com.example.rpg.frame.CameraFrameSource
 import com.example.rpg.frame.FrameInputMode
 import com.example.rpg.frame.VideoFileFrameSource
@@ -131,6 +133,7 @@ private fun VideoFileFrameSourcePreview(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val localizedErrorMessage = stringResource(R.string.debug_video_error)
     var currentFrame by remember { mutableStateOf<Bitmap?>(null) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
@@ -143,8 +146,8 @@ private fun VideoFileFrameSourcePreview(
                 currentFrame = frame
                 errorMessage = null
             },
-            onError = { message ->
-                errorMessage = message
+            onError = {
+                errorMessage = localizedErrorMessage
             },
         )
         frameSource.start()
@@ -164,13 +167,13 @@ private fun VideoFileFrameSourcePreview(
         if (frame != null) {
             Image(
                 bitmap = frame.asImageBitmap(),
-                contentDescription = "Debug video input",
+                contentDescription = stringResource(R.string.debug_video_content_description),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
             )
         } else {
             DebugVideoPlaceholder(
-                message = errorMessage ?: "Loading debug video from assets/raw/test_video.mp4",
+                message = errorMessage ?: stringResource(R.string.debug_video_loading),
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -193,8 +196,8 @@ private fun DebugFrameInputSwitcher(
     ) {
         Text(
             text = when (inputMode) {
-                FrameInputMode.Camera -> "CAM"
-                FrameInputMode.VideoTest -> "VIDEO"
+                FrameInputMode.Camera -> stringResource(R.string.debug_camera_mode)
+                FrameInputMode.VideoTest -> stringResource(R.string.debug_video_mode)
             },
         )
     }
@@ -233,12 +236,12 @@ fun CameraPermissionPlaceholder(
             modifier = Modifier.padding(24.dp),
         ) {
             Text(
-                text = "Нужно разрешение камеры для локального трекинга позы",
+                text = stringResource(R.string.camera_permission_message),
                 color = Color.White,
                 style = MaterialTheme.typography.bodyLarge,
             )
             Button(onClick = onRequestPermission) {
-                Text("Разрешить камеру")
+                Text(stringResource(R.string.allow_camera))
             }
         }
     }

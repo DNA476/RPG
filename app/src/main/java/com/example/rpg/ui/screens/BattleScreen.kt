@@ -25,14 +25,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.rpg.BuildConfig
+import com.example.rpg.R
 import com.example.rpg.pose.PoseAnalyzer
 import com.example.rpg.ui.components.BossHealthBar
 import com.example.rpg.ui.components.CameraPreview
 import com.example.rpg.ui.components.EnemyCombatant
 import com.example.rpg.ui.components.SkeletonOverlay
+import com.example.rpg.ui.localization.detectorStatusResource
+import com.example.rpg.ui.localization.difficultyResource
+import com.example.rpg.ui.localization.enemyAbilityNameResource
+import com.example.rpg.ui.localization.enemyNameResource
+import com.example.rpg.ui.localization.exerciseNameResource
+import com.example.rpg.ui.localization.trackingStateResource
 import com.example.rpg.ui.viewmodel.BattleUiState
 
 /**
@@ -46,6 +54,9 @@ fun BattleScreen(
     onSimulateRepetition: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val enemyName = uiState.selectedEnemy?.let {
+        stringResource(enemyNameResource(it.id))
+    }.orEmpty()
     Box(modifier = modifier.fillMaxSize()) {
         CameraPreview(
             poseAnalyzer = poseAnalyzer,
@@ -72,14 +83,14 @@ fun BattleScreen(
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             BossHealthBar(
-                bossName = uiState.bossName,
+                bossName = enemyName,
                 currentHp = uiState.bossCurrentHp,
                 maxHp = uiState.bossMaxHp,
                 modifier = Modifier.fillMaxWidth(),
             )
             EnemyCombatant(
                 imageResource = uiState.bossImageResource,
-                enemyName = uiState.bossName,
+                enemyName = enemyName,
                 hitEventId = uiState.hitEventId,
                 damageMessage = uiState.damageMessage,
                 modifier = Modifier
@@ -117,23 +128,29 @@ fun BattleHud(
         ) {
             val exercise = uiState.selectedExercise
             Text(
-                text = exercise?.displayName.orEmpty(),
+                text = exercise?.let { stringResource(exerciseNameResource(it.type)) }.orEmpty(),
                 color = Color(0xFFFFD166),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = "Урон: ${exercise?.baseDamage ?: 0}  •  " +
-                    "${exercise?.difficulty?.name.orEmpty()}  •  ${exercise?.detectorStatus?.name.orEmpty()}",
+                text = exercise?.let {
+                    stringResource(
+                        R.string.battle_exercise_meta,
+                        it.baseDamage,
+                        stringResource(difficultyResource(it.difficulty)),
+                        stringResource(detectorStatusResource(it.detectorStatus)),
+                    )
+                }.orEmpty(),
                 color = Color.White.copy(alpha = 0.72f),
                 style = MaterialTheme.typography.labelLarge,
             )
             val enemy = uiState.selectedEnemy
             Text(
                 text = when (exercise?.type) {
-                    enemy?.weakness?.exerciseType -> "Слабость врага: урон ×1.5"
-                    enemy?.resistance?.exerciseType -> "Сопротивление врага: урон ×0.75"
-                    else -> "Отношение врага: нейтральное"
+                    enemy?.weakness?.exerciseType -> stringResource(R.string.enemy_weakness)
+                    enemy?.resistance?.exerciseType -> stringResource(R.string.enemy_resistance)
+                    else -> stringResource(R.string.enemy_neutral)
                 },
                 color = Color.White.copy(alpha = 0.72f),
                 style = MaterialTheme.typography.labelLarge,
@@ -143,21 +160,32 @@ fun BattleHud(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                StatBlock(label = "Повторы", value = uiState.completedRepetitions.toString())
+                StatBlock(
+                    label = stringResource(R.string.repetitions),
+                    value = uiState.completedRepetitions.toString(),
+                )
                 Spacer(modifier = Modifier.width(12.dp))
-                StatBlock(label = "Общий урон", value = uiState.totalDamage.toString())
+                StatBlock(
+                    label = stringResource(R.string.total_damage),
+                    value = uiState.totalDamage.toString(),
+                )
             }
             Text(
-                text = uiState.exerciseStatus,
+                text = stringResource(uiState.exerciseStatusResource),
                 color = Color.White,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
                 text = if (uiState.debuffSecondsRemaining > 0) {
-                    "${uiState.enemyAbilityMessage} · ещё ${uiState.debuffSecondsRemaining} сек."
+                    stringResource(
+                        R.string.enemy_ability_active,
+                        stringResource(enemyAbilityNameResource(requireNotNull(enemy).id)),
+                        enemy.ability.attackReductionPercent,
+                        uiState.debuffSecondsRemaining,
+                    )
                 } else {
-                    "Атака врага через ${uiState.enemyAttackSecondsRemaining} сек."
+                    stringResource(R.string.enemy_attack_in, uiState.enemyAttackSecondsRemaining)
                 },
                 color = if (uiState.debuffSecondsRemaining > 0) {
                     Color(0xFFFF7B72)
@@ -168,8 +196,11 @@ fun BattleHud(
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "Сила атаки: ${(uiState.playerAttackMultiplier * 100).toInt()}% · " +
-                    "Tracking: ${uiState.trackingState.name}",
+                text = stringResource(
+                    R.string.attack_power_tracking,
+                    (uiState.playerAttackMultiplier * 100).toInt(),
+                    stringResource(trackingStateResource(uiState.trackingState)),
+                ),
                 color = Color.White.copy(alpha = 0.72f),
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -182,14 +213,14 @@ fun BattleHud(
                         contentColor = Color(0xFF111111),
                     ),
                 ) {
-                    Text("Simulate repetition")
+                    Text(stringResource(R.string.simulate_repetition))
                 }
             }
             OutlinedButton(
                 onClick = onBackToMenu,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Назад в меню")
+                Text(stringResource(R.string.back_to_menu))
             }
         }
     }

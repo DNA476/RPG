@@ -1,5 +1,7 @@
 package com.example.rpg.ui.viewmodel
 
+import androidx.annotation.StringRes
+import com.example.rpg.R
 import com.example.rpg.data.enemy.EnemyConfig
 import com.example.rpg.data.profile.UserProfile
 import com.example.rpg.data.profile.UserSex
@@ -44,7 +46,6 @@ data class StatisticsChartPoint(
 
 data class ExerciseStatisticsSummary(
     val exerciseType: ExerciseType,
-    val displayName: String,
     val repetitions: Int,
     val activeSeconds: Int,
 )
@@ -85,8 +86,7 @@ data class BattleUiState(
     val playerAttackMultiplier: Float = 1f,
     val enemyAttackSecondsRemaining: Int = 15,
     val debuffSecondsRemaining: Int = 0,
-    val enemyAbilityMessage: String? = null,
-    val exerciseStatus: String = "Выберите упражнение",
+    @param:StringRes val exerciseStatusResource: Int = R.string.status_choose_exercise,
     val damageMessage: String? = null,
     val hitEventId: Long = 0L,
     val poseFrame: PoseFrame? = null,

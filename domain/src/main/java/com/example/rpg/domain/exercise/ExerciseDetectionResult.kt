@@ -5,7 +5,25 @@ package com.example.rpg.domain.exercise
  */
 data class ExerciseDetectionResult(
     val repetitionCompleted: Boolean = false,
-    val stateLabel: String = "Ожидание",
+    val feedback: ExerciseFeedback = ExerciseFeedback.WAITING,
     val confidence: Float = 0f,
     val debugInfo: String? = null,
 )
+
+enum class ExerciseFeedback {
+    WAITING,
+    STAND_IN_FRAME,
+    DETECTOR_STOPPED,
+    KNEES_NOT_VISIBLE,
+    READY_TO_SQUAT,
+    STRAIGHTEN_LEGS,
+    BOTTOM_REACHED,
+    LOWER_MORE,
+    REPETITION_COUNTED,
+    RETURN_TO_STANCE,
+    EXPERIMENTAL_DETECTOR,
+    POSE_TRACKED,
+    TRACKING_INITIALIZING,
+    NO_PERSON,
+    TRACKING_ERROR,
+}

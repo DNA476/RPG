@@ -17,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.rpg.R
 
 /**
  * Reusable boss health indicator with animated HP changes.
@@ -62,7 +64,7 @@ fun BossHealthBar(
             )
         }
         Text(
-            text = "$currentHp / $maxHp HP",
+            text = stringResource(R.string.boss_health, currentHp, maxHp),
             style = MaterialTheme.typography.labelLarge,
             color = Color.White.copy(alpha = 0.85f),
             modifier = Modifier.padding(top = 4.dp),

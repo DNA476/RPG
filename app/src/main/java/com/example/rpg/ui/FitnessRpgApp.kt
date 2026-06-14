@@ -70,8 +70,8 @@ fun FitnessRpgApp(viewModel: BattleViewModel) {
             onSimulateRepetition = viewModel::simulateRepetition,
         )
         AppScreen.VICTORY -> VictoryScreen(
-            bossName = uiState.bossName,
-            exerciseName = uiState.selectedExercise?.displayName.orEmpty(),
+            enemyId = requireNotNull(uiState.selectedEnemy).id,
+            exerciseType = requireNotNull(uiState.selectedExercise).type,
             completedRepetitions = uiState.completedRepetitions,
             totalDamage = uiState.totalDamage,
             onBackToMenu = viewModel::returnToMenu,

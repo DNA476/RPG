@@ -18,7 +18,7 @@ abstract class ExperimentalExerciseDetector(
     private val mutableEvents = MutableSharedFlow<ExerciseEvent>(extraBufferCapacity = 1)
     private val mutableResult = MutableStateFlow(
         ExerciseDetectionResult(
-            stateLabel = "Экспериментальный детектор",
+            feedback = ExerciseFeedback.EXPERIMENTAL_DETECTOR,
             debugInfo = "TODO: implement and calibrate ${exerciseType.name} detection",
         ),
     )
@@ -29,30 +29,30 @@ abstract class ExperimentalExerciseDetector(
 
     final override fun start() {
         isRunning = true
-        mutableResult.value = experimentalResult("Встаньте полностью в кадр")
+        mutableResult.value = experimentalResult(ExerciseFeedback.STAND_IN_FRAME)
     }
 
     final override fun stop() {
         isRunning = false
-        mutableResult.value = experimentalResult("Детектор остановлен")
+        mutableResult.value = experimentalResult(ExerciseFeedback.DETECTOR_STOPPED)
     }
 
     final override fun reset() {
-        mutableResult.value = experimentalResult("Встаньте полностью в кадр")
+        mutableResult.value = experimentalResult(ExerciseFeedback.STAND_IN_FRAME)
     }
 
     final override fun processPoseFrame(frame: PoseFrame) {
         if (!isRunning) return
         mutableResult.value = when (frame.trackingState) {
-            PoseTrackingState.TRACKING -> experimentalResult("Поза отслеживается")
-            PoseTrackingState.INITIALIZING -> experimentalResult("Инициализация трекинга")
-            PoseTrackingState.NO_PERSON -> experimentalResult("Человек не найден")
-            PoseTrackingState.ERROR -> experimentalResult("Ошибка трекинга")
+            PoseTrackingState.TRACKING -> experimentalResult(ExerciseFeedback.POSE_TRACKED)
+            PoseTrackingState.INITIALIZING -> experimentalResult(ExerciseFeedback.TRACKING_INITIALIZING)
+            PoseTrackingState.NO_PERSON -> experimentalResult(ExerciseFeedback.NO_PERSON)
+            PoseTrackingState.ERROR -> experimentalResult(ExerciseFeedback.TRACKING_ERROR)
         }
     }
 
-    private fun experimentalResult(label: String) = ExerciseDetectionResult(
-        stateLabel = label,
+    private fun experimentalResult(feedback: ExerciseFeedback) = ExerciseDetectionResult(
+        feedback = feedback,
         debugInfo = "TODO: implement and calibrate ${exerciseType.name} detection",
     )
 }

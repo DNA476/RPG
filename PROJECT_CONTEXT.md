@@ -47,6 +47,9 @@ The repository is an MVP/prototype, not a production-ready application.
 - The main menu exposes profile and statistics through a top-left navigation
   drawer. A clickable card shows today's approximate calories and opens the
   seven-day statistics view.
+- The UI follows the device language and currently supports Russian, English,
+  German, Spanish, French, and Portuguese. Unsupported locales fall back to
+  Russian.
 - Valid live-detector repetitions are persisted immediately as daily local
   aggregates. Debug-simulated repetitions are intentionally excluded.
 - Accounts, progression, audio, analytics, and backend are absent.

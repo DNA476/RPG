@@ -20,11 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.rpg.R
 import com.example.rpg.data.enemy.EnemyConfig
 import com.example.rpg.domain.exercise.ExerciseConfig
 import com.example.rpg.ui.components.EnemyChoiceCard
+import com.example.rpg.ui.localization.exerciseNameResource
 
 @Composable
 fun EnemySelectionScreen(
@@ -54,13 +57,16 @@ fun EnemySelectionScreen(
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = "Выбери противника",
+                        text = stringResource(R.string.choose_opponent_title),
                         color = Color(0xFFFFD166),
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Black,
                     )
                     Text(
-                        text = "Упражнение: ${exercise.displayName}. Тройка фиксируется без обновления.",
+                        text = stringResource(
+                            R.string.selected_exercise_note,
+                            stringResource(exerciseNameResource(exercise.type)),
+                        ),
                         color = Color.White.copy(alpha = 0.78f),
                         style = MaterialTheme.typography.bodyLarge,
                     )
@@ -88,7 +94,7 @@ fun EnemySelectionScreen(
             ),
             contentPadding = PaddingValues(vertical = 15.dp),
         ) {
-            Text("Начать бой", fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.start_battle), fontWeight = FontWeight.Bold)
         }
         OutlinedButton(
             onClick = onBack,
@@ -96,7 +102,7 @@ fun EnemySelectionScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 12.dp),
         ) {
-            Text("Назад к упражнениям")
+            Text(stringResource(R.string.back_to_exercises))
         }
     }
 }

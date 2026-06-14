@@ -28,7 +28,7 @@ class SquatDetector(
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
     private val mutableResult = MutableStateFlow(
-        ExerciseDetectionResult(stateLabel = "Встаньте прямо перед камерой"),
+        ExerciseDetectionResult(feedback = ExerciseFeedback.STAND_IN_FRAME),
     )
     private var isRunning = false
     private var phase = Phase.WAITING_FOR_STAND
@@ -44,13 +44,13 @@ class SquatDetector(
 
     override fun stop() {
         isRunning = false
-        mutableResult.value = mutableResult.value.copy(stateLabel = "Детектор остановлен")
+        mutableResult.value = mutableResult.value.copy(feedback = ExerciseFeedback.DETECTOR_STOPPED)
     }
 
     override fun reset() {
         repetitionCount = 0
         phase = Phase.WAITING_FOR_STAND
-        mutableResult.value = ExerciseDetectionResult(stateLabel = "Встаньте прямо перед камерой")
+        mutableResult.value = ExerciseDetectionResult(feedback = ExerciseFeedback.STAND_IN_FRAME)
     }
 
     override fun processPoseFrame(frame: PoseFrame) {
@@ -59,7 +59,7 @@ class SquatDetector(
         val kneeAngle = averageVisibleKneeAngle(frame)
         if (kneeAngle == null) {
             mutableResult.value = ExerciseDetectionResult(
-                stateLabel = "Колени не видны полностью",
+                feedback = ExerciseFeedback.KNEES_NOT_VISIBLE,
                 debugInfo = "Required hip, knee, and ankle landmarks are not visible",
             )
             return
@@ -70,7 +70,11 @@ class SquatDetector(
         when (phase) {
             Phase.WAITING_FOR_STAND -> {
                 mutableResult.value = ExerciseDetectionResult(
-                    stateLabel = if (isStanding) "Готово к приседанию" else "Выпрямите ноги",
+                    feedback = if (isStanding) {
+                        ExerciseFeedback.READY_TO_SQUAT
+                    } else {
+                        ExerciseFeedback.STRAIGHTEN_LEGS
+                    },
                     confidence = frameConfidence(frame),
                     debugInfo = "kneeAngle=$kneeAngle",
                 )
@@ -79,14 +83,14 @@ class SquatDetector(
             Phase.STANDING -> if (isAtBottom) {
                 phase = Phase.BOTTOM
                 mutableResult.value = ExerciseDetectionResult(
-                    stateLabel = "Нижняя точка достигнута",
+                    feedback = ExerciseFeedback.BOTTOM_REACHED,
                     confidence = frameConfidence(frame),
                     debugInfo = "kneeAngle=$kneeAngle",
                 )
                 mutableEvents.tryEmit(ExerciseEvent.ExerciseStarted(exerciseType))
             } else {
                 mutableResult.value = ExerciseDetectionResult(
-                    stateLabel = "Опускайтесь ниже",
+                    feedback = ExerciseFeedback.LOWER_MORE,
                     confidence = frameConfidence(frame),
                     debugInfo = "kneeAngle=$kneeAngle",
                 )
@@ -96,7 +100,7 @@ class SquatDetector(
                 phase = Phase.STANDING
                 mutableResult.value = ExerciseDetectionResult(
                     repetitionCompleted = true,
-                    stateLabel = "Повтор засчитан",
+                    feedback = ExerciseFeedback.REPETITION_COUNTED,
                     confidence = frameConfidence(frame),
                     debugInfo = "kneeAngle=$kneeAngle; repetitions=$repetitionCount",
                 )
@@ -104,7 +108,7 @@ class SquatDetector(
                 mutableEvents.tryEmit(ExerciseEvent.ExerciseFinished(exerciseType))
             } else {
                 mutableResult.value = ExerciseDetectionResult(
-                    stateLabel = "Вернитесь в стойку",
+                    feedback = ExerciseFeedback.RETURN_TO_STANCE,
                     confidence = frameConfidence(frame),
                     debugInfo = "kneeAngle=$kneeAngle",
                 )

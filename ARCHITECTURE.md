@@ -34,6 +34,8 @@ Responsibilities:
 - State-driven navigation between onboarding, menu, statistics, profile,
   battle, and victory.
 - Main-menu-only navigation drawer for profile and statistics destinations.
+- Android string resources and stable content-ID mappings for device-selected
+  Russian, English, German, Spanish, French, and Portuguese localization.
 - Enemy choice UI and coroutine-driven presentation timers.
 - Construction of current repository, detector, analyzer, and battle objects.
 - SharedPreferences adapter for the optional user profile and daily fitness
@@ -83,6 +85,7 @@ Responsibilities:
 - Exercise content model, difficulty, and detector status.
 - Exercise detector interface.
 - Stateful squat recognition and its configuration.
+- Typed detector feedback values that the Android UI maps to localized strings.
 - Detector factory and safe experimental detector placeholders.
 
 This module must not know about Compose, CameraX, MediaPipe, enemies, or damage.

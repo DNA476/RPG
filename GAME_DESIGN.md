@@ -58,6 +58,8 @@ Current rules:
 - A prominent main-menu card shows today's approximate calorie total and opens
   the seven-day statistics view. With no activity it says that there is no
   activity yet.
+- Interface text follows the device language. The current supported set is
+  Russian, English, German, Spanish, French, and Portuguese.
 
 Debug builds can simulate a repetition, allowing every configured exercise and
 damage value to complete the battle before its live detector is ready.

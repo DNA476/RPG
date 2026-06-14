@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.rpg.R
 import com.example.rpg.data.FitnessRepository
 import com.example.rpg.data.local.SharedPreferencesFitnessRepository
 import com.example.rpg.data.enemy.EnemyConfig
@@ -30,6 +31,7 @@ import com.example.rpg.game.battle.FixedEnemyAttackTimingPolicy
 import com.example.rpg.game.battle.GameState
 import com.example.rpg.game.player.PlayerStats
 import com.example.rpg.pose.PoseAnalyzer
+import com.example.rpg.ui.localization.exerciseFeedbackResource
 import java.time.LocalDate
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -85,9 +87,8 @@ class BattleViewModel(
         ),
     )
     private var latestPoseFrame: PoseFrame? = null
-    private var exerciseStatus = "Выберите упражнение"
+    private var exerciseStatusResource = R.string.status_choose_exercise
     private var damageMessage: String? = null
-    private var enemyAbilityMessage: String? = null
     private var hitEventId = 0L
     private var enemyAttackSecondsRemaining = 15
     private var debuffSecondsRemaining = 0
@@ -204,7 +205,7 @@ class BattleViewModel(
     fun selectExercise(type: ExerciseType) {
         if (screen != AppScreen.MAIN_MENU) return
         selectedExercise = exerciseConfigRepository.get(type)
-        exerciseStatus = "Выбрано: ${selectedExercise.displayName}"
+        exerciseStatusResource = R.string.status_exercise_selected
         publishUiState()
     }
 
@@ -245,14 +246,13 @@ class BattleViewModel(
         observeActiveDetector()
         latestPoseFrame = null
         damageMessage = null
-        enemyAbilityMessage = null
         hitEventId = 0L
         debuffSecondsRemaining = 0
         screen = AppScreen.BATTLE
-        exerciseStatus = if (selectedExercise.detectorStatus == DetectorStatus.READY) {
-            "Встаньте перед камерой"
+        exerciseStatusResource = if (selectedExercise.detectorStatus == DetectorStatus.READY) {
+            R.string.feedback_stand_in_frame
         } else {
-            "Этот детектор пока экспериментальный. Возможны ошибки распознавания."
+            R.string.status_experimental_warning
         }
         battleSession?.startTracking()
         startEnemyAttackLoop(boss)
@@ -265,8 +265,7 @@ class BattleViewModel(
         screen = AppScreen.MAIN_MENU
         latestPoseFrame = null
         damageMessage = null
-        enemyAbilityMessage = null
-        exerciseStatus = "Выберите упражнение"
+        exerciseStatusResource = R.string.status_choose_exercise
         refreshStatistics()
         publishUiState()
     }
@@ -301,11 +300,11 @@ class BattleViewModel(
                     }
                     activeDetector?.processPoseFrame(frame)
                 } else {
-                    exerciseStatus = when (frame.trackingState) {
-                        PoseTrackingState.INITIALIZING -> "Инициализация трекинга"
-                        PoseTrackingState.NO_PERSON -> "Человек не найден"
-                        PoseTrackingState.ERROR -> "Ошибка трекинга позы"
-                        PoseTrackingState.TRACKING -> exerciseStatus
+                    exerciseStatusResource = when (frame.trackingState) {
+                        PoseTrackingState.INITIALIZING -> R.string.feedback_tracking_initializing
+                        PoseTrackingState.NO_PERSON -> R.string.feedback_no_person
+                        PoseTrackingState.ERROR -> R.string.feedback_tracking_error
+                        PoseTrackingState.TRACKING -> exerciseStatusResource
                     }
                 }
                 publishUiState()
@@ -318,7 +317,9 @@ class BattleViewModel(
         detectorEventsJob = viewModelScope.launch {
             detector.events.collect { event ->
                 when (event) {
-                    is ExerciseEvent.ExerciseStarted -> exerciseStatus = "Движение начато"
+                    is ExerciseEvent.ExerciseStarted -> {
+                        exerciseStatusResource = R.string.status_movement_started
+                    }
                     is ExerciseEvent.ExerciseFinished -> Unit
                     is ExerciseEvent.RepetitionCompleted -> handleCompletedRepetition(event)
                 }
@@ -328,7 +329,7 @@ class BattleViewModel(
         detectorResultJob = viewModelScope.launch {
             detector.result.collect { result ->
                 if (!result.repetitionCompleted) {
-                    exerciseStatus = result.stateLabel
+                    exerciseStatusResource = exerciseFeedbackResource(result.feedback)
                     publishUiState()
                 }
             }
@@ -359,7 +360,6 @@ class BattleViewModel(
         if (session.state.value.gameState == GameState.VICTORY) return
         val ability = enemy.ability
         session.setPlayerAttackMultiplier(ability.attackMultiplier)
-        enemyAbilityMessage = "${ability.name}: атака -${ability.attackReductionPercent}%"
         debuffJob?.cancel()
         debuffJob = viewModelScope.launch {
             for (seconds in ability.debuffDurationSeconds downTo 1) {
@@ -368,7 +368,6 @@ class BattleViewModel(
                 delay(1_000)
             }
             debuffSecondsRemaining = 0
-            enemyAbilityMessage = null
             session.setPlayerAttackMultiplier(1f)
             publishUiState()
         }
@@ -393,11 +392,11 @@ class BattleViewModel(
             )
         }
         val damage = battle.lastDamage ?: return
-        exerciseStatus = "Повтор засчитан"
+        exerciseStatusResource = R.string.feedback_repetition_counted
         hitEventId += 1
         showDamageMessage("-$damage")
         if (battle.gameState == GameState.VICTORY) {
-            exerciseStatus = "Противник побеждён"
+            exerciseStatusResource = R.string.status_enemy_defeated
             activeDetector?.stop()
             enemyAttackJob?.cancel()
             debuffJob?.cancel()
@@ -455,8 +454,7 @@ class BattleViewModel(
             playerAttackMultiplier = battle?.playerAttackMultiplier ?: 1f,
             enemyAttackSecondsRemaining = enemyAttackSecondsRemaining,
             debuffSecondsRemaining = debuffSecondsRemaining,
-            enemyAbilityMessage = enemyAbilityMessage,
-            exerciseStatus = exerciseStatus,
+            exerciseStatusResource = exerciseStatusResource,
             damageMessage = damageMessage,
             hitEventId = hitEventId,
             poseFrame = latestPoseFrame,
@@ -488,11 +486,9 @@ class BattleViewModel(
                 activeSeconds = it.activeSeconds,
             )
         }
-        val exerciseNames = exercises.associate { it.type to it.displayName }
         val summaries = report.totalsByExercise.map { total ->
             ExerciseStatisticsSummary(
                 exerciseType = total.exerciseType,
-                displayName = exerciseNames.getValue(total.exerciseType),
                 repetitions = total.repetitions,
                 activeSeconds = total.activeSeconds,
             )

@@ -22,10 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.rpg.R
 import com.example.rpg.data.enemy.EnemyConfig
 import com.example.rpg.domain.exercise.ExerciseType
+import com.example.rpg.ui.localization.enemyAbilityNameResource
+import com.example.rpg.ui.localization.enemyDescriptionResource
+import com.example.rpg.ui.localization.enemyNameResource
+import com.example.rpg.ui.localization.exerciseNameResource
 
 @Composable
 fun EnemyChoiceCard(
@@ -35,6 +41,9 @@ fun EnemyChoiceCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val enemyName = stringResource(enemyNameResource(enemy.id))
+    val enemyDescription = stringResource(enemyDescriptionResource(enemy.id))
+    val exerciseName = stringResource(exerciseNameResource(exerciseType))
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -52,7 +61,7 @@ fun EnemyChoiceCard(
         ) {
             Image(
                 painter = painterResource(enemyDrawableResource(enemy.imageResource)),
-                contentDescription = enemy.name,
+                contentDescription = enemyName,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .width(116.dp)
@@ -63,22 +72,26 @@ fun EnemyChoiceCard(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    text = enemy.name,
+                    text = enemyName,
                     color = Color.White,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = "${enemy.maxHp} HP · ${enemy.description}",
+                    text = stringResource(R.string.enemy_hp_description, enemy.maxHp, enemyDescription),
                     color = Color.White.copy(alpha = 0.72f),
                     style = MaterialTheme.typography.bodySmall,
                 )
                 TraitChip(
-                    text = affinityLabel(enemy, exerciseType),
+                    text = affinityLabel(enemy, exerciseType, exerciseName),
                     color = affinityColor(enemy, exerciseType),
                 )
                 TraitChip(
-                    text = "${enemy.ability.name}: −${enemy.ability.attackReductionPercent}% атаки",
+                    text = stringResource(
+                        R.string.ability_attack_reduction,
+                        stringResource(enemyAbilityNameResource(enemy.id)),
+                        enemy.ability.attackReductionPercent,
+                    ),
                     color = Color(0xFFFFC857),
                 )
             }
@@ -102,10 +115,15 @@ private fun TraitChip(text: String, color: Color) {
     }
 }
 
-private fun affinityLabel(enemy: EnemyConfig, exerciseType: ExerciseType): String = when (exerciseType) {
-    enemy.weakness.exerciseType -> "Уязвим к ${exerciseShortName(exerciseType)}: ×1.5"
-    enemy.resistance.exerciseType -> "Сопротивление ${exerciseShortName(exerciseType)}: ×0.75"
-    else -> "Нейтрален к выбранному упражнению"
+@Composable
+private fun affinityLabel(
+    enemy: EnemyConfig,
+    exerciseType: ExerciseType,
+    exerciseName: String,
+): String = when (exerciseType) {
+    enemy.weakness.exerciseType -> stringResource(R.string.affinity_weak, exerciseName)
+    enemy.resistance.exerciseType -> stringResource(R.string.affinity_resistant, exerciseName)
+    else -> stringResource(R.string.affinity_neutral)
 }
 
 private fun affinityColor(enemy: EnemyConfig, exerciseType: ExerciseType): Color = when (exerciseType) {

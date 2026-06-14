@@ -25,10 +25,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.rpg.R
 import com.example.rpg.data.profile.UserSex
 import com.example.rpg.ui.viewmodel.ProfileFormUiState
 
@@ -60,17 +62,17 @@ fun ProfileScreen(
     ) {
         if (!isOnboarding) {
             OutlinedButton(onClick = onBack) {
-                Text("Назад")
+                Text(stringResource(R.string.back))
             }
         }
         Text(
-            text = if (isOnboarding) "Немного о вас" else "Профиль",
+            text = stringResource(if (isOnboarding) R.string.onboarding_title else R.string.profile),
             color = Color(0xFFFFD166),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Black,
         )
         Text(
-            text = "Все поля необязательны. Вес помогает точнее оценивать расход калорий. Данные хранятся только на устройстве.",
+            text = stringResource(R.string.profile_intro),
             color = Color.White.copy(alpha = 0.82f),
             style = MaterialTheme.typography.bodyLarge,
         )
@@ -78,13 +80,13 @@ fun ProfileScreen(
             value = form.weightText,
             onValueChange = onWeightChanged,
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Вес, кг") },
-            placeholder = { Text("Например, 70") },
+            label = { Text(stringResource(R.string.weight_label)) },
+            placeholder = { Text(stringResource(R.string.weight_placeholder)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             singleLine = true,
             isError = form.weightError,
             supportingText = if (form.weightError) {
-                { Text("Введите значение от 20 до 300 кг") }
+                { Text(stringResource(R.string.weight_error)) }
             } else {
                 null
             },
@@ -93,20 +95,20 @@ fun ProfileScreen(
             value = form.heightText,
             onValueChange = onHeightChanged,
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Рост, см") },
-            placeholder = { Text("Например, 175") },
+            label = { Text(stringResource(R.string.height_label)) },
+            placeholder = { Text(stringResource(R.string.height_placeholder)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
             isError = form.heightError,
             supportingText = if (form.heightError) {
-                { Text("Введите значение от 80 до 250 см") }
+                { Text(stringResource(R.string.height_error)) }
             } else {
                 null
             },
         )
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                text = "Пол",
+                text = stringResource(R.string.sex_label),
                 color = Color.White,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
@@ -116,19 +118,19 @@ fun ProfileScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 SexChip(
-                    label = "Не указан",
+                    label = stringResource(R.string.sex_unspecified),
                     selected = form.sex == null,
                     onClick = { onSexSelected(null) },
                     modifier = Modifier.weight(1f),
                 )
                 SexChip(
-                    label = "Мужской",
+                    label = stringResource(R.string.sex_male),
                     selected = form.sex == UserSex.MALE,
                     onClick = { onSexSelected(UserSex.MALE) },
                     modifier = Modifier.weight(1f),
                 )
                 SexChip(
-                    label = "Женский",
+                    label = stringResource(R.string.sex_female),
                     selected = form.sex == UserSex.FEMALE,
                     onClick = { onSexSelected(UserSex.FEMALE) },
                     modifier = Modifier.weight(1f),
@@ -146,7 +148,7 @@ fun ProfileScreen(
             contentPadding = PaddingValues(vertical = 16.dp),
         ) {
             Text(
-                text = if (isOnboarding) "Продолжить" else "Сохранить",
+                text = stringResource(if (isOnboarding) R.string.continue_action else R.string.save),
                 fontWeight = FontWeight.Bold,
             )
         }
@@ -156,7 +158,7 @@ fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(vertical = 14.dp),
             ) {
-                Text("Пропустить")
+                Text(stringResource(R.string.skip))
             }
         }
     }

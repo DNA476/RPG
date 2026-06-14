@@ -1,3 +1,157 @@
-﻿<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <string name="app_name">Fitness RPG</string>
+    <string name="back">Назад</string>
+    <string name="back_to_menu">Назад в меню</string>
+    <string name="back_to_exercises">Назад к упражнениям</string>
+    <string name="save">Сохранить</string>
+    <string name="continue_action">Продолжить</string>
+    <string name="skip">Пропустить</string>
+    <string name="profile">Профиль</string>
+    <string name="statistics">Статистика</string>
+    <string name="open_menu">Открыть меню</string>
+    <string name="start_battle">Начать бой</string>
+    <string name="choose_opponent">Выбрать противника</string>
+
+    <string name="main_tagline">Побеждай врагов, выполняя реальные упражнения перед камерой</string>
+    <string name="choose_workout">Выбери тренировку</string>
+    <string name="local_data_note">Профиль и история тренировок хранятся только на устройстве.</string>
+    <string name="today_calories">≈ %1$d ккал сегодня</string>
+    <string name="no_activity_today">Сегодня ещё нет активности</string>
+    <string name="calorie_estimate_subtitle">Оценка по выполненным упражнениям</string>
+    <string name="default_weight_short">Расчёт для условного веса 70 кг</string>
+
+    <string name="onboarding_title">Немного о вас</string>
+    <string name="profile_intro">Все поля необязательны. Вес помогает точнее оценивать расход калорий. Данные хранятся только на устройстве.</string>
+    <string name="weight_label">Вес, кг</string>
+    <string name="weight_placeholder">Например, 70</string>
+    <string name="weight_error">Введите значение от 20 до 300 кг</string>
+    <string name="height_label">Рост, см</string>
+    <string name="height_placeholder">Например, 175</string>
+    <string name="height_error">Введите значение от 80 до 250 см</string>
+    <string name="sex_label">Пол</string>
+    <string name="sex_unspecified">Не указан</string>
+    <string name="sex_male">Мужской</string>
+    <string name="sex_female">Женский</string>
+
+    <string name="statistics_local_note">История хранится локально на этом устройстве</string>
+    <string name="period_7_days">7 дней</string>
+    <string name="period_30_days">30 дней</string>
+    <string name="period_90_days">90 дней</string>
+    <string name="all_exercises">Все упражнения</string>
+    <string name="repetitions_label">повторов</string>
+    <string name="calories_approx_label">ккал примерно</string>
+    <string name="active_days_label">активных дней</string>
+    <string name="default_weight_long">Калории рассчитаны для условного веса 70 кг. Добавьте вес в профиле для более персональной оценки.</string>
+    <string name="by_type_for_period">По видам за период</string>
+    <string name="repetitions_short">%1$d повт.</string>
+    <string name="seconds_short">%1$d сек.</string>
+    <string name="chart_repetitions_by_day">Повторы по дням</string>
+    <string name="chart_seconds_by_day">Секунды по дням</string>
+    <string name="chart_accessibility">График активности по дням: %1$s</string>
+    <string name="empty_statistics">За выбранный период пока нет упражнений.</string>
+
+    <string name="choose_opponent_title">Выбери противника</string>
+    <string name="selected_exercise_note">Упражнение: %1$s. Тройка фиксируется без обновления.</string>
+    <string name="enemy_hp_description">%1$d HP · %2$s</string>
+    <string name="affinity_weak">Уязвим к %1$s: ×1.5</string>
+    <string name="affinity_resistant">Сопротивление %1$s: ×0.75</string>
+    <string name="affinity_neutral">Нейтрален к выбранному упражнению</string>
+    <string name="ability_attack_reduction">%1$s: −%2$d%% атаки</string>
+
+    <string name="exercise_card_meta">Урон: %1$d · Сложность: %2$s</string>
+    <string name="battle_exercise_meta">Урон: %1$d · %2$s · %3$s</string>
+    <string name="difficulty_easy">Легко</string>
+    <string name="difficulty_medium">Средне</string>
+    <string name="difficulty_hard">Сложно</string>
+    <string name="difficulty_extreme">Экстремально</string>
+    <string name="detector_ready">Готово</string>
+    <string name="detector_experimental">Экспериментально</string>
+    <string name="detector_coming_soon">Скоро</string>
+    <string name="enemy_weakness">Слабость врага: урон ×1.5</string>
+    <string name="enemy_resistance">Сопротивление врага: урон ×0.75</string>
+    <string name="enemy_neutral">Отношение врага: нейтральное</string>
+    <string name="repetitions">Повторы</string>
+    <string name="total_damage">Общий урон</string>
+    <string name="enemy_ability_active">%1$s: атака −%2$d%% · ещё %3$d сек.</string>
+    <string name="enemy_attack_in">Атака врага через %1$d сек.</string>
+    <string name="attack_power_tracking">Сила атаки: %1$d%% · Трекинг: %2$s</string>
+    <string name="simulate_repetition">Симулировать повтор</string>
+    <string name="boss_health">%1$d / %2$d HP</string>
+
+    <string name="victory">Победа!</string>
+    <string name="enemy_defeated">%1$s побеждён</string>
+    <string name="victory_summary">%1$s\nПовторов: %2$d\nОбщий урон: %3$d</string>
+    <string name="return_to_menu">Вернуться в меню</string>
+
+    <string name="camera_permission_message">Нужно разрешение камеры для локального трекинга позы</string>
+    <string name="allow_camera">Разрешить камеру</string>
+    <string name="debug_video_content_description">Тестовое видео</string>
+    <string name="debug_video_loading">Загрузка тестового видео из assets/raw/test_video.mp4</string>
+    <string name="debug_video_error">Не удалось загрузить тестовое видео</string>
+    <string name="debug_camera_mode">КАМЕРА</string>
+    <string name="debug_video_mode">ВИДЕО</string>
+
+    <string name="status_choose_exercise">Выберите упражнение</string>
+    <string name="status_exercise_selected">Упражнение выбрано</string>
+    <string name="status_experimental_warning">Этот детектор пока экспериментальный. Возможны ошибки распознавания.</string>
+    <string name="status_movement_started">Движение начато</string>
+    <string name="status_enemy_defeated">Противник побеждён</string>
+    <string name="feedback_waiting">Ожидание</string>
+    <string name="feedback_stand_in_frame">Встаньте прямо перед камерой</string>
+    <string name="feedback_detector_stopped">Детектор остановлен</string>
+    <string name="feedback_knees_not_visible">Колени не видны полностью</string>
+    <string name="feedback_ready_to_squat">Готово к приседанию</string>
+    <string name="feedback_straighten_legs">Выпрямите ноги</string>
+    <string name="feedback_bottom_reached">Нижняя точка достигнута</string>
+    <string name="feedback_lower_more">Опускайтесь ниже</string>
+    <string name="feedback_repetition_counted">Повтор засчитан</string>
+    <string name="feedback_return_to_stance">Вернитесь в стойку</string>
+    <string name="feedback_experimental_detector">Экспериментальный детектор</string>
+    <string name="feedback_pose_tracked">Поза отслеживается</string>
+    <string name="feedback_tracking_initializing">Инициализация трекинга</string>
+    <string name="feedback_no_person">Человек не найден</string>
+    <string name="feedback_tracking_error">Ошибка трекинга позы</string>
+
+    <string name="tracking_initializing">инициализация</string>
+    <string name="tracking_no_person">человек не найден</string>
+    <string name="tracking_error">ошибка</string>
+    <string name="tracking_active">активен</string>
+
+    <string name="exercise_squat_name">Приседания</string>
+    <string name="exercise_squat_description">Базовое упражнение для ног. Один полный присед наносит урон.</string>
+    <string name="exercise_push_up_name">Отжимания</string>
+    <string name="exercise_push_up_description">Упражнение на грудь, плечи и трицепс.</string>
+    <string name="exercise_pull_up_name">Подтягивания</string>
+    <string name="exercise_pull_up_description">Сложное упражнение для спины и рук.</string>
+    <string name="exercise_crunch_name">Скручивания</string>
+    <string name="exercise_crunch_description">Упражнение на мышцы корпуса.</string>
+    <string name="exercise_lunge_name">Выпады</string>
+    <string name="exercise_lunge_description">Упражнение на ноги с попеременной работой сторон.</string>
+    <string name="exercise_jumping_jack_name">Jumping Jacks</string>
+    <string name="exercise_jumping_jack_description">Динамичное упражнение на всё тело.</string>
+    <string name="exercise_plank_name">Планка</string>
+    <string name="exercise_plank_description">Удерживайте положение, чтобы наносить урон со временем.</string>
+
+    <string name="enemy_goblin_scout_name">Гоблин-разведчик</string>
+    <string name="enemy_goblin_scout_description">Быстрый стрелок, который сбивает темп тренировки.</string>
+    <string name="enemy_goblin_scout_ability">Сбивающий выстрел</string>
+    <string name="enemy_goblin_brute_name">Гоблин-громила</string>
+    <string name="enemy_goblin_brute_description">Живучий противник, полагающийся на грубую силу.</string>
+    <string name="enemy_goblin_brute_ability">Боевой рёв</string>
+    <string name="enemy_goblin_shaman_name">Гоблин-шаман</string>
+    <string name="enemy_goblin_shaman_description">Накладывает проклятие, ослабляющее серию атак.</string>
+    <string name="enemy_goblin_shaman_ability">Ослабляющее проклятие</string>
+    <string name="enemy_goblin_guard_name">Гоблин-щитоносец</string>
+    <string name="enemy_goblin_guard_description">Медленный защитник с тяжёлым деревянным щитом.</string>
+    <string name="enemy_goblin_guard_ability">Удар щитом</string>
+    <string name="enemy_cave_hound_name">Пещерный пёс</string>
+    <string name="enemy_cave_hound_description">Подвижный зверь, устойчивый к размеренным приседаниям.</string>
+    <string name="enemy_cave_hound_ability">Оглушающий вой</string>
+    <string name="enemy_ash_hound_name">Пепельный пёс</string>
+    <string name="enemy_ash_hound_description">Зверь из горячих пещер, атакующий резкими выпадами.</string>
+    <string name="enemy_ash_hound_ability">Пламенный рык</string>
+    <string name="enemy_unknown_name">Неизвестный противник</string>
+    <string name="enemy_unknown_description">Описание недоступно.</string>
+    <string name="enemy_unknown_ability">Неизвестная способность</string>
 </resources>

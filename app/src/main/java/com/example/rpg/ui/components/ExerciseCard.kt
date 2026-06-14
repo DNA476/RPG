@@ -17,10 +17,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.rpg.R
 import com.example.rpg.domain.exercise.DetectorStatus
 import com.example.rpg.domain.exercise.ExerciseConfig
+import com.example.rpg.ui.localization.detectorStatusResource
+import com.example.rpg.ui.localization.difficultyResource
+import com.example.rpg.ui.localization.exerciseDescriptionResource
+import com.example.rpg.ui.localization.exerciseNameResource
 
 @Composable
 fun ExerciseCard(
@@ -49,7 +55,7 @@ fun ExerciseCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = exercise.displayName,
+                    text = stringResource(exerciseNameResource(exercise.type)),
                     color = Color.White,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
@@ -57,12 +63,16 @@ fun ExerciseCard(
                 DetectorBadge(status = exercise.detectorStatus)
             }
             Text(
-                text = exercise.description,
+                text = stringResource(exerciseDescriptionResource(exercise.type)),
                 color = Color.White.copy(alpha = 0.75f),
                 style = MaterialTheme.typography.bodyMedium,
             )
             Text(
-                text = "Урон: ${exercise.baseDamage}  •  Сложность: ${exercise.difficulty.name}",
+                text = stringResource(
+                    R.string.exercise_card_meta,
+                    exercise.baseDamage,
+                    stringResource(difficultyResource(exercise.difficulty)),
+                ),
                 color = Color(0xFFFFD166),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.SemiBold,
@@ -83,7 +93,7 @@ private fun DetectorBadge(status: DetectorStatus) {
         shape = RoundedCornerShape(50),
     ) {
         Text(
-            text = status.name.replace('_', ' '),
+            text = stringResource(detectorStatusResource(status)),
             color = color,
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,

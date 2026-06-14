@@ -31,15 +31,19 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.rpg.R
 import com.example.rpg.domain.exercise.ExerciseConfig
 import com.example.rpg.domain.exercise.ExerciseType
 import com.example.rpg.ui.viewmodel.StatisticsPeriod
 import com.example.rpg.ui.viewmodel.StatisticsUiState
+import com.example.rpg.ui.localization.exerciseNameResource
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.max
@@ -67,19 +71,19 @@ fun StatisticsScreen(
     ) {
         item {
             OutlinedButton(onClick = onBack) {
-                Text("Назад")
+                Text(stringResource(R.string.back))
             }
         }
         item {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    text = "Статистика",
+                    text = stringResource(R.string.statistics),
                     color = Color(0xFFFFD166),
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Black,
                 )
                 Text(
-                    text = "История хранится локально на этом устройстве",
+                    text = stringResource(R.string.statistics_local_note),
                     color = Color.White.copy(alpha = 0.72f),
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -97,9 +101,9 @@ fun StatisticsScreen(
                         label = {
                             Text(
                                 text = when (period) {
-                                    StatisticsPeriod.LAST_7_DAYS -> "7 дней"
-                                    StatisticsPeriod.LAST_30_DAYS -> "30 дней"
-                                    StatisticsPeriod.LAST_90_DAYS -> "90 дней"
+                                    StatisticsPeriod.LAST_7_DAYS -> stringResource(R.string.period_7_days)
+                                    StatisticsPeriod.LAST_30_DAYS -> stringResource(R.string.period_30_days)
+                                    StatisticsPeriod.LAST_90_DAYS -> stringResource(R.string.period_90_days)
                                 },
                             )
                         },
@@ -122,17 +126,17 @@ fun StatisticsScreen(
             ) {
                 StatCard(
                     value = statistics.totalRepetitions.toString(),
-                    label = "повторов",
+                    label = stringResource(R.string.repetitions_label),
                     modifier = Modifier.weight(1f),
                 )
                 StatCard(
                     value = statistics.estimatedCalories.toString(),
-                    label = "ккал примерно",
+                    label = stringResource(R.string.calories_approx_label),
                     modifier = Modifier.weight(1f),
                 )
                 StatCard(
                     value = statistics.activeDays.toString(),
-                    label = "активных дней",
+                    label = stringResource(R.string.active_days_label),
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -140,7 +144,7 @@ fun StatisticsScreen(
         if (statistics.usesDefaultWeight) {
             item {
                 Text(
-                    text = "Калории рассчитаны для условного веса 70 кг. Добавьте вес в профиле для более персональной оценки.",
+                    text = stringResource(R.string.default_weight_long),
                     color = Color.White.copy(alpha = 0.72f),
                     style = MaterialTheme.typography.bodySmall,
                 )
@@ -152,7 +156,7 @@ fun StatisticsScreen(
         item {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
-                    text = "По видам за период",
+                    text = stringResource(R.string.by_type_for_period),
                     color = Color.White,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
@@ -161,6 +165,14 @@ fun StatisticsScreen(
                     EmptyStatistics()
                 } else {
                     statistics.exerciseSummaries.forEach { summary ->
+                        val summaryValues = listOfNotNull(
+                            summary.repetitions.takeIf { it > 0 }?.let {
+                                stringResource(R.string.repetitions_short, it)
+                            },
+                            summary.activeSeconds.takeIf { it > 0 }?.let {
+                                stringResource(R.string.seconds_short, it)
+                            },
+                        ).joinToString(" · ")
                         Surface(
                             color = Color.White.copy(alpha = 0.08f),
                             shape = RoundedCornerShape(16.dp),
@@ -172,7 +184,7 @@ fun StatisticsScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(
-                                    text = summary.displayName,
+                                    text = stringResource(exerciseNameResource(summary.exerciseType)),
                                     color = Color.White,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.weight(1f),
@@ -180,15 +192,7 @@ fun StatisticsScreen(
                                     overflow = TextOverflow.Ellipsis,
                                 )
                                 Text(
-                                    text = buildString {
-                                        if (summary.repetitions > 0) {
-                                            append("${summary.repetitions} повт.")
-                                        }
-                                        if (summary.activeSeconds > 0) {
-                                            if (isNotEmpty()) append(" · ")
-                                            append("${summary.activeSeconds} сек.")
-                                        }
-                                    },
+                                    text = summaryValues,
                                     color = Color(0xFFFFD166),
                                     fontWeight = FontWeight.Bold,
                                 )
@@ -208,8 +212,9 @@ private fun ExerciseFilter(
     onExerciseSelected: (ExerciseType?) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val selectedName = exercises.firstOrNull { it.type == selectedExercise }?.displayName
-        ?: "Все упражнения"
+    val selectedName = selectedExercise?.let {
+        stringResource(exerciseNameResource(it))
+    } ?: stringResource(R.string.all_exercises)
     Box(modifier = Modifier.fillMaxWidth()) {
         OutlinedButton(
             onClick = { expanded = true },
@@ -226,7 +231,7 @@ private fun ExerciseFilter(
             onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
-                text = { Text("Все упражнения") },
+                text = { Text(stringResource(R.string.all_exercises)) },
                 onClick = {
                     expanded = false
                     onExerciseSelected(null)
@@ -234,7 +239,7 @@ private fun ExerciseFilter(
             )
             exercises.forEach { exercise ->
                 DropdownMenuItem(
-                    text = { Text(exercise.displayName) },
+                    text = { Text(stringResource(exerciseNameResource(exercise.type))) },
                     onClick = {
                         expanded = false
                         onExerciseSelected(exercise.type)
@@ -282,12 +287,17 @@ private fun StatisticsChart(statistics: StatisticsUiState) {
         if (showDuration) it.activeSeconds else it.repetitions
     }
     val maximum = max(values.maxOrNull() ?: 0, 1)
-    val formatter = remember {
-        DateTimeFormatter.ofPattern("d MMM", Locale.forLanguageTag("ru"))
+    val configuration = LocalConfiguration.current
+    val formatter = remember(configuration) {
+        DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
     }
     val firstDate = statistics.chartPoints.firstOrNull()?.date
     val middleDate = statistics.chartPoints.getOrNull(statistics.chartPoints.size / 2)?.date
     val lastDate = statistics.chartPoints.lastOrNull()?.date
+    val chartDescription = stringResource(
+        R.string.chart_accessibility,
+        values.joinToString(),
+    )
 
     Surface(
         color = Color.White.copy(alpha = 0.08f),
@@ -298,7 +308,9 @@ private fun StatisticsChart(statistics: StatisticsUiState) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                text = if (showDuration) "Секунды по дням" else "Повторы по дням",
+                text = stringResource(
+                    if (showDuration) R.string.chart_seconds_by_day else R.string.chart_repetitions_by_day,
+                ),
                 color = Color.White,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
@@ -308,7 +320,7 @@ private fun StatisticsChart(statistics: StatisticsUiState) {
                     .fillMaxWidth()
                     .height(180.dp)
                     .semantics {
-                        contentDescription = "График активности по дням: ${values.joinToString()}"
+                        contentDescription = chartDescription
                     },
             ) {
                 val slotWidth = size.width / max(values.size, 1)
@@ -354,7 +366,7 @@ private fun EmptyStatistics() {
         shape = RoundedCornerShape(16.dp),
     ) {
         Text(
-            text = "За выбранный период пока нет упражнений.",
+            text = stringResource(R.string.empty_statistics),
             color = Color.White.copy(alpha = 0.72f),
             modifier = Modifier
                 .fillMaxWidth()

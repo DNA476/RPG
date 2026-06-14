@@ -110,7 +110,8 @@ changes across the ViewModel and UI.
 - [ ] Establish product analytics that do not collect camera frames.
 - [ ] Add privacy disclosures and data-retention rules.
 - [ ] Add crash/performance monitoring.
-- [ ] Add localization and remove hard-coded user-facing strings.
+- [x] Add Russian, English, German, Spanish, French, and Portuguese
+  localization and remove hard-coded user-facing strings from the app layer.
 - [ ] Add accessibility review for UI and exercise alternatives.
 - [ ] Add release signing, CI, lint, unit tests, and instrumentation gates.
 - [ ] Define supported devices, Android versions, camera requirements, and
@@ -144,3 +145,5 @@ changes across the ViewModel and UI.
   intensity, and assumed repetition duration.
 - 2026-06-14: Keep profile and full statistics in a main-menu drawer while
   retaining a visible daily calorie summary as the quick statistics entry.
+- 2026-06-14: Follow the device language with Russian as the fallback and
+  support English, German, Spanish, French, and Portuguese resources.
