@@ -1,7 +1,7 @@
 # Roadmap
 
 This roadmap is ordered by dependency and risk, not by marketing priority.
-Statuses describe repository state as of 2026-06-14.
+Statuses describe repository state as of 2026-06-15.
 
 ## Completed Foundation
 
@@ -43,6 +43,9 @@ Statuses describe repository state as of 2026-06-14.
 - [x] Move profile and statistics navigation into a main-menu drawer.
 - [x] Add a clickable main-menu card for today's approximate calories.
 - [x] Add settings with an in-app language selector.
+- [x] Add a locally persisted test inventory and equipment screen with body,
+  weapon, and artifact slots.
+- [x] Add button and swipe navigation between inventory and equipment.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
@@ -103,7 +106,10 @@ changes across the ViewModel and UI.
 - [ ] Add enemy phases or exercise prompts.
 - [ ] Define fair player damage/defeat rules, if defeat remains in scope.
 - [ ] Add rewards, experience, levels, and achievements.
-- [ ] Add inventory/equipment/skills only after the reward loop is specified.
+- [ ] Connect resistant-matchup victories to randomized item rewards.
+- [ ] Define quests and reserve the highest item rarity for quest rewards.
+- [ ] Apply bounded equipment bonuses to combat after balance rules are set.
+- [ ] Expand the test inventory into the full inventory/equipment/skills loop.
 - [ ] Add audio, haptics, animation, and accessibility settings.
 
 ## Production Readiness
@@ -150,3 +156,5 @@ changes across the ViewModel and UI.
   support English, German, Spanish, French, and Portuguese resources.
 - 2026-06-14: Let players override the device language from settings while
   retaining the system-language option.
+- 2026-06-15: Prototype inventory and equipment before reward integration;
+  persist equipped slots locally and keep preview bonuses out of combat.

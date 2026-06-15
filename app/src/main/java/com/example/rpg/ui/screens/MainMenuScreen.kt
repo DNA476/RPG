@@ -47,6 +47,7 @@ import com.example.rpg.R
 import com.example.rpg.domain.exercise.ExerciseConfig
 import com.example.rpg.domain.exercise.ExerciseType
 import com.example.rpg.ui.components.ExerciseCard
+import com.example.rpg.ui.components.BackpackOutlineIcon
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,11 +62,13 @@ fun MainMenuScreen(
     onStatistics: () -> Unit,
     onProfile: () -> Unit,
     onSettings: () -> Unit,
+    onInventory: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
     val openMenuDescription = stringResource(R.string.open_menu)
+    val openInventoryDescription = stringResource(R.string.open_inventory)
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -98,6 +101,7 @@ fun MainMenuScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Row(
+                            modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             IconButton(
@@ -119,6 +123,15 @@ fun MainMenuScreen(
                                 style = MaterialTheme.typography.displayMedium,
                                 fontWeight = FontWeight.Black,
                             )
+                            Spacer(modifier = Modifier.weight(1f))
+                            IconButton(
+                                onClick = onInventory,
+                                modifier = Modifier.semantics {
+                                    contentDescription = openInventoryDescription
+                                },
+                            ) {
+                                BackpackOutlineIcon(modifier = Modifier.size(30.dp))
+                            }
                         }
                         Text(
                             text = stringResource(R.string.main_tagline),

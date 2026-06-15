@@ -62,6 +62,13 @@ Current rules:
 - Interface text can follow the device language or use an explicit in-app
   choice. The current supported set is Russian, English, German, Spanish,
   French, and Portuguese.
+- A backpack button opens a test inventory containing equipment, weapons, and
+  artifacts across common, rare, and epic rarities.
+- The player can equip one item per body/weapon slot and one artifact. The
+  equipment view uses a white body outline and is reachable by button or swipe.
+- Item bonuses are visible for design testing but do not modify combat yet.
+- A legendary quest-exclusive example exists in content but is not owned or
+  obtainable until quests and rewards are designed.
 
 Debug builds can simulate a repetition, allowing every configured exercise and
 damage value to complete the battle before its live detector is ready.

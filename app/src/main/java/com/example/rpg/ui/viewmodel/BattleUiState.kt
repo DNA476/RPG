@@ -3,6 +3,8 @@ package com.example.rpg.ui.viewmodel
 import androidx.annotation.StringRes
 import com.example.rpg.R
 import com.example.rpg.data.enemy.EnemyConfig
+import com.example.rpg.data.inventory.EquipmentSlot
+import com.example.rpg.data.inventory.InventoryItem
 import com.example.rpg.data.profile.UserProfile
 import com.example.rpg.data.profile.UserSex
 import com.example.rpg.domain.exercise.ExerciseConfig
@@ -18,6 +20,7 @@ enum class AppScreen {
     STATISTICS,
     PROFILE,
     SETTINGS,
+    INVENTORY,
     ENEMY_SELECTION,
     BATTLE,
     VICTORY,
@@ -63,6 +66,11 @@ data class StatisticsUiState(
     val usesDefaultWeight: Boolean = true,
 )
 
+data class InventoryUiState(
+    val items: List<InventoryItem> = emptyList(),
+    val equippedItemIds: Map<EquipmentSlot, String> = emptyMap(),
+)
+
 /**
  * Single immutable UI model for the complete encounter flow.
  */
@@ -73,6 +81,7 @@ data class BattleUiState(
     val userProfile: UserProfile = UserProfile(),
     val profileForm: ProfileFormUiState = ProfileFormUiState(),
     val statistics: StatisticsUiState = StatisticsUiState(),
+    val inventory: InventoryUiState = InventoryUiState(),
     val todayEstimatedCalories: Int = 0,
     val todayHasActivity: Boolean = false,
     val enemyChoices: List<EnemyConfig> = emptyList(),

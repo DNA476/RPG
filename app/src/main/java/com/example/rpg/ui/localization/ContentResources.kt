@@ -2,6 +2,10 @@ package com.example.rpg.ui.localization
 
 import androidx.annotation.StringRes
 import com.example.rpg.R
+import com.example.rpg.data.inventory.EquipmentSlot
+import com.example.rpg.data.inventory.InventoryItem
+import com.example.rpg.data.inventory.ItemBonusType
+import com.example.rpg.data.inventory.ItemRarity
 import com.example.rpg.domain.exercise.DetectorStatus
 import com.example.rpg.domain.exercise.ExerciseDifficulty
 import com.example.rpg.domain.exercise.ExerciseFeedback
@@ -103,4 +107,46 @@ fun enemyAbilityNameResource(id: String): Int = when (id) {
     "cave_hound" -> R.string.enemy_cave_hound_ability
     "ash_hound" -> R.string.enemy_ash_hound_ability
     else -> R.string.enemy_unknown_ability
+}
+
+@StringRes
+fun inventoryItemNameResource(item: InventoryItem): Int = when (item.id) {
+    "novice_headband" -> R.string.item_novice_headband
+    "iron_training_vest" -> R.string.item_iron_training_vest
+    "steady_wraps" -> R.string.item_steady_wraps
+    "runners_leggings" -> R.string.item_runners_leggings
+    "trail_boots" -> R.string.item_trail_boots
+    "oak_training_blade" -> R.string.item_oak_training_blade
+    "ember_edge" -> R.string.item_ember_edge
+    "resolve_stone" -> R.string.item_resolve_stone
+    "echo_charm" -> R.string.item_echo_charm
+    "crown_of_trials" -> R.string.item_crown_of_trials
+    else -> R.string.item_unknown
+}
+
+@StringRes
+fun equipmentSlotResource(slot: EquipmentSlot): Int = when (slot) {
+    EquipmentSlot.HEAD -> R.string.slot_head
+    EquipmentSlot.CHEST -> R.string.slot_chest
+    EquipmentSlot.HANDS -> R.string.slot_hands
+    EquipmentSlot.LEGS -> R.string.slot_legs
+    EquipmentSlot.FEET -> R.string.slot_feet
+    EquipmentSlot.WEAPON -> R.string.slot_weapon
+    EquipmentSlot.ARTIFACT -> R.string.slot_artifact
+}
+
+@StringRes
+fun itemRarityResource(rarity: ItemRarity): Int = when (rarity) {
+    ItemRarity.COMMON -> R.string.rarity_common
+    ItemRarity.RARE -> R.string.rarity_rare
+    ItemRarity.EPIC -> R.string.rarity_epic
+    ItemRarity.LEGENDARY -> R.string.rarity_legendary
+}
+
+@StringRes
+fun itemBonusResource(type: ItemBonusType): Int = when (type) {
+    ItemBonusType.ATTACK_POWER_PERCENT -> R.string.bonus_attack_power
+    ItemBonusType.DEBUFF_DURATION_REDUCTION_PERCENT -> R.string.bonus_debuff_reduction
+    ItemBonusType.ENEMY_ABILITY_DELAY_SECONDS -> R.string.bonus_enemy_delay
+    ItemBonusType.RESISTANT_MATCHUP_DAMAGE_PERCENT -> R.string.bonus_resistant_damage
 }

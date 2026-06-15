@@ -50,9 +50,18 @@ The repository is an MVP/prototype, not a production-ready application.
 - Settings allow the player to follow the device language or explicitly choose
   Russian, English, German, Spanish, French, or Portuguese. Unsupported device
   locales fall back to Russian.
+- A white backpack button in the main-menu header opens a test inventory with
+  nine locally available items. Inventory and equipment are swipe-connected
+  views; equipment uses a white player outline, body slots, a weapon slot, and
+  one artifact slot.
+- Items have common, rare, epic, or legendary rarity and preview tactical
+  bonuses. Equipped items persist locally, but bonuses do not affect combat
+  yet. The catalog includes a quest-exclusive legendary example that is not
+  granted to the test inventory.
 - Valid live-detector repetitions are persisted immediately as daily local
   aggregates. Debug-simulated repetitions are intentionally excluded.
-- Accounts, progression, audio, analytics, and backend are absent.
+- Accounts, reward drops, quests, active equipment bonuses, audio, analytics,
+  and backend are absent.
 - Debug builds can switch between live camera input and a looping video asset.
 - Debug builds expose `Simulate repetition` to test every exercise, damage,
   counters, and victory without camera input.

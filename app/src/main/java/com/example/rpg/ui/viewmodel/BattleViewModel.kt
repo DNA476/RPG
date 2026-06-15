@@ -9,11 +9,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.rpg.R
 import com.example.rpg.data.FitnessRepository
 import com.example.rpg.data.local.SharedPreferencesFitnessRepository
+import com.example.rpg.data.local.SharedPreferencesInventoryRepository
 import com.example.rpg.data.enemy.EnemyConfig
 import com.example.rpg.data.enemy.EnemyRepository
 import com.example.rpg.data.enemy.InMemoryEnemyRepository
 import com.example.rpg.data.exercise.ExerciseConfigRepository
 import com.example.rpg.data.exercise.InMemoryExerciseConfigRepository
+import com.example.rpg.data.inventory.EquipmentSlot
+import com.example.rpg.data.inventory.InventoryCatalog
+import com.example.rpg.data.inventory.InventoryRepository
+import com.example.rpg.data.inventory.InventoryState
 import com.example.rpg.data.profile.UserProfile
 import com.example.rpg.data.profile.UserSex
 import com.example.rpg.data.statistics.ExerciseCalorieEstimator
@@ -50,6 +55,9 @@ class BattleViewModel(
     private val fitnessRepository: FitnessRepository = SharedPreferencesFitnessRepository(
         application.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE),
     ),
+    private val inventoryRepository: InventoryRepository = SharedPreferencesInventoryRepository(
+        application.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE),
+    ),
     private val currentDate: () -> LocalDate = LocalDate::now,
 ) : AndroidViewModel(application) {
     private val exercises = exerciseConfigRepository.getAll()
@@ -70,6 +78,7 @@ class BattleViewModel(
     private var statisticsPeriod = StatisticsPeriod.LAST_7_DAYS
     private var statisticsExercise: ExerciseType? = null
     private var statistics = StatisticsUiState()
+    private var inventoryState: InventoryState = inventoryRepository.loadInventory()
     private var todayEstimatedCalories = 0
     private var todayHasActivity = false
     private var screen = if (fitnessRepository.isOnboardingCompleted()) {
@@ -211,6 +220,33 @@ class BattleViewModel(
     fun returnFromSettings() {
         if (screen != AppScreen.SETTINGS) return
         screen = AppScreen.MAIN_MENU
+        publishUiState()
+    }
+
+    fun openInventory() {
+        if (screen != AppScreen.MAIN_MENU) return
+        screen = AppScreen.INVENTORY
+        publishUiState()
+    }
+
+    fun returnFromInventory() {
+        if (screen != AppScreen.INVENTORY) return
+        screen = AppScreen.MAIN_MENU
+        publishUiState()
+    }
+
+    fun equipInventoryItem(itemId: String) {
+        if (screen != AppScreen.INVENTORY) return
+        val item = InventoryCatalog.get(itemId) ?: return
+        inventoryState = inventoryState.equip(item)
+        inventoryRepository.saveInventory(inventoryState)
+        publishUiState()
+    }
+
+    fun unequipInventorySlot(slot: EquipmentSlot) {
+        if (screen != AppScreen.INVENTORY) return
+        inventoryState = inventoryState.unequip(slot)
+        inventoryRepository.saveInventory(inventoryState)
         publishUiState()
     }
 
@@ -452,6 +488,12 @@ class BattleViewModel(
             userProfile = userProfile,
             profileForm = profileForm,
             statistics = statistics,
+            inventory = InventoryUiState(
+                items = InventoryCatalog.items.filter {
+                    it.id in inventoryState.ownedItemIds
+                },
+                equippedItemIds = inventoryState.equippedItemIds,
+            ),
             todayEstimatedCalories = todayEstimatedCalories,
             todayHasActivity = todayHasActivity,
             enemyChoices = enemyChoices,
