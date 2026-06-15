@@ -51,9 +51,10 @@ The repository is an MVP/prototype, not a production-ready application.
   Russian, English, German, Spanish, French, or Portuguese. Unsupported device
   locales fall back to Russian.
 - A white backpack button in the main-menu header opens a test inventory with
-  nine locally available items. Inventory and equipment are swipe-connected
-  views; equipment uses a white player outline, body slots, a weapon slot, and
-  one artifact slot.
+  27 locally available items across all equipment slots. Inventory and
+  equipment are swipe-connected views; equipment uses a white player outline,
+  body slots, a weapon slot, and one artifact slot. Item cards and equipped
+  slots use item-specific scalable outline icons drawn in Compose.
 - A white sword-in-shield button beside the backpack opens three test weekly
   quests: regular, resistant-matchup, and resistant-matchup-without-artifact.
   Each quest shows its required exercise, progress, restrictions, and exact
@@ -61,10 +62,10 @@ The repository is an MVP/prototype, not a production-ready application.
 - Weekly quest progress and reward state persist locally and reset on the next
   ISO week. Starting a resistance quest guarantees that the offered encounter
   contains both a resistant target and a fair non-resistant choice.
-- Items have common, rare, epic, or legendary rarity and preview tactical
-  bonuses. Equipped items persist locally, but bonuses do not affect combat
-  yet. Rare, epic, and legendary quest rewards are added to inventory
-  automatically when their test quest reaches its target.
+- The full test catalog contains 30 common, rare, epic, or legendary items and
+  seven preview tactical bonus types. Equipped items persist locally, but
+  bonuses do not affect combat yet. Rare, epic, and legendary quest rewards are
+  added to inventory automatically when their test quest reaches its target.
 - Valid live-detector repetitions are persisted immediately as daily local
   aggregates. Debug-simulated repetitions are intentionally excluded.
 - Accounts, randomized battle reward drops, active equipment bonuses, audio,

@@ -62,11 +62,15 @@ Current rules:
 - Interface text can follow the device language or use an explicit in-app
   choice. The current supported set is Russian, English, German, Spanish,
   French, and Portuguese.
-- A backpack button opens a test inventory containing equipment, weapons, and
-  artifacts across common, rare, and epic rarities.
+- A backpack button opens a 30-item test catalog containing equipment, weapons,
+  and artifacts across common, rare, epic, and legendary rarities. Twenty-seven
+  non-quest items are immediately available for testing.
 - The player can equip one item per body/weapon slot and one artifact. The
   equipment view uses a white body outline and is reachable by button or swipe.
 - Item bonuses are visible for design testing but do not modify combat yet.
+  Current previews cover attack power, debuff reduction, enemy ability delay,
+  resistant-matchup damage, weakness damage, opening attack damage, and
+  three-repetition streak damage.
 - A sword-in-shield button opens three test weekly quests:
   - regular: defeat two opponents with squats for a rare item;
   - difficult: defeat two opponents resistant to push-ups for an epic item;

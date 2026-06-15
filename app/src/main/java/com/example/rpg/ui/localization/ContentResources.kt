@@ -113,14 +113,32 @@ fun enemyAbilityNameResource(id: String): Int = when (id) {
 @StringRes
 fun inventoryItemNameResource(item: InventoryItem): Int = when (item.id) {
     "novice_headband" -> R.string.item_novice_headband
+    "scout_hood" -> R.string.item_scout_hood
+    "storm_circlet" -> R.string.item_storm_circlet
     "iron_training_vest" -> R.string.item_iron_training_vest
+    "wanderer_cloak" -> R.string.item_wanderer_cloak
+    "bastion_cuirass" -> R.string.item_bastion_cuirass
     "steady_wraps" -> R.string.item_steady_wraps
+    "climbers_grip" -> R.string.item_climbers_grip
+    "thunder_fists" -> R.string.item_thunder_fists
     "runners_leggings" -> R.string.item_runners_leggings
+    "pathfinder_trousers" -> R.string.item_pathfinder_trousers
+    "stonewall_greaves" -> R.string.item_stonewall_greaves
     "trail_boots" -> R.string.item_trail_boots
+    "novice_sandals" -> R.string.item_novice_sandals
+    "skybound_boots" -> R.string.item_skybound_boots
     "oak_training_blade" -> R.string.item_oak_training_blade
     "ember_edge" -> R.string.item_ember_edge
+    "scout_dagger" -> R.string.item_scout_dagger
+    "stonebreaker_hammer" -> R.string.item_stonebreaker_hammer
+    "ashwood_staff" -> R.string.item_ashwood_staff
     "resolve_stone" -> R.string.item_resolve_stone
     "echo_charm" -> R.string.item_echo_charm
+    "copper_compass" -> R.string.item_copper_compass
+    "ember_core" -> R.string.item_ember_core
+    "moon_hourglass" -> R.string.item_moon_hourglass
+    "watchers_eye" -> R.string.item_watchers_eye
+    "phoenix_feather" -> R.string.item_phoenix_feather
     "guardian_wraps" -> R.string.item_guardian_wraps
     "resistance_breaker" -> R.string.item_resistance_breaker
     "crown_of_trials" -> R.string.item_crown_of_trials
@@ -167,4 +185,7 @@ fun itemBonusResource(type: ItemBonusType): Int = when (type) {
     ItemBonusType.DEBUFF_DURATION_REDUCTION_PERCENT -> R.string.bonus_debuff_reduction
     ItemBonusType.ENEMY_ABILITY_DELAY_SECONDS -> R.string.bonus_enemy_delay
     ItemBonusType.RESISTANT_MATCHUP_DAMAGE_PERCENT -> R.string.bonus_resistant_damage
+    ItemBonusType.WEAKNESS_MATCHUP_DAMAGE_PERCENT -> R.string.bonus_weakness_damage
+    ItemBonusType.OPENING_ATTACK_DAMAGE_PERCENT -> R.string.bonus_opening_attack
+    ItemBonusType.STREAK_DAMAGE_PERCENT -> R.string.bonus_streak_damage
 }

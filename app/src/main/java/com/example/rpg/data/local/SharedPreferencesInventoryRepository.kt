@@ -17,9 +17,13 @@ class SharedPreferencesInventoryRepository(
             ?: return InventoryState(ownedItemIds = InventoryCatalog.demoOwnedItemIds)
         return runCatching {
             val root = JSONObject(storedJson)
-            val ownedIds = root.optJSONArray(JSON_OWNED_ITEMS)
+            val storedOwnedIds = root.optJSONArray(JSON_OWNED_ITEMS)
                 .toStringSet()
                 .filterTo(linkedSetOf()) { InventoryCatalog.get(it) != null }
+            val ownedIds = linkedSetOf<String>().apply {
+                addAll(storedOwnedIds)
+                addAll(InventoryCatalog.demoOwnedItemIds)
+            }
             val equippedItems = buildMap {
                 val equipped = root.optJSONObject(JSON_EQUIPPED_ITEMS) ?: JSONObject()
                 EquipmentSlot.entries.forEach { slot ->
@@ -31,7 +35,7 @@ class SharedPreferencesInventoryRepository(
                 }
             }
             InventoryState(
-                ownedItemIds = ownedIds.ifEmpty { InventoryCatalog.demoOwnedItemIds },
+                ownedItemIds = ownedIds,
                 equippedItemIds = equippedItems,
             )
         }.getOrElse {

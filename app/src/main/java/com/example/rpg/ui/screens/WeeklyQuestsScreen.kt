@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.example.rpg.R
 import com.example.rpg.data.inventory.InventoryCatalog
 import com.example.rpg.data.quest.QuestCategory
-import com.example.rpg.ui.components.EquipmentItemIcon
+import com.example.rpg.ui.components.InventoryItemIcon
 import com.example.rpg.ui.localization.exerciseNameResource
 import com.example.rpg.ui.localization.inventoryItemNameResource
 import com.example.rpg.ui.localization.itemRarityResource
@@ -204,8 +204,8 @@ private fun WeeklyQuestCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    EquipmentItemIcon(
-                        slot = reward.slot,
+                    InventoryItemIcon(
+                        item = reward,
                         modifier = Modifier.size(42.dp),
                         color = categoryColor,
                     )

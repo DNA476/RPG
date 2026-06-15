@@ -46,6 +46,8 @@ Statuses describe repository state as of 2026-06-15.
 - [x] Add a locally persisted test inventory and equipment screen with body,
   weapon, and artifact slots.
 - [x] Add button and swipe navigation between inventory and equipment.
+- [x] Expand the test catalog to 30 items with seven bonus types and
+  item-specific scalable Compose icons.
 - [x] Add three locally persisted weekly quest categories with required
   exercises, progress, restrictions, and fixed rare/epic/legendary rewards.
 - [x] Add a sword-in-shield quest entry beside the inventory button.
@@ -167,3 +169,5 @@ changes across the ViewModel and UI.
 - 2026-06-15: Prototype three weekly quest categories with local ISO-week
   progress, battle-condition checks, direct quest encounter setup, and
   automatic inventory rewards.
+- 2026-06-15: Expand the prototype inventory to 30 items and use code-drawn
+  item-specific icons so the collection can grow without bitmap asset churn.

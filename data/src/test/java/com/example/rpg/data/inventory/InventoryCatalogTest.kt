@@ -27,4 +27,23 @@ class InventoryCatalogTest {
         assertTrue(legendaryItems.all(InventoryItem::questExclusive))
         assertTrue(legendaryItems.none { it.id in InventoryCatalog.demoOwnedItemIds })
     }
+
+    @Test
+    fun expandedCatalogHasVarietyForEverySlotAndBonusType() {
+        assertEquals(30, InventoryCatalog.items.size)
+        EquipmentSlot.entries.forEach { slot ->
+            assertTrue(
+                "Expected at least three items for $slot",
+                InventoryCatalog.items.count { it.slot == slot } >= 3,
+            )
+        }
+        ItemBonusType.entries.forEach { bonusType ->
+            assertTrue(
+                "Expected at least one item with $bonusType",
+                InventoryCatalog.items.any { item ->
+                    item.bonuses.any { it.type == bonusType }
+                },
+            )
+        }
+    }
 }

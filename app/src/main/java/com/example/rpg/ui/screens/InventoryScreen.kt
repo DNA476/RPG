@@ -54,6 +54,7 @@ import com.example.rpg.data.inventory.EquipmentSlot
 import com.example.rpg.data.inventory.InventoryItem
 import com.example.rpg.data.inventory.ItemRarity
 import com.example.rpg.ui.components.EquipmentItemIcon
+import com.example.rpg.ui.components.InventoryItemIcon
 import com.example.rpg.ui.components.PlayerOutline
 import com.example.rpg.ui.localization.equipmentSlotResource
 import com.example.rpg.ui.localization.inventoryItemNameResource
@@ -355,8 +356,8 @@ private fun InventoryItemCard(
                     .background(rarityColor.copy(alpha = 0.15f), RoundedCornerShape(16.dp)),
                 contentAlignment = Alignment.Center,
             ) {
-                EquipmentItemIcon(
-                    slot = item.slot,
+                InventoryItemIcon(
+                    item = item,
                     modifier = Modifier.size(44.dp),
                     color = rarityColor,
                 )
@@ -533,11 +534,19 @@ private fun EquipmentSlotCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            EquipmentItemIcon(
-                slot = slot,
-                modifier = Modifier.size(28.dp),
-                color = accent,
-            )
+            if (item == null) {
+                EquipmentItemIcon(
+                    slot = slot,
+                    modifier = Modifier.size(28.dp),
+                    color = accent,
+                )
+            } else {
+                InventoryItemIcon(
+                    item = item,
+                    modifier = Modifier.size(28.dp),
+                    color = accent,
+                )
+            }
             Text(
                 text = stringResource(equipmentSlotResource(slot)),
                 color = Color.White.copy(alpha = 0.72f),
@@ -615,8 +624,8 @@ private fun ItemDetailsDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         icon = {
-            EquipmentItemIcon(
-                slot = item.slot,
+            InventoryItemIcon(
+                item = item,
                 modifier = Modifier.size(58.dp),
                 color = rarityColor,
             )

@@ -43,6 +43,7 @@ Responsibilities:
 - SharedPreferences adapter for the optional user profile and daily fitness
   aggregates.
 - SharedPreferences adapter for owned inventory IDs and equipped slot mappings.
+- Scalable Compose Canvas icons for individual inventory item silhouettes.
 - SharedPreferences adapter for weekly quest progress and granted rewards.
 
 Key files:
@@ -127,7 +128,8 @@ Responsibilities:
 - Exercise configuration repository contracts and current in-memory
   implementation.
 - User profile and exercise statistics repository contracts.
-- Inventory models, equipment slots, repository contract, and test item catalog.
+- Inventory models, equipment slots, icon types, repository contract, and
+  30-item test catalog.
 - Weekly quest models, catalog, progress rules, and repository contract.
 - Framework-light daily statistics models and calorie estimation.
 - `ExerciseCatalog`, the single source of truth for names, descriptions, base
@@ -158,7 +160,8 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
    seven-day statistics, a backpack button opens inventory, and a
    sword-in-shield button opens weekly quests.
 3. Inventory and equipment share a horizontal pager. Slot selection filters the
-   inventory, while equip/unequip changes are saved locally.
+   inventory, while equip/unequip changes are saved locally. Newly added
+   non-quest test items are merged into existing local inventories on load.
 4. Weekly quests show one regular, one resistant-matchup, and one
    resistant-matchup-without-artifact objective. Starting a quest selects its
    exercise and builds an encounter containing a qualifying resistant enemy
@@ -204,7 +207,8 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 - `SharedPreferencesFitnessRepository` owns the persisted profile, onboarding
   completion flag, and daily exercise aggregates.
 - `SharedPreferencesInventoryRepository` owns persisted inventory and equipped
-  slot IDs; `InventoryCatalog` owns test item definitions and bonuses.
+  slot IDs; `InventoryCatalog` owns test item definitions, bonuses, and icon
+  types. `InventoryItemIcon` renders those icon types without bitmap assets.
 - `SharedPreferencesWeeklyQuestRepository` owns persisted week progress;
   `WeeklyQuestCatalog` and `WeeklyQuestProgress` own quest content and matching
   rules.
