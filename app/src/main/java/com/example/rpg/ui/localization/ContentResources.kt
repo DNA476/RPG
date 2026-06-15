@@ -6,6 +6,7 @@ import com.example.rpg.data.inventory.EquipmentSlot
 import com.example.rpg.data.inventory.InventoryItem
 import com.example.rpg.data.inventory.ItemBonusType
 import com.example.rpg.data.inventory.ItemRarity
+import com.example.rpg.data.quest.QuestCategory
 import com.example.rpg.domain.exercise.DetectorStatus
 import com.example.rpg.domain.exercise.ExerciseDifficulty
 import com.example.rpg.domain.exercise.ExerciseFeedback
@@ -120,8 +121,25 @@ fun inventoryItemNameResource(item: InventoryItem): Int = when (item.id) {
     "ember_edge" -> R.string.item_ember_edge
     "resolve_stone" -> R.string.item_resolve_stone
     "echo_charm" -> R.string.item_echo_charm
+    "guardian_wraps" -> R.string.item_guardian_wraps
+    "resistance_breaker" -> R.string.item_resistance_breaker
     "crown_of_trials" -> R.string.item_crown_of_trials
     else -> R.string.item_unknown
+}
+
+@StringRes
+fun questCategoryResource(category: QuestCategory): Int = when (category) {
+    QuestCategory.REGULAR -> R.string.quest_category_regular
+    QuestCategory.DIFFICULT -> R.string.quest_category_difficult
+    QuestCategory.CHALLENGE -> R.string.quest_category_challenge
+}
+
+@StringRes
+fun questTitleResource(id: String): Int = when (id) {
+    "weekly_regular_squats" -> R.string.quest_title_regular_squats
+    "weekly_difficult_pushups" -> R.string.quest_title_difficult_pushups
+    "weekly_challenge_pullups" -> R.string.quest_title_challenge_pullups
+    else -> R.string.weekly_quests
 }
 
 @StringRes

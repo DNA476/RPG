@@ -32,7 +32,7 @@ Responsibilities:
 - CameraX and debug video frame sources.
 - ViewModel orchestration and conversion to UI state.
 - State-driven navigation between onboarding, menu, statistics, profile,
-  settings, inventory/equipment, battle, and victory.
+  settings, inventory/equipment, weekly quests, battle, and victory.
 - Main-menu-only navigation drawer for profile, statistics, and settings
   destinations.
 - Android string resources and AppCompat per-app locales for device-selected or
@@ -43,6 +43,7 @@ Responsibilities:
 - SharedPreferences adapter for the optional user profile and daily fitness
   aggregates.
 - SharedPreferences adapter for owned inventory IDs and equipped slot mappings.
+- SharedPreferences adapter for weekly quest progress and granted rewards.
 
 Key files:
 
@@ -53,9 +54,11 @@ Key files:
 - `ui/screens/ProfileScreen.kt`
 - `ui/screens/SettingsScreen.kt`
 - `ui/screens/InventoryScreen.kt`
+- `ui/screens/WeeklyQuestsScreen.kt`
 - `ui/screens/StatisticsScreen.kt`
 - `data/local/SharedPreferencesFitnessRepository.kt`
 - `data/local/SharedPreferencesInventoryRepository.kt`
+- `data/local/SharedPreferencesWeeklyQuestRepository.kt`
 - `ui/components/CameraPreview.kt`
 - `frame/CameraFrameSource.kt`
 - `frame/VideoFileFrameSource.kt`
@@ -125,6 +128,7 @@ Responsibilities:
   implementation.
 - User profile and exercise statistics repository contracts.
 - Inventory models, equipment slots, repository contract, and test item catalog.
+- Weekly quest models, catalog, progress rules, and repository contract.
 - Framework-light daily statistics models and calorie estimation.
 - `ExerciseCatalog`, the single source of truth for names, descriptions, base
   damage, difficulty, and detector status.
@@ -151,32 +155,41 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
    optional and the player may skip it.
 2. Later launches open `MainMenuScreen`, where a drawer links to profile,
    statistics, and language settings, a daily calorie card links directly to
-   seven-day statistics, and a backpack button opens inventory.
+   seven-day statistics, a backpack button opens inventory, and a
+   sword-in-shield button opens weekly quests.
 3. Inventory and equipment share a horizontal pager. Slot selection filters the
    inventory, while equip/unequip changes are saved locally.
-4. The player selects an `ExerciseConfig` from `ExerciseCatalog`.
-5. `BattleViewModel.openEnemySelection()` obtains and caches three random enemy
+4. Weekly quests show one regular, one resistant-matchup, and one
+   resistant-matchup-without-artifact objective. Starting a quest selects its
+   exercise and builds an encounter containing a qualifying resistant enemy
+   when required.
+5. Outside quests, the player selects an `ExerciseConfig` from
+   `ExerciseCatalog`.
+6. `BattleViewModel.openEnemySelection()` obtains and caches three random enemy
    configs for the selected exercise.
-6. The player chooses one enemy; `startBattle()` creates its `Boss`, detector,
+7. The player chooses one enemy; `startBattle()` creates its `Boss`, detector,
    and `BattleSession`.
-7. `CameraPreview` selects a `FrameSource`.
-8. `CameraFrameSource` converts CameraX frames to correctly oriented/mirrored
+8. `CameraPreview` selects a `FrameSource`.
+9. `CameraFrameSource` converts CameraX frames to correctly oriented/mirrored
    bitmaps, or `VideoFileFrameSource` decodes a test video.
-9. `PoseAnalyzer.analyze()` sends an accepted bitmap to MediaPipe.
-10. MediaPipe results become `PoseFrame` values.
-11. While tracking, `BattleViewModel` passes frames to the selected detector.
-12. The ready squat detector recognizes standing -> bottom -> standing and
+10. `PoseAnalyzer.analyze()` sends an accepted bitmap to MediaPipe.
+11. MediaPipe results become `PoseFrame` values.
+12. While tracking, `BattleViewModel` passes frames to the selected detector.
+13. The ready squat detector recognizes standing -> bottom -> standing and
    emits `RepetitionCompleted`.
-13. `BattleSession` calculates damage from base damage, affinity, and current
+14. `BattleSession` calculates damage from base damage, affinity, and current
    attack multiplier, mutates HP, and publishes a `BattleSnapshot`.
-14. After `BattleSession` accepts a live repetition, `BattleViewModel` records
+15. After `BattleSession` accepts a live repetition, `BattleViewModel` records
    it in the local daily aggregate. Debug simulation bypasses this write.
-15. A ViewModel timer uses `EnemyAttackTimingPolicy`; every 15 seconds it applies
+16. A ViewModel timer uses `EnemyAttackTimingPolicy`; every 15 seconds it applies
    the selected enemy's 25% attack reduction for 10 seconds.
-16. `BattleViewModel` increments `hitEventId` for every completed attack and
+17. On victory, `WeeklyQuestProgress` evaluates exercise, resistance, and the
+   artifact state captured at battle start. Completed quest rewards are added
+   to the persisted inventory once.
+18. `BattleViewModel` increments `hitEventId` for every completed attack and
    combines pose, detector, battle, and presentation information into
    `BattleUiState`.
-17. Compose renders battle feedback and switches to `VictoryScreen` at zero HP.
+19. Compose renders battle feedback and switches to `VictoryScreen` at zero HP.
 
 ## State Ownership
 
@@ -192,6 +205,9 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
   completion flag, and daily exercise aggregates.
 - `SharedPreferencesInventoryRepository` owns persisted inventory and equipped
   slot IDs; `InventoryCatalog` owns test item definitions and bonuses.
+- `SharedPreferencesWeeklyQuestRepository` owns persisted week progress;
+  `WeeklyQuestCatalog` and `WeeklyQuestProgress` own quest content and matching
+  rules.
 - `EnemyCombatant` owns transient shake, red-flash, and slash animation state.
 - Compose components render state and should not contain domain decisions.
 

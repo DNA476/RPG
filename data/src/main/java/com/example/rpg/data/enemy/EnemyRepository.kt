@@ -6,5 +6,11 @@ import com.example.rpg.game.enemy.Boss
 interface EnemyRepository {
     fun getRandomChoices(exerciseType: ExerciseType, count: Int = 3): List<EnemyConfig>
 
+    fun getQuestChoices(
+        exerciseType: ExerciseType,
+        requireResistantEnemy: Boolean,
+        count: Int = 3,
+    ): List<EnemyConfig>
+
     fun createBoss(id: String): Boss
 }

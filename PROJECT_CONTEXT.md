@@ -54,14 +54,21 @@ The repository is an MVP/prototype, not a production-ready application.
   nine locally available items. Inventory and equipment are swipe-connected
   views; equipment uses a white player outline, body slots, a weapon slot, and
   one artifact slot.
+- A white sword-in-shield button beside the backpack opens three test weekly
+  quests: regular, resistant-matchup, and resistant-matchup-without-artifact.
+  Each quest shows its required exercise, progress, restrictions, and exact
+  item reward.
+- Weekly quest progress and reward state persist locally and reset on the next
+  ISO week. Starting a resistance quest guarantees that the offered encounter
+  contains both a resistant target and a fair non-resistant choice.
 - Items have common, rare, epic, or legendary rarity and preview tactical
   bonuses. Equipped items persist locally, but bonuses do not affect combat
-  yet. The catalog includes a quest-exclusive legendary example that is not
-  granted to the test inventory.
+  yet. Rare, epic, and legendary quest rewards are added to inventory
+  automatically when their test quest reaches its target.
 - Valid live-detector repetitions are persisted immediately as daily local
   aggregates. Debug-simulated repetitions are intentionally excluded.
-- Accounts, reward drops, quests, active equipment bonuses, audio, analytics,
-  and backend are absent.
+- Accounts, randomized battle reward drops, active equipment bonuses, audio,
+  analytics, and backend are absent.
 - Debug builds can switch between live camera input and a looping video asset.
 - Debug builds expose `Simulate repetition` to test every exercise, damage,
   counters, and victory without camera input.

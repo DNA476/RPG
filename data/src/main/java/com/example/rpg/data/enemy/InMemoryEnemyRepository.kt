@@ -70,17 +70,49 @@ class InMemoryEnemyRepository(
             maxHp = 16,
             imageResource = "ash_hound",
             weakness = ExerciseAffinity.weakness(ExerciseType.JUMPING_JACK),
-            resistance = ExerciseAffinity.resistance(ExerciseType.PLANK),
+            resistance = ExerciseAffinity.resistance(ExerciseType.PULL_UP),
             ability = weakeningAbility("Пламенный рык"),
         ),
     )
 
     override fun getRandomChoices(exerciseType: ExerciseType, count: Int): List<EnemyConfig> {
+        return buildChoices(
+            exerciseType = exerciseType,
+            count = count,
+            requireResistantEnemy = false,
+        )
+    }
+
+    override fun getQuestChoices(
+        exerciseType: ExerciseType,
+        requireResistantEnemy: Boolean,
+        count: Int,
+    ): List<EnemyConfig> {
+        return buildChoices(
+            exerciseType = exerciseType,
+            count = count,
+            requireResistantEnemy = requireResistantEnemy,
+        )
+    }
+
+    private fun buildChoices(
+        exerciseType: ExerciseType,
+        count: Int,
+        requireResistantEnemy: Boolean,
+    ): List<EnemyConfig> {
         require(count in 1..enemies.size)
+        require(!requireResistantEnemy || count >= 2)
         val shuffled = enemies.shuffled(random)
         val choices = shuffled.take(count).toMutableList()
         if (choices.all { it.isResistantTo(exerciseType) }) {
             choices[choices.lastIndex] = shuffled.first { !it.isResistantTo(exerciseType) }
+        }
+        if (requireResistantEnemy && choices.none { it.isResistantTo(exerciseType) }) {
+            val resistantEnemy = shuffled.first { it.isResistantTo(exerciseType) }
+            val replacementIndex = choices.indexOfLast {
+                !it.isResistantTo(exerciseType)
+            }
+            choices[replacementIndex] = resistantEnemy
         }
         return choices.distinctBy { it.id }
     }

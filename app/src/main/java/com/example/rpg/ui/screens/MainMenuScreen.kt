@@ -48,6 +48,7 @@ import com.example.rpg.domain.exercise.ExerciseConfig
 import com.example.rpg.domain.exercise.ExerciseType
 import com.example.rpg.ui.components.ExerciseCard
 import com.example.rpg.ui.components.BackpackOutlineIcon
+import com.example.rpg.ui.components.SwordInShieldOutlineIcon
 import kotlinx.coroutines.launch
 
 @Composable
@@ -63,12 +64,14 @@ fun MainMenuScreen(
     onProfile: () -> Unit,
     onSettings: () -> Unit,
     onInventory: () -> Unit,
+    onQuests: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
     val openMenuDescription = stringResource(R.string.open_menu)
     val openInventoryDescription = stringResource(R.string.open_inventory)
+    val openQuestsDescription = stringResource(R.string.open_quests)
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -124,6 +127,14 @@ fun MainMenuScreen(
                                 fontWeight = FontWeight.Black,
                             )
                             Spacer(modifier = Modifier.weight(1f))
+                            IconButton(
+                                onClick = onQuests,
+                                modifier = Modifier.semantics {
+                                    contentDescription = openQuestsDescription
+                                },
+                            ) {
+                                SwordInShieldOutlineIcon(modifier = Modifier.size(30.dp))
+                            }
                             IconButton(
                                 onClick = onInventory,
                                 modifier = Modifier.semantics {

@@ -67,8 +67,14 @@ Current rules:
 - The player can equip one item per body/weapon slot and one artifact. The
   equipment view uses a white body outline and is reachable by button or swipe.
 - Item bonuses are visible for design testing but do not modify combat yet.
-- A legendary quest-exclusive example exists in content but is not owned or
-  obtainable until quests and rewards are designed.
+- A sword-in-shield button opens three test weekly quests:
+  - regular: defeat two opponents with squats for a rare item;
+  - difficult: defeat two opponents resistant to push-ups for an epic item;
+  - challenge: defeat two opponents resistant to pull-ups without an artifact
+    for a legendary item.
+- Quest progress resets each ISO week. Completing a quest automatically adds
+  its fixed reward to inventory; the highest current rarity remains
+  quest-exclusive.
 
 Debug builds can simulate a repetition, allowing every configured exercise and
 damage value to complete the battle before its live detector is ready.

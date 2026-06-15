@@ -11,6 +11,7 @@ import com.example.rpg.ui.screens.ProfileScreen
 import com.example.rpg.ui.screens.SettingsScreen
 import com.example.rpg.ui.screens.StatisticsScreen
 import com.example.rpg.ui.screens.VictoryScreen
+import com.example.rpg.ui.screens.WeeklyQuestsScreen
 import com.example.rpg.ui.viewmodel.AppScreen
 import com.example.rpg.ui.viewmodel.BattleViewModel
 
@@ -41,6 +42,7 @@ fun FitnessRpgApp(viewModel: BattleViewModel) {
             onProfile = viewModel::openProfile,
             onSettings = viewModel::openSettings,
             onInventory = viewModel::openInventory,
+            onQuests = viewModel::openQuests,
         )
         AppScreen.STATISTICS -> StatisticsScreen(
             statistics = uiState.statistics,
@@ -68,6 +70,11 @@ fun FitnessRpgApp(viewModel: BattleViewModel) {
             onUnequip = viewModel::unequipInventorySlot,
             onBack = viewModel::returnFromInventory,
         )
+        AppScreen.QUESTS -> WeeklyQuestsScreen(
+            weeklyQuests = uiState.weeklyQuests,
+            onStartQuest = viewModel::startQuest,
+            onBack = viewModel::returnFromQuests,
+        )
         AppScreen.ENEMY_SELECTION -> EnemySelectionScreen(
             exercise = requireNotNull(uiState.selectedExercise),
             enemies = uiState.enemyChoices,
@@ -87,6 +94,8 @@ fun FitnessRpgApp(viewModel: BattleViewModel) {
             exerciseType = requireNotNull(uiState.selectedExercise).type,
             completedRepetitions = uiState.completedRepetitions,
             totalDamage = uiState.totalDamage,
+            questProgressAdvanced = uiState.advancedQuestIds.isNotEmpty(),
+            questRewardGranted = uiState.rewardedItemIds.isNotEmpty(),
             onBackToMenu = viewModel::returnToMenu,
         )
     }

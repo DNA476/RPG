@@ -195,4 +195,27 @@
     <string name="enemy_unknown_name">Oponente desconocido</string>
     <string name="enemy_unknown_description">Descripción no disponible.</string>
     <string name="enemy_unknown_ability">Habilidad desconocida</string>
+    <string name="weekly_quests">Misiones semanales</string>
+    <string name="open_quests">Abrir misiones semanales</string>
+    <string name="weekly_quests_subtitle">Tres pruebas semanales: normal, difícil y desafío máximo. Cumple sus condiciones de combate para ganar equipo.</string>
+    <string name="weekly_quests_reset">Actualización en %1$d días</string>
+    <string name="weekly_quests_test_note">Versión de prueba: el progreso se guarda localmente y se reinicia al comenzar una nueva semana.</string>
+    <string name="quest_category_regular">Normal</string>
+    <string name="quest_category_difficult">Difícil</string>
+    <string name="quest_category_challenge">Desafío</string>
+    <string name="quest_title_regular_squats">Calentamiento semanal</string>
+    <string name="quest_title_difficult_pushups">Romper la resistencia</string>
+    <string name="quest_title_challenge_pullups">Prueba sin reliquias</string>
+    <string name="quest_exercise">Ejercicio: %1$s</string>
+    <string name="quest_goal_regular">Derrota a %1$d oponentes usando %2$s.</string>
+    <string name="quest_goal_resistant">Derrota a %1$d oponentes resistentes a %2$s.</string>
+    <string name="quest_goal_resistant_without_artifact">Derrota a %1$d oponentes resistentes a %2$s sin equipar un artefacto.</string>
+    <string name="quest_progress">Progreso: %1$d/%2$d</string>
+    <string name="quest_reward">Recompensa</string>
+    <string name="quest_go_to_battle">Ir al combate</string>
+    <string name="quest_reward_received">Recompensa recibida</string>
+    <string name="quest_progress_updated">Progreso de la misión semanal actualizado</string>
+    <string name="quest_reward_added_to_inventory">Misión completada: recompensa añadida al inventario</string>
+    <string name="item_guardian_wraps">Brazales del guardián</string>
+    <string name="item_resistance_breaker">Quebrantador de resistencia</string>
 </resources>

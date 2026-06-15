@@ -69,6 +69,26 @@ object InventoryCatalog {
             ),
         ),
         InventoryItem(
+            id = "guardian_wraps",
+            slot = EquipmentSlot.HANDS,
+            rarity = ItemRarity.RARE,
+            bonuses = listOf(
+                ItemBonus(ItemBonusType.DEBUFF_DURATION_REDUCTION_PERCENT, 8),
+                ItemBonus(ItemBonusType.ATTACK_POWER_PERCENT, 3),
+            ),
+            questExclusive = true,
+        ),
+        InventoryItem(
+            id = "resistance_breaker",
+            slot = EquipmentSlot.WEAPON,
+            rarity = ItemRarity.EPIC,
+            bonuses = listOf(
+                ItemBonus(ItemBonusType.RESISTANT_MATCHUP_DAMAGE_PERCENT, 14),
+                ItemBonus(ItemBonusType.ATTACK_POWER_PERCENT, 6),
+            ),
+            questExclusive = true,
+        ),
+        InventoryItem(
             id = "crown_of_trials",
             slot = EquipmentSlot.HEAD,
             rarity = ItemRarity.LEGENDARY,

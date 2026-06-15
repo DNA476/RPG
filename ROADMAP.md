@@ -46,6 +46,9 @@ Statuses describe repository state as of 2026-06-15.
 - [x] Add a locally persisted test inventory and equipment screen with body,
   weapon, and artifact slots.
 - [x] Add button and swipe navigation between inventory and equipment.
+- [x] Add three locally persisted weekly quest categories with required
+  exercises, progress, restrictions, and fixed rare/epic/legendary rewards.
+- [x] Add a sword-in-shield quest entry beside the inventory button.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
@@ -107,7 +110,10 @@ changes across the ViewModel and UI.
 - [ ] Define fair player damage/defeat rules, if defeat remains in scope.
 - [ ] Add rewards, experience, levels, and achievements.
 - [ ] Connect resistant-matchup victories to randomized item rewards.
-- [ ] Define quests and reserve the highest item rarity for quest rewards.
+- [x] Prototype weekly quests and reserve the highest item rarity for quest
+  rewards.
+- [ ] Define production quest rotation, reward pools, duplicate handling, and
+  long-term balance.
 - [ ] Apply bounded equipment bonuses to combat after balance rules are set.
 - [ ] Expand the test inventory into the full inventory/equipment/skills loop.
 - [ ] Add audio, haptics, animation, and accessibility settings.
@@ -158,3 +164,6 @@ changes across the ViewModel and UI.
   retaining the system-language option.
 - 2026-06-15: Prototype inventory and equipment before reward integration;
   persist equipped slots locally and keep preview bonuses out of combat.
+- 2026-06-15: Prototype three weekly quest categories with local ISO-week
+  progress, battle-condition checks, direct quest encounter setup, and
+  automatic inventory rewards.

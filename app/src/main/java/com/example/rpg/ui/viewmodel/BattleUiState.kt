@@ -7,6 +7,7 @@ import com.example.rpg.data.inventory.EquipmentSlot
 import com.example.rpg.data.inventory.InventoryItem
 import com.example.rpg.data.profile.UserProfile
 import com.example.rpg.data.profile.UserSex
+import com.example.rpg.data.quest.WeeklyQuest
 import com.example.rpg.domain.exercise.ExerciseConfig
 import com.example.rpg.domain.exercise.ExerciseType
 import com.example.rpg.domain.pose.PoseFrame
@@ -21,6 +22,7 @@ enum class AppScreen {
     PROFILE,
     SETTINGS,
     INVENTORY,
+    QUESTS,
     ENEMY_SELECTION,
     BATTLE,
     VICTORY,
@@ -71,6 +73,17 @@ data class InventoryUiState(
     val equippedItemIds: Map<EquipmentSlot, String> = emptyMap(),
 )
 
+data class QuestUiEntry(
+    val quest: WeeklyQuest,
+    val progress: Int,
+    val rewardGranted: Boolean,
+)
+
+data class WeeklyQuestsUiState(
+    val entries: List<QuestUiEntry> = emptyList(),
+    val daysUntilReset: Int = 0,
+)
+
 /**
  * Single immutable UI model for the complete encounter flow.
  */
@@ -82,6 +95,9 @@ data class BattleUiState(
     val profileForm: ProfileFormUiState = ProfileFormUiState(),
     val statistics: StatisticsUiState = StatisticsUiState(),
     val inventory: InventoryUiState = InventoryUiState(),
+    val weeklyQuests: WeeklyQuestsUiState = WeeklyQuestsUiState(),
+    val advancedQuestIds: Set<String> = emptySet(),
+    val rewardedItemIds: Set<String> = emptySet(),
     val todayEstimatedCalories: Int = 0,
     val todayHasActivity: Boolean = false,
     val enemyChoices: List<EnemyConfig> = emptyList(),

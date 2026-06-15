@@ -195,4 +195,27 @@
     <string name="enemy_unknown_name">Adversaire inconnu</string>
     <string name="enemy_unknown_description">Description indisponible.</string>
     <string name="enemy_unknown_ability">Capacité inconnue</string>
+    <string name="weekly_quests">Quêtes hebdomadaires</string>
+    <string name="open_quests">Ouvrir les quêtes hebdomadaires</string>
+    <string name="weekly_quests_subtitle">Trois épreuves par semaine : normale, difficile et défi maximal. Respectez leurs conditions de combat pour gagner de l’équipement.</string>
+    <string name="weekly_quests_reset">Actualisation dans %1$d jours</string>
+    <string name="weekly_quests_test_note">Version test : la progression est stockée localement et réinitialisée au début d’une nouvelle semaine.</string>
+    <string name="quest_category_regular">Normale</string>
+    <string name="quest_category_difficult">Difficile</string>
+    <string name="quest_category_challenge">Défi</string>
+    <string name="quest_title_regular_squats">Échauffement hebdomadaire</string>
+    <string name="quest_title_difficult_pushups">Briser la résistance</string>
+    <string name="quest_title_challenge_pullups">Épreuve sans reliques</string>
+    <string name="quest_exercise">Exercice : %1$s</string>
+    <string name="quest_goal_regular">Battez %1$d adversaires avec %2$s.</string>
+    <string name="quest_goal_resistant">Battez %1$d adversaires résistants à %2$s.</string>
+    <string name="quest_goal_resistant_without_artifact">Battez %1$d adversaires résistants à %2$s sans équiper d’artefact.</string>
+    <string name="quest_progress">Progression : %1$d/%2$d</string>
+    <string name="quest_reward">Récompense</string>
+    <string name="quest_go_to_battle">Aller au combat</string>
+    <string name="quest_reward_received">Récompense obtenue</string>
+    <string name="quest_progress_updated">Progression de la quête hebdomadaire mise à jour</string>
+    <string name="quest_reward_added_to_inventory">Quête terminée : récompense ajoutée à l’inventaire</string>
+    <string name="item_guardian_wraps">Brassards du gardien</string>
+    <string name="item_resistance_breaker">Brise-résistance</string>
 </resources>

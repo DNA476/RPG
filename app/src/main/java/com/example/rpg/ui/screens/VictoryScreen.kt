@@ -31,6 +31,8 @@ fun VictoryScreen(
     exerciseType: ExerciseType,
     completedRepetitions: Int,
     totalDamage: Int,
+    questProgressAdvanced: Boolean,
+    questRewardGranted: Boolean,
     onBackToMenu: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -76,6 +78,21 @@ fun VictoryScreen(
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
+            if (questProgressAdvanced) {
+                Text(
+                    text = stringResource(
+                        if (questRewardGranted) {
+                            R.string.quest_reward_added_to_inventory
+                        } else {
+                            R.string.quest_progress_updated
+                        },
+                    ),
+                    color = Color(0xFFFFD166),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                )
+            }
             Button(
                 onClick = onBackToMenu,
                 shape = RoundedCornerShape(18.dp),

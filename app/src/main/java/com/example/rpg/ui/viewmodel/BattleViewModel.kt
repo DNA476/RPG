@@ -10,6 +10,7 @@ import com.example.rpg.R
 import com.example.rpg.data.FitnessRepository
 import com.example.rpg.data.local.SharedPreferencesFitnessRepository
 import com.example.rpg.data.local.SharedPreferencesInventoryRepository
+import com.example.rpg.data.local.SharedPreferencesWeeklyQuestRepository
 import com.example.rpg.data.enemy.EnemyConfig
 import com.example.rpg.data.enemy.EnemyRepository
 import com.example.rpg.data.enemy.InMemoryEnemyRepository
@@ -21,6 +22,11 @@ import com.example.rpg.data.inventory.InventoryRepository
 import com.example.rpg.data.inventory.InventoryState
 import com.example.rpg.data.profile.UserProfile
 import com.example.rpg.data.profile.UserSex
+import com.example.rpg.data.quest.QuestBattleResult
+import com.example.rpg.data.quest.WeeklyQuestCatalog
+import com.example.rpg.data.quest.WeeklyQuestProgress
+import com.example.rpg.data.quest.WeeklyQuestRepository
+import com.example.rpg.data.quest.WeeklyQuestState
 import com.example.rpg.data.statistics.ExerciseCalorieEstimator
 import com.example.rpg.data.statistics.ExerciseStatisticsAggregator
 import com.example.rpg.domain.exercise.DetectorStatus
@@ -58,6 +64,10 @@ class BattleViewModel(
     private val inventoryRepository: InventoryRepository = SharedPreferencesInventoryRepository(
         application.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE),
     ),
+    private val weeklyQuestRepository: WeeklyQuestRepository =
+        SharedPreferencesWeeklyQuestRepository(
+            application.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE),
+        ),
     private val currentDate: () -> LocalDate = LocalDate::now,
 ) : AndroidViewModel(application) {
     private val exercises = exerciseConfigRepository.getAll()
@@ -79,6 +89,14 @@ class BattleViewModel(
     private var statisticsExercise: ExerciseType? = null
     private var statistics = StatisticsUiState()
     private var inventoryState: InventoryState = inventoryRepository.loadInventory()
+    private var weeklyQuestState: WeeklyQuestState = WeeklyQuestProgress.stateForWeek(
+        state = weeklyQuestRepository.loadState(),
+        date = currentDate(),
+    )
+    private var activeQuestId: String? = null
+    private var battleArtifactWasEquipped = false
+    private var advancedQuestIds = emptySet<String>()
+    private var rewardedItemIds = emptySet<String>()
     private var todayEstimatedCalories = 0
     private var todayHasActivity = false
     private var screen = if (fitnessRepository.isOnboardingCompleted()) {
@@ -106,6 +124,8 @@ class BattleViewModel(
     val uiState: StateFlow<BattleUiState> = mutableUiState.asStateFlow()
 
     init {
+        weeklyQuestRepository.saveState(weeklyQuestState)
+        grantPendingQuestRewards()
         observePoseFrames()
         refreshStatistics()
         publishUiState()
@@ -235,6 +255,37 @@ class BattleViewModel(
         publishUiState()
     }
 
+    fun openQuests() {
+        if (screen != AppScreen.MAIN_MENU) return
+        refreshWeeklyQuestState()
+        screen = AppScreen.QUESTS
+        publishUiState()
+    }
+
+    fun returnFromQuests() {
+        if (screen != AppScreen.QUESTS) return
+        screen = AppScreen.MAIN_MENU
+        publishUiState()
+    }
+
+    fun startQuest(questId: String) {
+        if (screen != AppScreen.QUESTS) return
+        val quest = WeeklyQuestCatalog.get(questId) ?: return
+        selectedExercise = exerciseConfigRepository.get(quest.exerciseType)
+        enemyChoices = enemyRepository.getQuestChoices(
+            exerciseType = quest.exerciseType,
+            requireResistantEnemy = quest.requiresResistantEnemy,
+        )
+        selectedEnemy = if (quest.requiresResistantEnemy) {
+            enemyChoices.first { it.isResistantTo(quest.exerciseType) }
+        } else {
+            enemyChoices.first()
+        }
+        activeQuestId = quest.id
+        screen = AppScreen.ENEMY_SELECTION
+        publishUiState()
+    }
+
     fun equipInventoryItem(itemId: String) {
         if (screen != AppScreen.INVENTORY) return
         val item = InventoryCatalog.get(itemId) ?: return
@@ -259,6 +310,7 @@ class BattleViewModel(
 
     fun openEnemySelection() {
         if (screen != AppScreen.MAIN_MENU) return
+        activeQuestId = null
         enemyChoices = enemyChoicesByExercise.getOrPut(selectedExercise.type) {
             enemyRepository.getRandomChoices(selectedExercise.type)
         }
@@ -275,7 +327,7 @@ class BattleViewModel(
 
     fun returnToExerciseSelection() {
         if (screen != AppScreen.ENEMY_SELECTION) return
-        screen = AppScreen.MAIN_MENU
+        screen = if (activeQuestId == null) AppScreen.MAIN_MENU else AppScreen.QUESTS
         publishUiState()
     }
 
@@ -296,6 +348,9 @@ class BattleViewModel(
         damageMessage = null
         hitEventId = 0L
         debuffSecondsRemaining = 0
+        battleArtifactWasEquipped = EquipmentSlot.ARTIFACT in inventoryState.equippedItemIds
+        advancedQuestIds = emptySet()
+        rewardedItemIds = emptySet()
         screen = AppScreen.BATTLE
         exerciseStatusResource = if (selectedExercise.detectorStatus == DetectorStatus.READY) {
             R.string.feedback_stand_in_frame
@@ -310,6 +365,7 @@ class BattleViewModel(
     fun returnToMenu() {
         stopBattleRuntime()
         battleSession = null
+        activeQuestId = null
         screen = AppScreen.MAIN_MENU
         latestPoseFrame = null
         damageMessage = null
@@ -444,6 +500,7 @@ class BattleViewModel(
         hitEventId += 1
         showDamageMessage("-$damage")
         if (battle.gameState == GameState.VICTORY) {
+            recordQuestVictory()
             exerciseStatusResource = R.string.status_enemy_defeated
             activeDetector?.stop()
             enemyAttackJob?.cancel()
@@ -478,7 +535,58 @@ class BattleViewModel(
         }
     }
 
+    private fun refreshWeeklyQuestState() {
+        val refreshedState = WeeklyQuestProgress.stateForWeek(
+            state = weeklyQuestState,
+            date = currentDate(),
+        )
+        if (refreshedState != weeklyQuestState) {
+            weeklyQuestState = refreshedState
+            weeklyQuestRepository.saveState(weeklyQuestState)
+        }
+    }
+
+    private fun recordQuestVictory() {
+        refreshWeeklyQuestState()
+        val enemy = selectedEnemy ?: return
+        val update = WeeklyQuestProgress.recordVictory(
+            quests = WeeklyQuestCatalog.quests,
+            state = weeklyQuestState,
+            result = QuestBattleResult(
+                exerciseType = selectedExercise.type,
+                enemyWasResistant = enemy.isResistantTo(selectedExercise.type),
+                artifactWasEquipped = battleArtifactWasEquipped,
+            ),
+        )
+        weeklyQuestState = update.state
+        advancedQuestIds = update.advancedQuestIds
+        rewardedItemIds = grantPendingQuestRewards()
+        weeklyQuestRepository.saveState(weeklyQuestState)
+    }
+
+    private fun grantPendingQuestRewards(): Set<String> {
+        val grantedItemIds = linkedSetOf<String>()
+        val newlyRewardedQuestIds = linkedSetOf<String>()
+        WeeklyQuestCatalog.quests.forEach { quest ->
+            val isComplete = weeklyQuestState.progressFor(quest) >= quest.requiredVictories
+            if (isComplete && quest.id !in weeklyQuestState.rewardedQuestIds) {
+                inventoryState = inventoryState.addItem(quest.rewardItemId)
+                grantedItemIds += quest.rewardItemId
+                newlyRewardedQuestIds += quest.id
+            }
+        }
+        if (newlyRewardedQuestIds.isNotEmpty()) {
+            weeklyQuestState = weeklyQuestState.copy(
+                rewardedQuestIds = weeklyQuestState.rewardedQuestIds + newlyRewardedQuestIds,
+            )
+            inventoryRepository.saveInventory(inventoryState)
+            weeklyQuestRepository.saveState(weeklyQuestState)
+        }
+        return grantedItemIds
+    }
+
     private fun publishUiState() {
+        refreshWeeklyQuestState()
         val battle = battleSession?.state?.value
         val enemy = selectedEnemy
         mutableUiState.value = BattleUiState(
@@ -494,6 +602,18 @@ class BattleViewModel(
                 },
                 equippedItemIds = inventoryState.equippedItemIds,
             ),
+            weeklyQuests = WeeklyQuestsUiState(
+                entries = WeeklyQuestCatalog.quests.map { quest ->
+                    QuestUiEntry(
+                        quest = quest,
+                        progress = weeklyQuestState.progressFor(quest),
+                        rewardGranted = quest.id in weeklyQuestState.rewardedQuestIds,
+                    )
+                },
+                daysUntilReset = 8 - currentDate().dayOfWeek.value,
+            ),
+            advancedQuestIds = advancedQuestIds,
+            rewardedItemIds = rewardedItemIds,
             todayEstimatedCalories = todayEstimatedCalories,
             todayHasActivity = todayHasActivity,
             enemyChoices = enemyChoices,

@@ -195,4 +195,27 @@
     <string name="enemy_unknown_name">Unknown opponent</string>
     <string name="enemy_unknown_description">Description unavailable.</string>
     <string name="enemy_unknown_ability">Unknown ability</string>
+    <string name="weekly_quests">Weekly quests</string>
+    <string name="open_quests">Open weekly quests</string>
+    <string name="weekly_quests_subtitle">Three trials for the week: regular, difficult, and maximum challenge. Meet their battle conditions to earn gear.</string>
+    <string name="weekly_quests_reset">Refresh in %1$d days</string>
+    <string name="weekly_quests_test_note">Test version: progress is stored locally and resets at the start of a new week.</string>
+    <string name="quest_category_regular">Regular</string>
+    <string name="quest_category_difficult">Difficult</string>
+    <string name="quest_category_challenge">Challenge</string>
+    <string name="quest_title_regular_squats">Weekly warm-up</string>
+    <string name="quest_title_difficult_pushups">Break the resistance</string>
+    <string name="quest_title_challenge_pullups">Trial without relics</string>
+    <string name="quest_exercise">Exercise: %1$s</string>
+    <string name="quest_goal_regular">Defeat %1$d opponents using %2$s.</string>
+    <string name="quest_goal_resistant">Defeat %1$d opponents resistant to %2$s.</string>
+    <string name="quest_goal_resistant_without_artifact">Defeat %1$d opponents resistant to %2$s without equipping an artifact.</string>
+    <string name="quest_progress">Progress: %1$d/%2$d</string>
+    <string name="quest_reward">Reward</string>
+    <string name="quest_go_to_battle">Go to battle</string>
+    <string name="quest_reward_received">Reward received</string>
+    <string name="quest_progress_updated">Weekly quest progress updated</string>
+    <string name="quest_reward_added_to_inventory">Quest complete: reward added to inventory</string>
+    <string name="item_guardian_wraps">Guardian Bracers</string>
+    <string name="item_resistance_breaker">Resistance Breaker</string>
 </resources>

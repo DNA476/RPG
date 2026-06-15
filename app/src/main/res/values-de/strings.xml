@@ -195,4 +195,27 @@
     <string name="enemy_unknown_name">Unbekannter Gegner</string>
     <string name="enemy_unknown_description">Keine Beschreibung verfügbar.</string>
     <string name="enemy_unknown_ability">Unbekannte Fähigkeit</string>
+    <string name="weekly_quests">Wöchentliche Quests</string>
+    <string name="open_quests">Wöchentliche Quests öffnen</string>
+    <string name="weekly_quests_subtitle">Drei Prüfungen pro Woche: normal, schwierig und maximale Herausforderung. Erfülle die Kampfbedingungen und erhalte Ausrüstung.</string>
+    <string name="weekly_quests_reset">Aktualisierung in %1$d Tagen</string>
+    <string name="weekly_quests_test_note">Testversion: Der Fortschritt wird lokal gespeichert und zu Beginn einer neuen Woche zurückgesetzt.</string>
+    <string name="quest_category_regular">Normal</string>
+    <string name="quest_category_difficult">Schwierig</string>
+    <string name="quest_category_challenge">Prüfung</string>
+    <string name="quest_title_regular_squats">Wöchentliches Aufwärmen</string>
+    <string name="quest_title_difficult_pushups">Widerstand brechen</string>
+    <string name="quest_title_challenge_pullups">Prüfung ohne Relikte</string>
+    <string name="quest_exercise">Übung: %1$s</string>
+    <string name="quest_goal_regular">Besiege %1$d Gegner mit %2$s.</string>
+    <string name="quest_goal_resistant">Besiege %1$d Gegner mit Widerstand gegen %2$s.</string>
+    <string name="quest_goal_resistant_without_artifact">Besiege %1$d Gegner mit Widerstand gegen %2$s, ohne ein Artefakt auszurüsten.</string>
+    <string name="quest_progress">Fortschritt: %1$d/%2$d</string>
+    <string name="quest_reward">Belohnung</string>
+    <string name="quest_go_to_battle">Zum Kampf</string>
+    <string name="quest_reward_received">Belohnung erhalten</string>
+    <string name="quest_progress_updated">Fortschritt der Wochenquest aktualisiert</string>
+    <string name="quest_reward_added_to_inventory">Quest abgeschlossen: Belohnung zum Inventar hinzugefügt</string>
+    <string name="item_guardian_wraps">Armschienen des Wächters</string>
+    <string name="item_resistance_breaker">Widerstandsbrecher</string>
 </resources>

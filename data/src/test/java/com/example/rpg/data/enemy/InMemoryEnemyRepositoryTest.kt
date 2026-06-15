@@ -31,4 +31,18 @@ class InMemoryEnemyRepositoryTest {
         assertEquals(selected.maxHp, boss.maxHp)
         assertEquals(selected.ability, boss.ability)
     }
+
+    @Test
+    fun questChoicesContainResistantAndFairMatchups() {
+        val repository = InMemoryEnemyRepository(Random(11))
+
+        val choices = repository.getQuestChoices(
+            exerciseType = ExerciseType.PULL_UP,
+            requireResistantEnemy = true,
+        )
+
+        assertEquals(3, choices.size)
+        assertTrue(choices.any { it.isResistantTo(ExerciseType.PULL_UP) })
+        assertTrue(choices.any { !it.isResistantTo(ExerciseType.PULL_UP) })
+    }
 }

@@ -212,4 +212,27 @@
     <string name="enemy_unknown_name">Неизвестный противник</string>
     <string name="enemy_unknown_description">Описание недоступно.</string>
     <string name="enemy_unknown_ability">Неизвестная способность</string>
+    <string name="weekly_quests">Еженедельные квесты</string>
+    <string name="open_quests">Открыть еженедельные квесты</string>
+    <string name="weekly_quests_subtitle">Три испытания недели: обычное, сложное и максимальное. Выполняйте условия в боях и получайте снаряжение.</string>
+    <string name="weekly_quests_reset">До обновления: %1$d дн.</string>
+    <string name="weekly_quests_test_note">Тестовая версия: прогресс хранится локально и сбрасывается в начале новой недели.</string>
+    <string name="quest_category_regular">Обычный</string>
+    <string name="quest_category_difficult">Сложный</string>
+    <string name="quest_category_challenge">Испытание</string>
+    <string name="quest_title_regular_squats">Недельная разминка</string>
+    <string name="quest_title_difficult_pushups">Преодолеть сопротивление</string>
+    <string name="quest_title_challenge_pullups">Испытание без реликвий</string>
+    <string name="quest_exercise">Упражнение: %1$s</string>
+    <string name="quest_goal_regular">Победите %1$d противников, используя упражнение «%2$s».</string>
+    <string name="quest_goal_resistant">Победите %1$d противников с сопротивлением к упражнению «%2$s».</string>
+    <string name="quest_goal_resistant_without_artifact">Победите %1$d противников с сопротивлением к упражнению «%2$s», не надевая артефакт.</string>
+    <string name="quest_progress">Прогресс: %1$d/%2$d</string>
+    <string name="quest_reward">Награда</string>
+    <string name="quest_go_to_battle">Перейти к бою</string>
+    <string name="quest_reward_received">Награда получена</string>
+    <string name="quest_progress_updated">Прогресс еженедельного квеста обновлен</string>
+    <string name="quest_reward_added_to_inventory">Квест выполнен: награда добавлена в инвентарь</string>
+    <string name="item_guardian_wraps">Наручи хранителя</string>
+    <string name="item_resistance_breaker">Клинок преодоления</string>
 </resources>
