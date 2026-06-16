@@ -14,14 +14,17 @@ class SharedPreferencesInventoryRepository(
 ) : InventoryRepository {
     override fun loadInventory(): InventoryState {
         val storedJson = preferences.getString(KEY_INVENTORY, null)
-            ?: return InventoryState(ownedItemIds = InventoryCatalog.demoOwnedItemIds)
+            ?: return InventoryState(ownedItemIds = InventoryCatalog.demoOwnedItemIds).also {
+                markArtifactStartMigrationDone()
+            }
         return runCatching {
             val root = JSONObject(storedJson)
             val storedOwnedIds = root.optJSONArray(JSON_OWNED_ITEMS)
                 .toStringSet()
                 .filterTo(linkedSetOf()) { InventoryCatalog.get(it) != null }
+            val migratedOwnedIds = removeLegacyDemoArtifactsIfNeeded(storedOwnedIds)
             val ownedIds = linkedSetOf<String>().apply {
-                addAll(storedOwnedIds)
+                addAll(migratedOwnedIds)
                 addAll(InventoryCatalog.demoOwnedItemIds)
             }
             val equippedItems = buildMap {
@@ -39,7 +42,9 @@ class SharedPreferencesInventoryRepository(
                 equippedItemIds = equippedItems,
             )
         }.getOrElse {
-            InventoryState(ownedItemIds = InventoryCatalog.demoOwnedItemIds)
+            InventoryState(ownedItemIds = InventoryCatalog.demoOwnedItemIds).also {
+                markArtifactStartMigrationDone()
+            }
         }
     }
 
@@ -67,8 +72,25 @@ class SharedPreferencesInventoryRepository(
         }
     }
 
+    private fun removeLegacyDemoArtifactsIfNeeded(ownedItemIds: Set<String>): Set<String> {
+        if (preferences.getBoolean(KEY_ARTIFACT_START_MIGRATION_DONE, false)) {
+            return ownedItemIds
+        }
+        markArtifactStartMigrationDone()
+        return ownedItemIds - InventoryCatalog.resistantVictoryArtifactItemIds
+    }
+
+    private fun markArtifactStartMigrationDone() {
+        if (!preferences.getBoolean(KEY_ARTIFACT_START_MIGRATION_DONE, false)) {
+            preferences.edit {
+                putBoolean(KEY_ARTIFACT_START_MIGRATION_DONE, true)
+            }
+        }
+    }
+
     companion object {
         private const val KEY_INVENTORY = "player_inventory"
+        private const val KEY_ARTIFACT_START_MIGRATION_DONE = "artifact_start_migration_done"
         private const val JSON_OWNED_ITEMS = "ownedItems"
         private const val JSON_EQUIPPED_ITEMS = "equippedItems"
     }

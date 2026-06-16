@@ -46,8 +46,8 @@ Current rules:
 - Damage cannot fall below 1, so resistance never makes a battle impossible.
 - Every successful attack triggers damage text, a sword slash, red flash, and
   short enemy shake.
-- There is no player damage, timer, stamina, combo, failure, reward, or
-  progression loop yet.
+- There is no player damage, timer, stamina, combo, failure, random reward
+  rarity roll, or experience loop yet.
 - Every accepted live repetition is added immediately to local daily
   statistics, even if the player leaves before victory.
 - Debug-simulated repetitions do not affect fitness history.
@@ -63,8 +63,9 @@ Current rules:
   choice. The current supported set is Russian, English, German, Spanish,
   French, and Portuguese.
 - A backpack button opens a 36-item test catalog containing equipment, weapons,
-  and artifacts across common, rare, epic, and legendary rarities. Twenty-seven
-  non-quest items are immediately available for testing.
+  and artifacts across common, rare, epic, and legendary rarities. Twenty
+  non-artifact equipment and weapon items are immediately available for testing.
+  The player starts with zero artifacts.
 - The player can equip one item per body/weapon slot and one artifact. The
   equipment view uses a white body outline and is reachable by button or swipe.
 - Item bonuses are visible for design testing but do not modify combat yet.
@@ -78,6 +79,8 @@ Current rules:
     epic item;
   - challenge: defeat two or three resistant opponents without an artifact for
     a legendary item.
+- Defeating an enemy resistant to the selected exercise grants the next unowned
+  non-quest artifact from the resistant-victory pool.
 - Quest progress resets each ISO week. Completing a quest automatically adds
   its fixed reward to inventory; the highest current rarity remains
   quest-exclusive.

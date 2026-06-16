@@ -249,6 +249,7 @@
     <string name="quest_reward_received">Recompensa recibida</string>
     <string name="quest_progress_updated">Progreso de la misión semanal actualizado</string>
     <string name="quest_reward_added_to_inventory">Misión completada: recompensa añadida al inventario</string>
+    <string name="battle_reward_added_to_inventory">Recompensa añadida al inventario</string>
     <string name="item_guardian_wraps">Brazales del guardián</string>
     <string name="item_resistance_breaker">Quebrantador de resistencia</string>
 </resources>

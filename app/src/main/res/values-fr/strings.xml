@@ -249,6 +249,7 @@
     <string name="quest_reward_received">Récompense obtenue</string>
     <string name="quest_progress_updated">Progression de la quête hebdomadaire mise à jour</string>
     <string name="quest_reward_added_to_inventory">Quête terminée : récompense ajoutée à l’inventaire</string>
+    <string name="battle_reward_added_to_inventory">Récompense ajoutée à l’inventaire</string>
     <string name="item_guardian_wraps">Brassards du gardien</string>
     <string name="item_resistance_breaker">Brise-résistance</string>
 </resources>

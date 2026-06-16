@@ -266,6 +266,7 @@
     <string name="quest_reward_received">Награда получена</string>
     <string name="quest_progress_updated">Прогресс еженедельного квеста обновлен</string>
     <string name="quest_reward_added_to_inventory">Квест выполнен: награда добавлена в инвентарь</string>
+    <string name="battle_reward_added_to_inventory">Награда добавлена в инвентарь</string>
     <string name="item_guardian_wraps">Наручи хранителя</string>
     <string name="item_resistance_breaker">Клинок преодоления</string>
 </resources>

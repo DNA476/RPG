@@ -32,7 +32,7 @@ fun VictoryScreen(
     completedRepetitions: Int,
     totalDamage: Int,
     questProgressAdvanced: Boolean,
-    questRewardGranted: Boolean,
+    inventoryRewardGranted: Boolean,
     onBackToMenu: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -78,15 +78,14 @@ fun VictoryScreen(
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
-            if (questProgressAdvanced) {
+            val rewardMessageResource = when {
+                inventoryRewardGranted -> R.string.battle_reward_added_to_inventory
+                questProgressAdvanced -> R.string.quest_progress_updated
+                else -> null
+            }
+            if (rewardMessageResource != null) {
                 Text(
-                    text = stringResource(
-                        if (questRewardGranted) {
-                            R.string.quest_reward_added_to_inventory
-                        } else {
-                            R.string.quest_progress_updated
-                        },
-                    ),
+                    text = stringResource(rewardMessageResource),
                     color = Color(0xFFFFD166),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,

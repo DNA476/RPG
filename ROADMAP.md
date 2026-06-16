@@ -1,7 +1,7 @@
 # Roadmap
 
 This roadmap is ordered by dependency and risk, not by marketing priority.
-Statuses describe repository state as of 2026-06-16.
+Statuses describe repository state as of 2026-06-17.
 
 ## Completed Foundation
 
@@ -53,6 +53,9 @@ Statuses describe repository state as of 2026-06-16.
 - [x] Add a three-week test quest rotation covering the current ISO week and
   two future weeks.
 - [x] Add a sword-in-shield quest entry beside the inventory button.
+- [x] Start players with zero artifacts and grant non-quest artifacts from
+  resistant-matchup victories.
+- [x] Add a custom adaptive launcher icon for APK builds.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
@@ -113,7 +116,7 @@ changes across the ViewModel and UI.
 - [ ] Add enemy phases or exercise prompts.
 - [ ] Define fair player damage/defeat rules, if defeat remains in scope.
 - [ ] Add rewards, experience, levels, and achievements.
-- [ ] Connect resistant-matchup victories to randomized item rewards.
+- [x] Connect resistant-matchup victories to prototype artifact rewards.
 - [x] Prototype weekly quests and reserve the highest item rarity for quest
   rewards.
 - [ ] Define production quest rotation, reward pools, duplicate handling, and
@@ -175,3 +178,7 @@ changes across the ViewModel and UI.
   item-specific icons so the collection can grow without bitmap asset churn.
 - 2026-06-16: Keep weekly quests as three active cards, but source them from a
   three-week rotation with distinct exercises and rare/epic/legendary rewards.
+- 2026-06-17: Start players with zero artifacts, grant non-quest artifacts from
+  resistant victories, and keep the strongest rewards quest-exclusive.
+- 2026-06-17: Use a custom adaptive launcher icon so APK builds no longer ship
+  the default Android placeholder icon.

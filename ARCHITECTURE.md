@@ -42,7 +42,8 @@ Responsibilities:
 - Construction of current repository, detector, analyzer, and battle objects.
 - SharedPreferences adapter for the optional user profile and daily fitness
   aggregates.
-- SharedPreferences adapter for owned inventory IDs and equipped slot mappings.
+- SharedPreferences adapter for owned inventory IDs, equipped slot mappings,
+  and the one-time removal of legacy demo-owned artifacts from local saves.
 - Scalable Compose Canvas icons for individual inventory item silhouettes.
 - SharedPreferences adapter for weekly quest progress and granted rewards.
 
@@ -128,8 +129,9 @@ Responsibilities:
 - Exercise configuration repository contracts and current in-memory
   implementation.
 - User profile and exercise statistics repository contracts.
-- Inventory models, equipment slots, icon types, repository contract, and
-  36-item test catalog.
+- Inventory models, equipment slots, icon types, repository contract, 36-item
+  test catalog, starting equipment pool, and resistant-victory artifact reward
+  pool.
 - Weekly quest models, three-week rotation catalog, progress rules, and
   repository contract.
 - Framework-light daily statistics models and calorie estimation.
@@ -161,8 +163,10 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
    seven-day statistics, a backpack button opens inventory, and a
    sword-in-shield button opens weekly quests.
 3. Inventory and equipment share a horizontal pager. Slot selection filters the
-   inventory, while equip/unequip changes are saved locally. Newly added
-   non-quest test items are merged into existing local inventories on load.
+   inventory, while equip/unequip changes are saved locally. Fresh players start
+   with non-artifact test equipment only; legacy local saves have the old demo
+   artifact pool removed once. Newly added non-quest equipment items are merged
+   into existing local inventories on load.
 4. Weekly quests select the active three-quest set from a three-week ISO-week
    rotation. Each set has one regular, one resistant-matchup, and one
    resistant-matchup-without-artifact objective. Starting a quest selects its
@@ -188,9 +192,11 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
    it in the local daily aggregate. Debug simulation bypasses this write.
 16. A ViewModel timer uses `EnemyAttackTimingPolicy`; every 15 seconds it applies
    the selected enemy's 25% attack reduction for 10 seconds.
-17. On victory, `WeeklyQuestProgress` evaluates exercise, resistance, and the
-   artifact state captured at battle start. Completed quest rewards are added
-   to the persisted inventory once.
+17. On victory, a resistant matchup grants the next unowned non-quest artifact
+   from `InventoryCatalog.resistantVictoryArtifactItemIds`. `WeeklyQuestProgress`
+   then evaluates exercise, resistance, and the artifact state captured at
+   battle start. Completed quest rewards are added to the persisted inventory
+   once.
 18. `BattleViewModel` increments `hitEventId` for every completed attack and
    combines pose, detector, battle, and presentation information into
    `BattleUiState`.
@@ -208,9 +214,11 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 - `MainMenuScreen` owns only transient drawer open/closed state.
 - `SharedPreferencesFitnessRepository` owns the persisted profile, onboarding
   completion flag, and daily exercise aggregates.
-- `SharedPreferencesInventoryRepository` owns persisted inventory and equipped
-  slot IDs; `InventoryCatalog` owns test item definitions, bonuses, and icon
-  types. `InventoryItemIcon` renders those icon types without bitmap assets.
+- `SharedPreferencesInventoryRepository` owns persisted inventory, equipped slot
+  IDs, and the one-time artifact-start migration; `InventoryCatalog` owns test
+  item definitions, bonuses, icon types, starting ownership, and the
+  resistant-victory artifact pool. `InventoryItemIcon` renders those icon types
+  without bitmap assets.
 - `SharedPreferencesWeeklyQuestRepository` owns persisted week progress;
   `WeeklyQuestCatalog` owns the three-week quest rotation, and
   `WeeklyQuestProgress` owns quest matching and ISO-week reset rules.

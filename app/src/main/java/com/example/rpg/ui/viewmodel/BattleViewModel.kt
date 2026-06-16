@@ -500,7 +500,9 @@ class BattleViewModel(
         hitEventId += 1
         showDamageMessage("-$damage")
         if (battle.gameState == GameState.VICTORY) {
-            recordQuestVictory()
+            val battleRewardIds = grantResistantVictoryArtifactReward()
+            val questRewardIds = recordQuestVictory()
+            rewardedItemIds = battleRewardIds + questRewardIds
             exerciseStatusResource = R.string.status_enemy_defeated
             activeDetector?.stop()
             enemyAttackJob?.cancel()
@@ -546,9 +548,9 @@ class BattleViewModel(
         }
     }
 
-    private fun recordQuestVictory() {
+    private fun recordQuestVictory(): Set<String> {
         refreshWeeklyQuestState()
-        val enemy = selectedEnemy ?: return
+        val enemy = selectedEnemy ?: return emptySet()
         val update = WeeklyQuestProgress.recordVictory(
             quests = currentWeeklyQuests(),
             state = weeklyQuestState,
@@ -560,8 +562,20 @@ class BattleViewModel(
         )
         weeklyQuestState = update.state
         advancedQuestIds = update.advancedQuestIds
-        rewardedItemIds = grantPendingQuestRewards()
+        val grantedItemIds = grantPendingQuestRewards()
         weeklyQuestRepository.saveState(weeklyQuestState)
+        return grantedItemIds
+    }
+
+    private fun grantResistantVictoryArtifactReward(): Set<String> {
+        val enemy = selectedEnemy ?: return emptySet()
+        if (!enemy.isResistantTo(selectedExercise.type)) return emptySet()
+        val rewardItemId = InventoryCatalog.resistantVictoryArtifactItemIds
+            .firstOrNull { itemId -> itemId !in inventoryState.ownedItemIds }
+            ?: return emptySet()
+        inventoryState = inventoryState.addItem(rewardItemId)
+        inventoryRepository.saveInventory(inventoryState)
+        return setOf(rewardItemId)
     }
 
     private fun grantPendingQuestRewards(): Set<String> {

@@ -29,6 +29,28 @@ class InventoryCatalogTest {
     }
 
     @Test
+    fun demoOwnedItemsDoNotIncludeArtifacts() {
+        val demoOwnedItems = InventoryCatalog.items.filter {
+            it.id in InventoryCatalog.demoOwnedItemIds
+        }
+
+        assertFalse(demoOwnedItems.isEmpty())
+        assertTrue(demoOwnedItems.none { it.slot == EquipmentSlot.ARTIFACT })
+    }
+
+    @Test
+    fun resistantVictoryArtifactPoolContainsOnlyNonQuestArtifacts() {
+        val rewardItems = InventoryCatalog.items.filter {
+            it.id in InventoryCatalog.resistantVictoryArtifactItemIds
+        }
+
+        assertEquals(7, rewardItems.size)
+        assertTrue(rewardItems.all { it.slot == EquipmentSlot.ARTIFACT })
+        assertTrue(rewardItems.none(InventoryItem::questExclusive))
+        assertTrue(rewardItems.none { it.id in InventoryCatalog.demoOwnedItemIds })
+    }
+
+    @Test
     fun expandedCatalogHasVarietyForEverySlotAndBonusType() {
         assertEquals(36, InventoryCatalog.items.size)
         EquipmentSlot.entries.forEach { slot ->

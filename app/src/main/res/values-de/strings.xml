@@ -249,6 +249,7 @@
     <string name="quest_reward_received">Belohnung erhalten</string>
     <string name="quest_progress_updated">Fortschritt der Wochenquest aktualisiert</string>
     <string name="quest_reward_added_to_inventory">Quest abgeschlossen: Belohnung zum Inventar hinzugefügt</string>
+    <string name="battle_reward_added_to_inventory">Belohnung zum Inventar hinzugefügt</string>
     <string name="item_guardian_wraps">Armschienen des Wächters</string>
     <string name="item_resistance_breaker">Widerstandsbrecher</string>
 </resources>

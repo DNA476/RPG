@@ -356,7 +356,15 @@ object InventoryCatalog {
     )
 
     val demoOwnedItemIds: Set<String> = items
-        .filterNot(InventoryItem::questExclusive)
+        .filter { item ->
+            !item.questExclusive && item.slot != EquipmentSlot.ARTIFACT
+        }
+        .mapTo(linkedSetOf(), InventoryItem::id)
+
+    val resistantVictoryArtifactItemIds: Set<String> = items
+        .filter { item ->
+            item.slot == EquipmentSlot.ARTIFACT && !item.questExclusive
+        }
         .mapTo(linkedSetOf(), InventoryItem::id)
 
     fun get(id: String): InventoryItem? = items.firstOrNull { it.id == id }
