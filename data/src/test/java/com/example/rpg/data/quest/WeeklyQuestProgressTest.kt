@@ -97,14 +97,40 @@ class WeeklyQuestProgressTest {
 
     @Test
     fun catalogRewardsExistAndIncreaseWithQuestDifficulty() {
-        val rewards = WeeklyQuestCatalog.quests.map { quest ->
-            requireNotNull(InventoryCatalog.get(quest.rewardItemId))
-        }
+        WeeklyQuestCatalog.rotations.forEach { rotation ->
+            val rewards = rotation.quests.map { quest ->
+                requireNotNull(InventoryCatalog.get(quest.rewardItemId))
+            }
 
+            assertEquals(
+                listOf(ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY),
+                rewards.map { it.rarity },
+            )
+            assertTrue(rewards.all { it.questExclusive })
+        }
+    }
+
+    @Test
+    fun questCatalogRotatesForCurrentAndNextTwoWeeks() {
         assertEquals(
-            listOf(ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY),
-            rewards.map { it.rarity },
+            listOf("weekly_regular_squats", "weekly_difficult_pushups", "weekly_challenge_pullups"),
+            WeeklyQuestCatalog.questsForWeek("2026-W25").map { it.id },
         )
-        assertTrue(rewards.all { it.questExclusive })
+        assertEquals(
+            listOf("weekly_regular_lunges", "weekly_difficult_plank", "weekly_challenge_squats"),
+            WeeklyQuestCatalog.questsForWeek("2026-W26").map { it.id },
+        )
+        assertEquals(
+            listOf("weekly_regular_crunches", "weekly_difficult_pullups", "weekly_challenge_pushups"),
+            WeeklyQuestCatalog.questsForWeek("2026-W27").map { it.id },
+        )
+    }
+
+    @Test
+    fun everyQuestIdIsUniqueAcrossRotation() {
+        assertEquals(
+            WeeklyQuestCatalog.allQuests.size,
+            WeeklyQuestCatalog.allQuests.map { it.id }.distinct().size,
+        )
     }
 }

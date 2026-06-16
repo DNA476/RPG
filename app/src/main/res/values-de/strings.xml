@@ -83,6 +83,12 @@
     <string name="item_moon_hourglass">Mondstundenglas</string>
     <string name="item_watchers_eye">Auge des Wächters</string>
     <string name="item_phoenix_feather">Phönixfeder</string>
+    <string name="item_trailblazer_greaves">Beinschienen des Wegbereiters</string>
+    <string name="item_aegis_compass">Aegis-Kompass</string>
+    <string name="item_titan_cuirass">Titanenkürass</string>
+    <string name="item_focus_charm">Fokusamulett</string>
+    <string name="item_skybreaker_staff">Himmelsbrecherstab</string>
+    <string name="item_sunforged_crown">Sonnengeschmiedete Krone</string>
     <string name="item_crown_of_trials">Krone der Prüfungen</string>
     <string name="item_unknown">Unbekannter Gegenstand</string>
     <string name="main_tagline">Besiege Gegner mit echten Übungen vor der Kamera</string>
@@ -227,6 +233,12 @@
     <string name="quest_title_regular_squats">Wöchentliches Aufwärmen</string>
     <string name="quest_title_difficult_pushups">Widerstand brechen</string>
     <string name="quest_title_challenge_pullups">Prüfung ohne Relikte</string>
+    <string name="quest_title_regular_lunges">Marsch des Wegbereiters</string>
+    <string name="quest_title_difficult_plank">Plank unter dem Schild</string>
+    <string name="quest_title_challenge_squats">Prüfung des steinernen Stands</string>
+    <string name="quest_title_regular_crunches">Rhythmus der Mitte</string>
+    <string name="quest_title_difficult_pullups">Höhe des Widerstands</string>
+    <string name="quest_title_challenge_pushups">Sonnenhieb-Prüfung</string>
     <string name="quest_exercise">Übung: %1$s</string>
     <string name="quest_goal_regular">Besiege %1$d Gegner mit %2$s.</string>
     <string name="quest_goal_resistant">Besiege %1$d Gegner mit Widerstand gegen %2$s.</string>

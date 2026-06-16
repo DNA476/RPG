@@ -1,7 +1,7 @@
 # Roadmap
 
 This roadmap is ordered by dependency and risk, not by marketing priority.
-Statuses describe repository state as of 2026-06-15.
+Statuses describe repository state as of 2026-06-16.
 
 ## Completed Foundation
 
@@ -50,6 +50,8 @@ Statuses describe repository state as of 2026-06-15.
   item-specific scalable Compose icons.
 - [x] Add three locally persisted weekly quest categories with required
   exercises, progress, restrictions, and fixed rare/epic/legendary rewards.
+- [x] Add a three-week test quest rotation covering the current ISO week and
+  two future weeks.
 - [x] Add a sword-in-shield quest entry beside the inventory button.
 
 ## Current Priority: Make The Vertical Slice Reliable
@@ -171,3 +173,5 @@ changes across the ViewModel and UI.
   automatic inventory rewards.
 - 2026-06-15: Expand the prototype inventory to 30 items and use code-drawn
   item-specific icons so the collection can grow without bitmap asset churn.
+- 2026-06-16: Keep weekly quests as three active cards, but source them from a
+  three-week rotation with distinct exercises and rare/epic/legendary rewards.

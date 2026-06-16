@@ -83,6 +83,12 @@
     <string name="item_moon_hourglass">Sablier lunaire</string>
     <string name="item_watchers_eye">Œil du veilleur</string>
     <string name="item_phoenix_feather">Plume de phénix</string>
+    <string name="item_trailblazer_greaves">Grèves du pionnier</string>
+    <string name="item_aegis_compass">Boussole de l’égide</string>
+    <string name="item_titan_cuirass">Cuirasse du titan</string>
+    <string name="item_focus_charm">Charme de concentration</string>
+    <string name="item_skybreaker_staff">Bâton brise-ciel</string>
+    <string name="item_sunforged_crown">Couronne forgée au soleil</string>
     <string name="item_crown_of_trials">Couronne des épreuves</string>
     <string name="item_unknown">Objet inconnu</string>
     <string name="main_tagline">Bats des ennemis en faisant de vrais exercices devant la caméra</string>
@@ -227,6 +233,12 @@
     <string name="quest_title_regular_squats">Échauffement hebdomadaire</string>
     <string name="quest_title_difficult_pushups">Briser la résistance</string>
     <string name="quest_title_challenge_pullups">Épreuve sans reliques</string>
+    <string name="quest_title_regular_lunges">Marche du pionnier</string>
+    <string name="quest_title_difficult_plank">Planche sous bouclier</string>
+    <string name="quest_title_challenge_squats">Épreuve de posture de pierre</string>
+    <string name="quest_title_regular_crunches">Rythme du tronc</string>
+    <string name="quest_title_difficult_pullups">Sommet de résistance</string>
+    <string name="quest_title_challenge_pushups">Épreuve de frappe solaire</string>
     <string name="quest_exercise">Exercice : %1$s</string>
     <string name="quest_goal_regular">Battez %1$d adversaires avec %2$s.</string>
     <string name="quest_goal_resistant">Battez %1$d adversaires résistants à %2$s.</string>

@@ -18,6 +18,11 @@ data class WeeklyQuest(
     val rewardItemId: String,
 )
 
+data class WeeklyQuestRotation(
+    val weekOffset: Int,
+    val quests: List<WeeklyQuest>,
+)
+
 data class QuestBattleResult(
     val exerciseType: ExerciseType,
     val enemyWasResistant: Boolean,

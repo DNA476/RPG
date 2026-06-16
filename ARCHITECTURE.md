@@ -129,8 +129,9 @@ Responsibilities:
   implementation.
 - User profile and exercise statistics repository contracts.
 - Inventory models, equipment slots, icon types, repository contract, and
-  30-item test catalog.
-- Weekly quest models, catalog, progress rules, and repository contract.
+  36-item test catalog.
+- Weekly quest models, three-week rotation catalog, progress rules, and
+  repository contract.
 - Framework-light daily statistics models and calorie estimation.
 - `ExerciseCatalog`, the single source of truth for names, descriptions, base
   damage, difficulty, and detector status.
@@ -162,7 +163,8 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 3. Inventory and equipment share a horizontal pager. Slot selection filters the
    inventory, while equip/unequip changes are saved locally. Newly added
    non-quest test items are merged into existing local inventories on load.
-4. Weekly quests show one regular, one resistant-matchup, and one
+4. Weekly quests select the active three-quest set from a three-week ISO-week
+   rotation. Each set has one regular, one resistant-matchup, and one
    resistant-matchup-without-artifact objective. Starting a quest selects its
    exercise and builds an encounter containing a qualifying resistant enemy
    when required.
@@ -210,8 +212,8 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
   slot IDs; `InventoryCatalog` owns test item definitions, bonuses, and icon
   types. `InventoryItemIcon` renders those icon types without bitmap assets.
 - `SharedPreferencesWeeklyQuestRepository` owns persisted week progress;
-  `WeeklyQuestCatalog` and `WeeklyQuestProgress` own quest content and matching
-  rules.
+  `WeeklyQuestCatalog` owns the three-week quest rotation, and
+  `WeeklyQuestProgress` owns quest matching and ISO-week reset rules.
 - `EnemyCombatant` owns transient shake, red-flash, and slash animation state.
 - Compose components render state and should not contain domain decisions.
 

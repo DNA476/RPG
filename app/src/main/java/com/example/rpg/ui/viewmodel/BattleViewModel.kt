@@ -270,7 +270,7 @@ class BattleViewModel(
 
     fun startQuest(questId: String) {
         if (screen != AppScreen.QUESTS) return
-        val quest = WeeklyQuestCatalog.get(questId) ?: return
+        val quest = currentWeeklyQuests().firstOrNull { it.id == questId } ?: return
         selectedExercise = exerciseConfigRepository.get(quest.exerciseType)
         enemyChoices = enemyRepository.getQuestChoices(
             exerciseType = quest.exerciseType,
@@ -550,7 +550,7 @@ class BattleViewModel(
         refreshWeeklyQuestState()
         val enemy = selectedEnemy ?: return
         val update = WeeklyQuestProgress.recordVictory(
-            quests = WeeklyQuestCatalog.quests,
+            quests = currentWeeklyQuests(),
             state = weeklyQuestState,
             result = QuestBattleResult(
                 exerciseType = selectedExercise.type,
@@ -567,7 +567,7 @@ class BattleViewModel(
     private fun grantPendingQuestRewards(): Set<String> {
         val grantedItemIds = linkedSetOf<String>()
         val newlyRewardedQuestIds = linkedSetOf<String>()
-        WeeklyQuestCatalog.quests.forEach { quest ->
+        currentWeeklyQuests().forEach { quest ->
             val isComplete = weeklyQuestState.progressFor(quest) >= quest.requiredVictories
             if (isComplete && quest.id !in weeklyQuestState.rewardedQuestIds) {
                 inventoryState = inventoryState.addItem(quest.rewardItemId)
@@ -603,7 +603,7 @@ class BattleViewModel(
                 equippedItemIds = inventoryState.equippedItemIds,
             ),
             weeklyQuests = WeeklyQuestsUiState(
-                entries = WeeklyQuestCatalog.quests.map { quest ->
+                entries = currentWeeklyQuests().map { quest ->
                     QuestUiEntry(
                         quest = quest,
                         progress = weeklyQuestState.progressFor(quest),
@@ -683,6 +683,8 @@ class BattleViewModel(
             usesDefaultWeight = userProfile.weightKg == null,
         )
     }
+
+    private fun currentWeeklyQuests() = WeeklyQuestCatalog.questsForWeek(weeklyQuestState.weekId)
 
     private fun UserProfile.toForm(): ProfileFormUiState = ProfileFormUiState(
         weightText = weightKg?.let { weight ->

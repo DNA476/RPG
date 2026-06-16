@@ -30,7 +30,7 @@ class InventoryCatalogTest {
 
     @Test
     fun expandedCatalogHasVarietyForEverySlotAndBonusType() {
-        assertEquals(30, InventoryCatalog.items.size)
+        assertEquals(36, InventoryCatalog.items.size)
         EquipmentSlot.entries.forEach { slot ->
             assertTrue(
                 "Expected at least three items for $slot",

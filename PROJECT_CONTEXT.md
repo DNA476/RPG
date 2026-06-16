@@ -55,14 +55,15 @@ The repository is an MVP/prototype, not a production-ready application.
   equipment are swipe-connected views; equipment uses a white player outline,
   body slots, a weapon slot, and one artifact slot. Item cards and equipped
   slots use item-specific scalable outline icons drawn in Compose.
-- A white sword-in-shield button beside the backpack opens three test weekly
-  quests: regular, resistant-matchup, and resistant-matchup-without-artifact.
-  Each quest shows its required exercise, progress, restrictions, and exact
-  item reward.
+- A white sword-in-shield button beside the backpack opens the active weekly
+  quest set. The prototype includes three weekly sets: the current ISO week and
+  two future weeks. Each set contains regular, resistant-matchup, and
+  resistant-matchup-without-artifact quests with required exercise, progress,
+  restrictions, and exact item reward.
 - Weekly quest progress and reward state persist locally and reset on the next
   ISO week. Starting a resistance quest guarantees that the offered encounter
   contains both a resistant target and a fair non-resistant choice.
-- The full test catalog contains 30 common, rare, epic, or legendary items and
+- The full test catalog contains 36 common, rare, epic, or legendary items and
   seven preview tactical bonus types. Equipped items persist locally, but
   bonuses do not affect combat yet. Rare, epic, and legendary quest rewards are
   added to inventory automatically when their test quest reaches its target.

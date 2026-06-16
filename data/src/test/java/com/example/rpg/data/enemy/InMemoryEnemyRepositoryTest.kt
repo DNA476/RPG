@@ -1,6 +1,7 @@
 package com.example.rpg.data.enemy
 
 import com.example.rpg.domain.exercise.ExerciseType
+import com.example.rpg.data.quest.WeeklyQuestCatalog
 import kotlin.random.Random
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -44,5 +45,26 @@ class InMemoryEnemyRepositoryTest {
         assertEquals(3, choices.size)
         assertTrue(choices.any { it.isResistantTo(ExerciseType.PULL_UP) })
         assertTrue(choices.any { !it.isResistantTo(ExerciseType.PULL_UP) })
+    }
+
+    @Test
+    fun resistantQuestChoicesWorkForEveryRotatedResistantQuest() {
+        val resistantQuestExercises = WeeklyQuestCatalog.allQuests
+            .filter { it.requiresResistantEnemy }
+            .map { it.exerciseType }
+            .distinct()
+
+        resistantQuestExercises.forEachIndexed { index, exerciseType ->
+            val repository = InMemoryEnemyRepository(Random(index + 100))
+
+            val choices = repository.getQuestChoices(
+                exerciseType = exerciseType,
+                requireResistantEnemy = true,
+            )
+
+            assertEquals(3, choices.size)
+            assertTrue(choices.any { it.isResistantTo(exerciseType) })
+            assertTrue(choices.any { !it.isResistantTo(exerciseType) })
+        }
     }
 }

@@ -89,6 +89,12 @@
     <string name="item_moon_hourglass">Лунные песочные часы</string>
     <string name="item_watchers_eye">Око наблюдателя</string>
     <string name="item_phoenix_feather">Перо феникса</string>
+    <string name="item_trailblazer_greaves">Поножи первопроходца</string>
+    <string name="item_aegis_compass">Компас эгиды</string>
+    <string name="item_titan_cuirass">Кираса титана</string>
+    <string name="item_focus_charm">Талисман сосредоточения</string>
+    <string name="item_skybreaker_staff">Посох неболома</string>
+    <string name="item_sunforged_crown">Солнцекованая корона</string>
     <string name="item_crown_of_trials">Корона испытаний</string>
     <string name="item_unknown">Неизвестный предмет</string>
 
@@ -244,6 +250,12 @@
     <string name="quest_title_regular_squats">Недельная разминка</string>
     <string name="quest_title_difficult_pushups">Преодолеть сопротивление</string>
     <string name="quest_title_challenge_pullups">Испытание без реликвий</string>
+    <string name="quest_title_regular_lunges">Марш первопроходца</string>
+    <string name="quest_title_difficult_plank">Планка под щитом</string>
+    <string name="quest_title_challenge_squats">Испытание каменной стойки</string>
+    <string name="quest_title_regular_crunches">Ритм корпуса</string>
+    <string name="quest_title_difficult_pullups">Высота сопротивления</string>
+    <string name="quest_title_challenge_pushups">Испытание солнечного удара</string>
     <string name="quest_exercise">Упражнение: %1$s</string>
     <string name="quest_goal_regular">Победите %1$d противников, используя упражнение «%2$s».</string>
     <string name="quest_goal_resistant">Победите %1$d противников с сопротивлением к упражнению «%2$s».</string>

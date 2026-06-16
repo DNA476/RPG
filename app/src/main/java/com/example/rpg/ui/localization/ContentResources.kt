@@ -139,6 +139,12 @@ fun inventoryItemNameResource(item: InventoryItem): Int = when (item.id) {
     "moon_hourglass" -> R.string.item_moon_hourglass
     "watchers_eye" -> R.string.item_watchers_eye
     "phoenix_feather" -> R.string.item_phoenix_feather
+    "trailblazer_greaves" -> R.string.item_trailblazer_greaves
+    "aegis_compass" -> R.string.item_aegis_compass
+    "titan_cuirass" -> R.string.item_titan_cuirass
+    "focus_charm" -> R.string.item_focus_charm
+    "skybreaker_staff" -> R.string.item_skybreaker_staff
+    "sunforged_crown" -> R.string.item_sunforged_crown
     "guardian_wraps" -> R.string.item_guardian_wraps
     "resistance_breaker" -> R.string.item_resistance_breaker
     "crown_of_trials" -> R.string.item_crown_of_trials
@@ -157,6 +163,12 @@ fun questTitleResource(id: String): Int = when (id) {
     "weekly_regular_squats" -> R.string.quest_title_regular_squats
     "weekly_difficult_pushups" -> R.string.quest_title_difficult_pushups
     "weekly_challenge_pullups" -> R.string.quest_title_challenge_pullups
+    "weekly_regular_lunges" -> R.string.quest_title_regular_lunges
+    "weekly_difficult_plank" -> R.string.quest_title_difficult_plank
+    "weekly_challenge_squats" -> R.string.quest_title_challenge_squats
+    "weekly_regular_crunches" -> R.string.quest_title_regular_crunches
+    "weekly_difficult_pullups" -> R.string.quest_title_difficult_pullups
+    "weekly_challenge_pushups" -> R.string.quest_title_challenge_pushups
     else -> R.string.weekly_quests
 }
 

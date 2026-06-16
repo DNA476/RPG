@@ -83,6 +83,12 @@
     <string name="item_moon_hourglass">Reloj de arena lunar</string>
     <string name="item_watchers_eye">Ojo del vigilante</string>
     <string name="item_phoenix_feather">Pluma de fénix</string>
+    <string name="item_trailblazer_greaves">Grebas del pionero</string>
+    <string name="item_aegis_compass">Brújula de égida</string>
+    <string name="item_titan_cuirass">Coraza del titán</string>
+    <string name="item_focus_charm">Talismán de concentración</string>
+    <string name="item_skybreaker_staff">Bastón rompecielos</string>
+    <string name="item_sunforged_crown">Corona forjada al sol</string>
     <string name="item_crown_of_trials">Corona de las pruebas</string>
     <string name="item_unknown">Objeto desconocido</string>
     <string name="main_tagline">Derrota enemigos haciendo ejercicios reales frente a la cámara</string>
@@ -227,6 +233,12 @@
     <string name="quest_title_regular_squats">Calentamiento semanal</string>
     <string name="quest_title_difficult_pushups">Romper la resistencia</string>
     <string name="quest_title_challenge_pullups">Prueba sin reliquias</string>
+    <string name="quest_title_regular_lunges">Marcha del pionero</string>
+    <string name="quest_title_difficult_plank">Plancha bajo escudo</string>
+    <string name="quest_title_challenge_squats">Prueba de postura pétrea</string>
+    <string name="quest_title_regular_crunches">Ritmo del torso</string>
+    <string name="quest_title_difficult_pullups">Altura de resistencia</string>
+    <string name="quest_title_challenge_pushups">Prueba del golpe solar</string>
     <string name="quest_exercise">Ejercicio: %1$s</string>
     <string name="quest_goal_regular">Derrota a %1$d oponentes usando %2$s.</string>
     <string name="quest_goal_resistant">Derrota a %1$d oponentes resistentes a %2$s.</string>

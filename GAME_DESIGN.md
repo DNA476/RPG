@@ -62,7 +62,7 @@ Current rules:
 - Interface text can follow the device language or use an explicit in-app
   choice. The current supported set is Russian, English, German, Spanish,
   French, and Portuguese.
-- A backpack button opens a 30-item test catalog containing equipment, weapons,
+- A backpack button opens a 36-item test catalog containing equipment, weapons,
   and artifacts across common, rare, epic, and legendary rarities. Twenty-seven
   non-quest items are immediately available for testing.
 - The player can equip one item per body/weapon slot and one artifact. The
@@ -71,11 +71,13 @@ Current rules:
   Current previews cover attack power, debuff reduction, enemy ability delay,
   resistant-matchup damage, weakness damage, opening attack damage, and
   three-repetition streak damage.
-- A sword-in-shield button opens three test weekly quests:
-  - regular: defeat two opponents with squats for a rare item;
-  - difficult: defeat two opponents resistant to push-ups for an epic item;
-  - challenge: defeat two opponents resistant to pull-ups without an artifact
-    for a legendary item.
+- A sword-in-shield button opens the active set from a three-week test quest
+  rotation. Each week contains:
+  - regular: defeat two opponents with the listed exercise for a rare item;
+  - difficult: defeat two opponents resistant to the listed exercise for an
+    epic item;
+  - challenge: defeat two or three resistant opponents without an artifact for
+    a legendary item.
 - Quest progress resets each ISO week. Completing a quest automatically adds
   its fixed reward to inventory; the highest current rarity remains
   quest-exclusive.

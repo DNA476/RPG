@@ -83,6 +83,12 @@
     <string name="item_moon_hourglass">Moon Hourglass</string>
     <string name="item_watchers_eye">Watcher’s Eye</string>
     <string name="item_phoenix_feather">Phoenix Feather</string>
+    <string name="item_trailblazer_greaves">Trailblazer Greaves</string>
+    <string name="item_aegis_compass">Aegis Compass</string>
+    <string name="item_titan_cuirass">Titan Cuirass</string>
+    <string name="item_focus_charm">Focus Charm</string>
+    <string name="item_skybreaker_staff">Skybreaker Staff</string>
+    <string name="item_sunforged_crown">Sunforged Crown</string>
     <string name="item_crown_of_trials">Crown of Trials</string>
     <string name="item_unknown">Unknown item</string>
     <string name="main_tagline">Defeat enemies by doing real exercises in front of the camera</string>
@@ -227,6 +233,12 @@
     <string name="quest_title_regular_squats">Weekly warm-up</string>
     <string name="quest_title_difficult_pushups">Break the resistance</string>
     <string name="quest_title_challenge_pullups">Trial without relics</string>
+    <string name="quest_title_regular_lunges">Trailblazer March</string>
+    <string name="quest_title_difficult_plank">Shielded Plank</string>
+    <string name="quest_title_challenge_squats">Stone Stance Trial</string>
+    <string name="quest_title_regular_crunches">Core Rhythm</string>
+    <string name="quest_title_difficult_pullups">Height of Resistance</string>
+    <string name="quest_title_challenge_pushups">Sunstrike Trial</string>
     <string name="quest_exercise">Exercise: %1$s</string>
     <string name="quest_goal_regular">Defeat %1$d opponents using %2$s.</string>
     <string name="quest_goal_resistant">Defeat %1$d opponents resistant to %2$s.</string>
