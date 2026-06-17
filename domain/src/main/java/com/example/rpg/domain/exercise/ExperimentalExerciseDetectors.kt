@@ -57,14 +57,8 @@ abstract class ExperimentalExerciseDetector(
     )
 }
 
-class PushUpDetector : ExperimentalExerciseDetector(ExerciseType.PUSH_UP)
-
 class PullUpDetector : ExperimentalExerciseDetector(ExerciseType.PULL_UP)
 
 class CrunchDetector : ExperimentalExerciseDetector(ExerciseType.CRUNCH)
 
-class LungeDetector : ExperimentalExerciseDetector(ExerciseType.LUNGE)
-
 class JumpingJackDetector : ExperimentalExerciseDetector(ExerciseType.JUMPING_JACK)
-
-class PlankDetector : ExperimentalExerciseDetector(ExerciseType.PLANK)

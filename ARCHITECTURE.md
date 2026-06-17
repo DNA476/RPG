@@ -98,6 +98,7 @@ Responsibilities:
 - Exercise content model, difficulty, and detector status.
 - Exercise detector interface.
 - Stateful squat recognition and its configuration.
+- Experimental push-up, lunge, and plank state machines for live testing.
 - Typed detector feedback values that the Android UI maps to localized strings.
 - Detector factory and safe experimental detector placeholders.
 
@@ -188,8 +189,10 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 10. `PoseAnalyzer.analyze()` sends an accepted bitmap to MediaPipe.
 11. MediaPipe results become `PoseFrame` values.
 12. While tracking, `BattleViewModel` passes frames to the selected detector.
-13. The ready squat detector recognizes standing -> bottom -> standing and
-   emits `RepetitionCompleted`.
+13. The selected detector emits `RepetitionCompleted` for a valid movement
+   cycle. Squat recognizes standing -> bottom -> standing; push-up and lunge
+   use experimental top/bottom/return state machines; plank emits one completed
+   interval for each three seconds of tracked hold.
 14. `BattleSession` calculates damage from base damage, affinity, and current
    attack multiplier, mutates HP, and publishes a `BattleSnapshot`.
 15. After `BattleSession` accepts a live repetition, `BattleViewModel` records
@@ -261,7 +264,8 @@ behind adapters in `:app`; inject them at the composition root.
 ## Testing Strategy
 
 - `:domain`: deterministic pose sequences for detector state machines,
-  visibility thresholds, boundary angles, reset, and invalid frames.
+  visibility thresholds, boundary angles, reset, hold intervals, and invalid
+  frames.
 - `:game`: attack mapping, damage, state transitions, victory, reset, and ignored
   events.
 - `:data`: repository contract tests when persistence is introduced.

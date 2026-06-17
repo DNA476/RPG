@@ -25,8 +25,11 @@ The repository is an MVP/prototype, not a production-ready application.
 - Exercise catalog: squat, push-up, pull-up, crunch, lunge, jumping jack, and
   plank.
 - Ready detector: squat.
-- Experimental placeholders: all other catalog exercises. They safely consume
-  tracking state but do not count live-camera repetitions yet.
+- Experimental live detectors: push-up, lunge, and plank. Push-up and lunge use
+  simple movement state machines; plank applies one completed interval every
+  three seconds of a tracked hold.
+- Experimental placeholders: pull-up, crunch, and jumping jack. They safely
+  consume tracking state but do not count live-camera repetitions yet.
 - Encounter selection: after choosing an exercise, the player receives three
   random enemies and chooses one. The trio has no refresh action and is cached
   for that exercise during the current app session.
@@ -149,7 +152,8 @@ first:
   duration because sessions do not yet track active exercise time precisely.
 - Local statistics use SharedPreferences daily aggregates and have no export,
   backup UI, or migration to Room yet.
-- Only squat has a calibrated movement state machine.
+- Only squat has a calibrated movement state machine. Push-up, lunge, and plank
+  have uncalibrated experimental state machines for live testing.
 - Experimental detectors report tracking feedback but require exercise-specific
   recognition and calibration.
 - Dependencies are manually constructed; there is no DI framework.

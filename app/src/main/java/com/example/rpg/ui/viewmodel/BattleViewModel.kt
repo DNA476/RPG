@@ -490,10 +490,18 @@ class BattleViewModel(
         session.handleExerciseEvent(event)
         val battle = session.state.value
         if (recordStatistics && battle.completedRepetitions > previousRepetitionCount) {
-            fitnessRepository.recordRepetition(
-                exerciseType = event.exerciseType,
-                date = currentDate(),
-            )
+            if (event.activeSeconds > 0) {
+                fitnessRepository.recordActiveSeconds(
+                    exerciseType = event.exerciseType,
+                    seconds = event.activeSeconds,
+                    date = currentDate(),
+                )
+            } else {
+                fitnessRepository.recordRepetition(
+                    exerciseType = event.exerciseType,
+                    date = currentDate(),
+                )
+            }
         }
         val damage = battle.lastDamage ?: return
         exerciseStatusResource = R.string.feedback_repetition_counted

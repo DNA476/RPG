@@ -57,6 +57,8 @@ Statuses describe repository state as of 2026-06-17.
   resistant-matchup victories.
 - [x] Add a custom adaptive launcher icon for APK builds.
 - [x] Keep bottom UI actions above the Android system navigation bar.
+- [x] Add experimental live detectors for push-up, lunge, and plank so they can
+  produce battle attacks during real camera sessions.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
@@ -109,9 +111,9 @@ changes across the ViewModel and UI.
 
 ## Content And Game Expansion
 
-- [ ] Implement and validate lunge detection.
-- [ ] Implement and validate push-up, pull-up, crunch, jumping-jack, and plank
-  detection.
+- [ ] Calibrate and validate lunge, push-up, and plank detection against real
+  camera sessions and recorded video.
+- [ ] Implement and validate pull-up, crunch, and jumping-jack detection.
 - [ ] Add distinct attack feedback for basic, heavy, and critical attacks.
 - [x] Add multiple enemies and configurable encounters.
 - [ ] Add enemy phases or exercise prompts.

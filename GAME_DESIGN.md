@@ -32,7 +32,10 @@ Current rules:
 - On first launch, weight, height, and sex are requested but all fields may be
   skipped.
 - The menu offers seven exercises.
-- Squat is ready for live pose detection; the other six are experimental.
+- Squat is ready for live pose detection.
+- Push-up, lunge, and plank have experimental live detectors. Push-up and lunge
+  count complete movement cycles; plank deals damage for each held interval.
+- Pull-up, crunch, and jumping jack remain experimental placeholders.
 - Valid cycle: standing -> squat bottom -> standing.
 - One valid repetition produces one attack.
 - Damage equals the selected exercise's configured base damage: squat/crunch 1,
@@ -88,7 +91,7 @@ Current rules:
   quest-exclusive.
 
 Debug builds can simulate a repetition, allowing every configured exercise and
-damage value to complete the battle before its live detector is ready.
+damage value to complete the battle even before its live detector is ready.
 
 ## Design Principles
 
