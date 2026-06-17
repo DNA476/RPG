@@ -1,8 +1,12 @@
 package com.example.rpg.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import com.example.rpg.ui.screens.BattleScreen
 import com.example.rpg.ui.screens.EnemySelectionScreen
 import com.example.rpg.ui.screens.MainMenuScreen
@@ -19,84 +23,90 @@ import com.example.rpg.ui.viewmodel.BattleViewModel
 fun FitnessRpgApp(viewModel: BattleViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
-    when (uiState.screen) {
-        AppScreen.ONBOARDING -> ProfileScreen(
-            form = uiState.profileForm,
-            isOnboarding = true,
-            onWeightChanged = viewModel::updateProfileWeight,
-            onHeightChanged = viewModel::updateProfileHeight,
-            onSexSelected = viewModel::selectProfileSex,
-            onSave = viewModel::saveProfile,
-            onSkip = viewModel::skipOnboarding,
-            onBack = {},
-        )
-        AppScreen.MAIN_MENU -> MainMenuScreen(
-            exercises = uiState.exercises,
-            selectedExercise = uiState.selectedExercise,
-            todayEstimatedCalories = uiState.todayEstimatedCalories,
-            todayHasActivity = uiState.todayHasActivity,
-            usesDefaultWeight = uiState.userProfile.weightKg == null,
-            onExerciseSelected = viewModel::selectExercise,
-            onContinue = viewModel::openEnemySelection,
-            onStatistics = viewModel::openStatistics,
-            onProfile = viewModel::openProfile,
-            onSettings = viewModel::openSettings,
-            onInventory = viewModel::openInventory,
-            onQuests = viewModel::openQuests,
-        )
-        AppScreen.STATISTICS -> StatisticsScreen(
-            statistics = uiState.statistics,
-            exercises = uiState.exercises,
-            onPeriodSelected = viewModel::selectStatisticsPeriod,
-            onExerciseSelected = viewModel::selectStatisticsExercise,
-            onBack = viewModel::returnFromStatistics,
-        )
-        AppScreen.PROFILE -> ProfileScreen(
-            form = uiState.profileForm,
-            isOnboarding = false,
-            onWeightChanged = viewModel::updateProfileWeight,
-            onHeightChanged = viewModel::updateProfileHeight,
-            onSexSelected = viewModel::selectProfileSex,
-            onSave = viewModel::saveProfile,
-            onSkip = {},
-            onBack = viewModel::returnFromProfile,
-        )
-        AppScreen.SETTINGS -> SettingsScreen(
-            onBack = viewModel::returnFromSettings,
-        )
-        AppScreen.INVENTORY -> InventoryScreen(
-            inventory = uiState.inventory,
-            onEquip = viewModel::equipInventoryItem,
-            onUnequip = viewModel::unequipInventorySlot,
-            onBack = viewModel::returnFromInventory,
-        )
-        AppScreen.QUESTS -> WeeklyQuestsScreen(
-            weeklyQuests = uiState.weeklyQuests,
-            onStartQuest = viewModel::startQuest,
-            onBack = viewModel::returnFromQuests,
-        )
-        AppScreen.ENEMY_SELECTION -> EnemySelectionScreen(
-            exercise = requireNotNull(uiState.selectedExercise),
-            enemies = uiState.enemyChoices,
-            selectedEnemy = uiState.selectedEnemy,
-            onEnemySelected = viewModel::selectEnemy,
-            onStartBattle = viewModel::startBattle,
-            onBack = viewModel::returnToExerciseSelection,
-        )
-        AppScreen.BATTLE -> BattleScreen(
-            uiState = uiState,
-            poseAnalyzer = viewModel.poseAnalyzer,
-            onBackToMenu = viewModel::returnToMenu,
-            onSimulateRepetition = viewModel::simulateRepetition,
-        )
-        AppScreen.VICTORY -> VictoryScreen(
-            enemyId = requireNotNull(uiState.selectedEnemy).id,
-            exerciseType = requireNotNull(uiState.selectedExercise).type,
-            completedRepetitions = uiState.completedRepetitions,
-            totalDamage = uiState.totalDamage,
-            questProgressAdvanced = uiState.advancedQuestIds.isNotEmpty(),
-            inventoryRewardGranted = uiState.rewardedItemIds.isNotEmpty(),
-            onBackToMenu = viewModel::returnToMenu,
-        )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding(),
+    ) {
+        when (uiState.screen) {
+            AppScreen.ONBOARDING -> ProfileScreen(
+                form = uiState.profileForm,
+                isOnboarding = true,
+                onWeightChanged = viewModel::updateProfileWeight,
+                onHeightChanged = viewModel::updateProfileHeight,
+                onSexSelected = viewModel::selectProfileSex,
+                onSave = viewModel::saveProfile,
+                onSkip = viewModel::skipOnboarding,
+                onBack = {},
+            )
+            AppScreen.MAIN_MENU -> MainMenuScreen(
+                exercises = uiState.exercises,
+                selectedExercise = uiState.selectedExercise,
+                todayEstimatedCalories = uiState.todayEstimatedCalories,
+                todayHasActivity = uiState.todayHasActivity,
+                usesDefaultWeight = uiState.userProfile.weightKg == null,
+                onExerciseSelected = viewModel::selectExercise,
+                onContinue = viewModel::openEnemySelection,
+                onStatistics = viewModel::openStatistics,
+                onProfile = viewModel::openProfile,
+                onSettings = viewModel::openSettings,
+                onInventory = viewModel::openInventory,
+                onQuests = viewModel::openQuests,
+            )
+            AppScreen.STATISTICS -> StatisticsScreen(
+                statistics = uiState.statistics,
+                exercises = uiState.exercises,
+                onPeriodSelected = viewModel::selectStatisticsPeriod,
+                onExerciseSelected = viewModel::selectStatisticsExercise,
+                onBack = viewModel::returnFromStatistics,
+            )
+            AppScreen.PROFILE -> ProfileScreen(
+                form = uiState.profileForm,
+                isOnboarding = false,
+                onWeightChanged = viewModel::updateProfileWeight,
+                onHeightChanged = viewModel::updateProfileHeight,
+                onSexSelected = viewModel::selectProfileSex,
+                onSave = viewModel::saveProfile,
+                onSkip = {},
+                onBack = viewModel::returnFromProfile,
+            )
+            AppScreen.SETTINGS -> SettingsScreen(
+                onBack = viewModel::returnFromSettings,
+            )
+            AppScreen.INVENTORY -> InventoryScreen(
+                inventory = uiState.inventory,
+                onEquip = viewModel::equipInventoryItem,
+                onUnequip = viewModel::unequipInventorySlot,
+                onBack = viewModel::returnFromInventory,
+            )
+            AppScreen.QUESTS -> WeeklyQuestsScreen(
+                weeklyQuests = uiState.weeklyQuests,
+                onStartQuest = viewModel::startQuest,
+                onBack = viewModel::returnFromQuests,
+            )
+            AppScreen.ENEMY_SELECTION -> EnemySelectionScreen(
+                exercise = requireNotNull(uiState.selectedExercise),
+                enemies = uiState.enemyChoices,
+                selectedEnemy = uiState.selectedEnemy,
+                onEnemySelected = viewModel::selectEnemy,
+                onStartBattle = viewModel::startBattle,
+                onBack = viewModel::returnToExerciseSelection,
+            )
+            AppScreen.BATTLE -> BattleScreen(
+                uiState = uiState,
+                poseAnalyzer = viewModel.poseAnalyzer,
+                onBackToMenu = viewModel::returnToMenu,
+                onSimulateRepetition = viewModel::simulateRepetition,
+            )
+            AppScreen.VICTORY -> VictoryScreen(
+                enemyId = requireNotNull(uiState.selectedEnemy).id,
+                exerciseType = requireNotNull(uiState.selectedExercise).type,
+                completedRepetitions = uiState.completedRepetitions,
+                totalDamage = uiState.totalDamage,
+                questProgressAdvanced = uiState.advancedQuestIds.isNotEmpty(),
+                inventoryRewardGranted = uiState.rewardedItemIds.isNotEmpty(),
+                onBackToMenu = viewModel::returnToMenu,
+            )
+        }
     }
 }

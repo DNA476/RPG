@@ -56,6 +56,8 @@ Current rules:
   available; otherwise the UI states that a 70 kg default is used.
 - The main menu has a top-left drawer containing profile, statistics, and
   settings.
+- Bottom action buttons should remain above the Android system navigation bar on
+  devices that use gesture or three-button navigation.
 - A prominent main-menu card shows today's approximate calorie total and opens
   the seven-day statistics view. With no activity it says that there is no
   activity yet.

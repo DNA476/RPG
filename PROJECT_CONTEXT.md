@@ -47,6 +47,8 @@ The repository is an MVP/prototype, not a production-ready application.
 - The main menu exposes profile, statistics, and settings through a top-left
   navigation drawer. A clickable card shows today's approximate calories and
   opens the seven-day statistics view.
+- The app keeps its Compose screens above the Android navigation bar so bottom
+  actions remain visible on devices with three-button or gesture navigation.
 - Settings allow the player to follow the device language or explicitly choose
   Russian, English, German, Spanish, French, or Portuguese. Unsupported device
   locales fall back to Russian.

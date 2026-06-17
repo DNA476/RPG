@@ -56,6 +56,7 @@ Statuses describe repository state as of 2026-06-17.
 - [x] Start players with zero artifacts and grant non-quest artifacts from
   resistant-matchup victories.
 - [x] Add a custom adaptive launcher icon for APK builds.
+- [x] Keep bottom UI actions above the Android system navigation bar.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
@@ -182,3 +183,5 @@ changes across the ViewModel and UI.
   resistant victories, and keep the strongest rewards quest-exclusive.
 - 2026-06-17: Use a custom adaptive launcher icon so APK builds no longer ship
   the default Android placeholder icon.
+- 2026-06-17: Apply the Android navigation bar inset at the Compose app root so
+  bottom buttons are not covered by system controls.

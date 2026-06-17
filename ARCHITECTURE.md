@@ -33,6 +33,8 @@ Responsibilities:
 - ViewModel orchestration and conversion to UI state.
 - State-driven navigation between onboarding, menu, statistics, profile,
   settings, inventory/equipment, weekly quests, battle, and victory.
+- Root-level Compose handling for the Android navigation bar inset, so screen
+  content does not sit under system controls.
 - Main-menu-only navigation drawer for profile, statistics, and settings
   destinations.
 - Android string resources and AppCompat per-app locales for device-selected or
@@ -162,6 +164,8 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
    statistics, and language settings, a daily calorie card links directly to
    seven-day statistics, a backpack button opens inventory, and a
    sword-in-shield button opens weekly quests.
+   `FitnessRpgApp` applies the bottom system navigation inset before rendering
+   the current screen.
 3. Inventory and equipment share a horizontal pager. Slot selection filters the
    inventory, while equip/unequip changes are saved locally. Fresh players start
    with non-artifact test equipment only; legacy local saves have the old demo
