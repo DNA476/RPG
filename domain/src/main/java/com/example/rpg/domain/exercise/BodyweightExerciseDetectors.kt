@@ -4,9 +4,6 @@ import com.example.rpg.domain.pose.BodyLandmark
 import com.example.rpg.domain.pose.BodyLandmarkName
 import com.example.rpg.domain.pose.PoseFrame
 import com.example.rpg.domain.pose.PoseTrackingState
-import kotlin.math.abs
-import kotlin.math.acos
-import kotlin.math.sqrt
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,7 +60,7 @@ class PushUpDetector(
         }
 
         val hasStraightBody = metrics.bodyAngle >= config.minBodyLineAngleDegrees &&
-            metrics.bodyVerticalRange <= config.maxBodyVerticalRange
+            metrics.bodySpan >= config.minBodySpan
         val isTop = hasStraightBody && metrics.elbowAngle >= config.topElbowAngleDegrees
         val isBottom = hasStraightBody && metrics.elbowAngle <= config.bottomElbowAngleDegrees
 
@@ -124,12 +121,13 @@ class PushUpDetector(
         debugInfo = debugInfo,
     )
 }
-
 data class PushUpDetectorConfig(
     val topElbowAngleDegrees: Float = 155f,
     val bottomElbowAngleDegrees: Float = 105f,
     val minBodyLineAngleDegrees: Float = 145f,
+    /** Kept for source compatibility; body orientation no longer needs to be horizontal. */
     val maxBodyVerticalRange: Float = 0.35f,
+    val minBodySpan: Float = 0.18f,
     val minLandmarkVisibility: Float = 0.55f,
     val eventBufferCapacity: Int = 8,
 )
@@ -303,7 +301,7 @@ class PlankDetector(
         }
 
         val isPlank = metrics.bodyAngle >= config.minBodyLineAngleDegrees &&
-            metrics.bodyVerticalRange <= config.maxBodyVerticalRange
+            metrics.bodySpan >= config.minBodySpan
         if (!isPlank) {
             clearHold()
             mutableResult.value = ExerciseDetectionResult(
@@ -366,7 +364,9 @@ class PlankDetector(
 data class PlankDetectorConfig(
     val damageIntervalMs: Long = 3_000L,
     val minBodyLineAngleDegrees: Float = 160f,
+    /** Kept for source compatibility; body orientation no longer needs to be horizontal. */
     val maxBodyVerticalRange: Float = 0.25f,
+    val minBodySpan: Float = 0.18f,
     val minLandmarkVisibility: Float = 0.55f,
     val eventBufferCapacity: Int = 8,
 ) {
@@ -377,10 +377,11 @@ private data class PushUpMetrics(
     val elbowAngle: Float,
     val bodyAngle: Float,
     val bodyVerticalRange: Float,
+    val bodySpan: Float,
     val confidence: Float,
 ) {
     val debugInfo: String =
-        "elbowAngle=$elbowAngle; bodyAngle=$bodyAngle; bodyVerticalRange=$bodyVerticalRange"
+        "elbowAngle=$elbowAngle; bodyAngle=$bodyAngle; bodySpan=$bodySpan; bodyVerticalRange=$bodyVerticalRange"
 
     companion object {
         fun from(frame: PoseFrame, config: PushUpDetectorConfig): PushUpMetrics? {
@@ -389,6 +390,7 @@ private data class PushUpMetrics(
                 elbow = BodyLandmarkName.LEFT_ELBOW,
                 wrist = BodyLandmarkName.LEFT_WRIST,
                 hip = BodyLandmarkName.LEFT_HIP,
+                knee = BodyLandmarkName.LEFT_KNEE,
                 ankle = BodyLandmarkName.LEFT_ANKLE,
                 minVisibility = config.minLandmarkVisibility,
             )
@@ -397,6 +399,7 @@ private data class PushUpMetrics(
                 elbow = BodyLandmarkName.RIGHT_ELBOW,
                 wrist = BodyLandmarkName.RIGHT_WRIST,
                 hip = BodyLandmarkName.RIGHT_HIP,
+                knee = BodyLandmarkName.RIGHT_KNEE,
                 ankle = BodyLandmarkName.RIGHT_ANKLE,
                 minVisibility = config.minLandmarkVisibility,
             )
@@ -406,6 +409,7 @@ private data class PushUpMetrics(
                 elbowAngle = sides.map { it.elbowAngle }.average().toFloat(),
                 bodyAngle = sides.map { it.bodyAngle }.average().toFloat(),
                 bodyVerticalRange = sides.minOf { it.bodyVerticalRange },
+                bodySpan = sides.maxOf { it.bodySpan },
                 confidence = sides.flatMap { it.landmarks }.confidence(),
             )
         }
@@ -440,7 +444,7 @@ private data class LungeMetrics(
             return LungeMetrics(
                 leftKneeAngle = angleDegrees(leftHip, leftKnee, leftAnkle) ?: return null,
                 rightKneeAngle = angleDegrees(rightHip, rightKnee, rightAnkle) ?: return null,
-                ankleSpread = maxOf(abs(leftAnkle.x - rightAnkle.x), abs(leftAnkle.y - rightAnkle.y)),
+                ankleSpread = distance3d(leftAnkle, rightAnkle),
                 confidence = listOf(leftHip, leftKnee, leftAnkle, rightHip, rightKnee, rightAnkle).confidence(),
             )
         }
@@ -450,9 +454,10 @@ private data class LungeMetrics(
 private data class PlankMetrics(
     val bodyAngle: Float,
     val bodyVerticalRange: Float,
+    val bodySpan: Float,
     val confidence: Float,
 ) {
-    val debugInfo: String = "bodyAngle=$bodyAngle; bodyVerticalRange=$bodyVerticalRange"
+    val debugInfo: String = "bodyAngle=$bodyAngle; bodySpan=$bodySpan; bodyVerticalRange=$bodyVerticalRange"
 
     companion object {
         fun from(frame: PoseFrame, config: PlankDetectorConfig): PlankMetrics? {
@@ -466,15 +471,24 @@ private data class PlankMetrics(
                 BodyLandmarkName.RIGHT_HIP,
                 config.minLandmarkVisibility,
             ) ?: return null
+            val knee = frame.averageVisible(
+                BodyLandmarkName.LEFT_KNEE,
+                BodyLandmarkName.RIGHT_KNEE,
+                config.minLandmarkVisibility,
+            )
             val ankle = frame.averageVisible(
                 BodyLandmarkName.LEFT_ANKLE,
                 BodyLandmarkName.RIGHT_ANKLE,
                 config.minLandmarkVisibility,
-            ) ?: return null
+            )
+            val endpoint = listOfNotNull(knee, ankle)
+                .maxByOrNull { point -> angleDegrees(shoulder, hip, point) ?: 0f }
+                ?: return null
             return PlankMetrics(
-                bodyAngle = angleDegrees(shoulder, hip, ankle) ?: return null,
-                bodyVerticalRange = maxOf(shoulder.y, hip.y, ankle.y) - minOf(shoulder.y, hip.y, ankle.y),
-                confidence = listOf(shoulder, hip, ankle).confidence(),
+                bodyAngle = angleDegrees(shoulder, hip, endpoint) ?: return null,
+                bodyVerticalRange = maxOf(shoulder.y, hip.y, endpoint.y) - minOf(shoulder.y, hip.y, endpoint.y),
+                bodySpan = distance3d(shoulder, endpoint),
+                confidence = listOf(shoulder, hip, endpoint).confidence(),
             )
         }
     }
@@ -484,6 +498,7 @@ private data class SideMetrics(
     val elbowAngle: Float,
     val bodyAngle: Float,
     val bodyVerticalRange: Float,
+    val bodySpan: Float,
     val landmarks: List<BodyLandmark>,
 )
 
@@ -492,6 +507,7 @@ private fun PoseFrame.sideMetrics(
     elbow: BodyLandmarkName,
     wrist: BodyLandmarkName,
     hip: BodyLandmarkName,
+    knee: BodyLandmarkName,
     ankle: BodyLandmarkName,
     minVisibility: Float,
 ): SideMetrics? {
@@ -499,57 +515,23 @@ private fun PoseFrame.sideMetrics(
     val elbowPoint = visibleLandmark(elbow, minVisibility)
     val wristPoint = visibleLandmark(wrist, minVisibility)
     val hipPoint = visibleLandmark(hip, minVisibility)
+    val kneePoint = visibleLandmark(knee, minVisibility)
     val anklePoint = visibleLandmark(ankle, minVisibility)
     if (
         shoulderPoint == null || elbowPoint == null || wristPoint == null ||
-        hipPoint == null || anklePoint == null
+        hipPoint == null || (kneePoint == null && anklePoint == null)
     ) {
         return null
     }
-    val bodyYValues = listOf(shoulderPoint.y, hipPoint.y, anklePoint.y)
+    val endpoint = listOfNotNull(kneePoint, anklePoint)
+        .maxByOrNull { point -> angleDegrees(shoulderPoint, hipPoint, point) ?: 0f }
+        ?: return null
+    val bodyYValues = listOf(shoulderPoint.y, hipPoint.y, endpoint.y)
     return SideMetrics(
         elbowAngle = angleDegrees(shoulderPoint, elbowPoint, wristPoint) ?: return null,
-        bodyAngle = angleDegrees(shoulderPoint, hipPoint, anklePoint) ?: return null,
+        bodyAngle = angleDegrees(shoulderPoint, hipPoint, endpoint) ?: return null,
         bodyVerticalRange = bodyYValues.max() - bodyYValues.min(),
-        landmarks = listOf(shoulderPoint, elbowPoint, wristPoint, hipPoint, anklePoint),
+        bodySpan = distance3d(shoulderPoint, endpoint),
+        landmarks = listOf(shoulderPoint, elbowPoint, wristPoint, hipPoint, endpoint),
     )
 }
-
-private fun PoseFrame.visibleLandmark(name: BodyLandmarkName, minVisibility: Float): BodyLandmark? =
-    landmark(name)?.takeIf { it.visibility >= minVisibility }
-
-private fun PoseFrame.averageVisible(
-    first: BodyLandmarkName,
-    second: BodyLandmarkName,
-    minVisibility: Float,
-): BodyLandmark? {
-    val firstLandmark = visibleLandmark(first, minVisibility)
-    val secondLandmark = visibleLandmark(second, minVisibility)
-    val visible = listOfNotNull(firstLandmark, secondLandmark)
-    if (visible.isEmpty()) return null
-    return BodyLandmark(
-        name = visible.first().name,
-        x = visible.map { it.x }.average().toFloat(),
-        y = visible.map { it.y }.average().toFloat(),
-        z = visible.map { it.z }.average().toFloat(),
-        visibility = visible.map { it.visibility }.average().toFloat(),
-        presence = visible.map { it.presence }.average().toFloat(),
-    )
-}
-
-private fun angleDegrees(first: BodyLandmark, middle: BodyLandmark, last: BodyLandmark): Float? {
-    val firstX = first.x - middle.x
-    val firstY = first.y - middle.y
-    val lastX = last.x - middle.x
-    val lastY = last.y - middle.y
-    val dot = firstX * lastX + firstY * lastY
-    val firstLength = sqrt(firstX * firstX + firstY * firstY)
-    val lastLength = sqrt(lastX * lastX + lastY * lastY)
-    if (firstLength == 0f || lastLength == 0f) return null
-
-    val cosine = (dot / (firstLength * lastLength)).coerceIn(-1f, 1f)
-    return Math.toDegrees(acos(cosine).toDouble()).toFloat()
-}
-
-private fun List<BodyLandmark>.confidence(): Float =
-    if (isEmpty()) 0f else map { it.visibility }.average().toFloat()

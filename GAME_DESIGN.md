@@ -33,9 +33,9 @@ Current rules:
   skipped.
 - The menu offers seven exercises.
 - Squat is ready for live pose detection.
-- Push-up, lunge, and plank have experimental live detectors. Push-up and lunge
-  count complete movement cycles; plank deals damage for each held interval.
-- Pull-up, crunch, and jumping jack remain experimental placeholders.
+- Push-up, pull-up, crunch, lunge, jumping jack, and plank have experimental
+  live detectors. Dynamic exercises count complete movement cycles; plank deals
+  damage for each held interval.
 - Valid cycle: standing -> squat bottom -> standing.
 - One valid repetition produces one attack.
 - Damage equals the selected exercise's configured base damage: squat/crunch 1,
@@ -53,6 +53,12 @@ Current rules:
   rarity roll, or experience loop yet.
 - Every accepted live repetition is added immediately to local daily
   statistics, even if the player leaves before victory.
+- All seven catalog exercises have live repetition paths. Squat is the ready
+  detector; the other six remain visibly experimental while their front-facing
+  3D thresholds are calibrated with real users and recordings.
+- Front-facing play is the primary experimental target. Detection uses depth,
+  does not require a horizontal body on screen, and accepts knee-supported or
+  inclined push-up/plank positions when movement remains distinguishable.
 - Debug-simulated repetitions do not affect fitness history.
 - Statistics can be viewed for 7, 30, or 90 days and filtered by exercise.
 - Calories are explicitly approximate. Weight personalizes the estimate when

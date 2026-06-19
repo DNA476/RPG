@@ -79,6 +79,8 @@ Responsibilities:
 - Run asynchronous live-stream inference.
 - Apply confidence configuration.
 - Convert MediaPipe landmarks to domain `PoseFrame` objects.
+- Preserve normalized image landmarks for overlays and MediaPipe world
+  landmarks for view-independent exercise geometry.
 - Publish tracking, no-person, and error states.
 - Reject a new frame while inference is already in progress.
 
@@ -97,10 +99,13 @@ Responsibilities:
 - Exercise identifiers and event contracts.
 - Exercise content model, difficulty, and detector status.
 - Exercise detector interface.
-- Stateful squat recognition and its configuration.
-- Experimental push-up, lunge, and plank state machines for live testing.
+- Stateful recognition and configuration for every catalog exercise.
+- Shared 3D angle and distance calculations that prefer world coordinates and
+  fall back to normalized coordinates.
+- Experimental front-facing paths for push-up, pull-up, crunch, lunge, jumping
+  jack, and plank; push-up and plank support knee or ankle body endpoints.
 - Typed detector feedback values that the Android UI maps to localized strings.
-- Detector factory and safe experimental detector placeholders.
+- Detector factory and safe experimental detector implementations.
 
 This module must not know about Compose, CameraX, MediaPipe, enemies, or damage.
 
@@ -193,10 +198,10 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 10. `PoseAnalyzer.analyze()` sends an accepted bitmap to MediaPipe.
 11. MediaPipe results become `PoseFrame` values.
 12. While tracking, `BattleViewModel` passes frames to the selected detector.
-13. The selected detector emits `RepetitionCompleted` for a valid movement
-   cycle. Squat recognizes standing -> bottom -> standing; push-up and lunge
-   use experimental top/bottom/return state machines; plank emits one completed
-   interval for each three seconds of tracked hold.
+13. The selected detector calculates 3D metrics and emits `RepetitionCompleted`
+   for a valid movement cycle. Squat, push-up, pull-up, crunch, lunge, and
+   jumping jack use exercise-specific start/target/return state machines; plank
+   emits one completed interval for each three seconds of tracked hold.
 14. `BattleSession` calculates damage from base damage, affinity, and current
    attack multiplier, mutates HP, and publishes a `BattleSnapshot`.
 15. After `BattleSession` accepts a live repetition, `BattleViewModel` records

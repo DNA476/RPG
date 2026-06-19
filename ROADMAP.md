@@ -20,8 +20,8 @@ Statuses describe repository state as of 2026-06-19.
 - [x] Add a visible goblin enemy and synchronized hit-reaction animation.
 - [x] Add a main menu with seven exercise cards and explicit selection.
 - [x] Add scalable exercise content models and a central `ExerciseCatalog`.
-- [x] Add `ExerciseDetectorFactory` with a ready squat detector and safe
-  experimental placeholders.
+- [x] Add `ExerciseDetectorFactory` with a ready squat detector and initially
+  safe experimental placeholders.
 - [x] Calculate damage from the selected exercise configuration.
 - [x] Add menu -> battle -> victory -> menu navigation.
 - [x] Add a debug-only simulated repetition action.
@@ -44,6 +44,12 @@ Statuses describe repository state as of 2026-06-19.
 - [x] Scale enemy HP on a cubic curve from the level-1 baseline to `3x` at
   level 12.
 - [x] Keep debug-simulated repetitions out of fitness statistics.
+- [x] Add functional experimental repetition state machines for pull-ups,
+  crunches, and jumping jacks so every catalog exercise can be live-tested.
+- [x] Use MediaPipe world landmarks with normalized 3D fallback for
+  front-facing exercise geometry.
+- [x] Remove horizontal screen-orientation requirements from push-up and plank
+  detection and support knee or ankle body endpoints.
 - [x] Move profile and statistics navigation into a main-menu drawer.
 - [x] Add a clickable main-menu card for today's approximate calories.
 - [x] Add settings with an in-app language selector.
@@ -74,7 +80,8 @@ Statuses describe repository state as of 2026-06-19.
   devices.
 - [ ] Verify debug-video orientation and skeleton alignment.
 - [ ] Test lifecycle transitions: background, resume, input switch, reset.
-- [ ] Replace placeholder generated tests with project-specific coverage.
+- [ ] Expand project-specific coverage beyond detector, combat, data, and
+  catalog rules into ViewModel and Compose navigation tests.
 - [ ] Add structured input/pose error reporting instead of display-only strings.
 - [ ] Measure dropped frames and inference latency on a low/mid-range device.
 
@@ -157,6 +164,11 @@ changes across the ViewModel and UI.
 
 ## Decision Log
 
+- 2026-06-19: Prefer MediaPipe world landmarks for detector geometry while
+  retaining normalized coordinates for UI overlays and as a fallback.
+- 2026-06-19: Optimize experimental detectors for front-facing tests without
+  removing side-view compatibility; keep all new paths marked experimental
+  until recorded and live calibration is complete.
 - 2026-06-19: Derive player level from lifetime approximate calories using
   `100 * 2^level` thresholds; use level 0 before 200 kcal and cap at level 12.
 - 2026-06-19: Treat catalog enemy HP as the level-1 baseline and use cubic

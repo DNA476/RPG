@@ -82,8 +82,10 @@ class PoseAnalyzer(
 
     private fun onPoseResult(result: PoseLandmarkerResult, input: com.google.mediapipe.framework.image.MPImage) {
         val firstPose = result.landmarks().firstOrNull()
+        val firstWorldPose = result.worldLandmarks().firstOrNull()
         val landmarks = firstPose?.mapIndexedNotNull { index, landmark ->
             val name = BodyLandmarkName.fromMediaPipeIndex(index) ?: return@mapIndexedNotNull null
+            val worldLandmark = firstWorldPose?.getOrNull(index)
             BodyLandmark(
                 name = name,
                 x = landmark.x(),
@@ -91,6 +93,9 @@ class PoseAnalyzer(
                 z = landmark.z(),
                 visibility = landmark.visibility().orElse(0f),
                 presence = landmark.presence().orElse(0f),
+                worldX = worldLandmark?.x(),
+                worldY = worldLandmark?.y(),
+                worldZ = worldLandmark?.z(),
             )
         }.orEmpty()
 

@@ -4,8 +4,6 @@ import com.example.rpg.domain.pose.BodyLandmark
 import com.example.rpg.domain.pose.BodyLandmarkName
 import com.example.rpg.domain.pose.PoseFrame
 import com.example.rpg.domain.pose.PoseTrackingState
-import kotlin.math.acos
-import kotlin.math.sqrt
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -147,16 +145,6 @@ class SquatDetector(
         if (hip == null || knee == null || ankle == null) return null
         if (listOf(hip, knee, ankle).any { it.visibility < config.minLandmarkVisibility }) return null
 
-        val vectorHipX = hip.x - knee.x
-        val vectorHipY = hip.y - knee.y
-        val vectorAnkleX = ankle.x - knee.x
-        val vectorAnkleY = ankle.y - knee.y
-        val dot = vectorHipX * vectorAnkleX + vectorHipY * vectorAnkleY
-        val hipLength = sqrt(vectorHipX * vectorHipX + vectorHipY * vectorHipY)
-        val ankleLength = sqrt(vectorAnkleX * vectorAnkleX + vectorAnkleY * vectorAnkleY)
-        if (hipLength == 0f || ankleLength == 0f) return null
-
-        val cosine = (dot / (hipLength * ankleLength)).coerceIn(-1f, 1f)
-        return Math.toDegrees(acos(cosine).toDouble()).toFloat()
+        return angleDegrees(hip, knee, ankle)
     }
 }

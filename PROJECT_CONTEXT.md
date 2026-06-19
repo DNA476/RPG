@@ -25,11 +25,16 @@ The repository is an MVP/prototype, not a production-ready application.
 - Exercise catalog: squat, push-up, pull-up, crunch, lunge, jumping jack, and
   plank.
 - Ready detector: squat.
-- Experimental live detectors: push-up, lunge, and plank. Push-up and lunge use
-  simple movement state machines; plank applies one completed interval every
-  three seconds of a tracked hold.
-- Experimental placeholders: pull-up, crunch, and jumping jack. They safely
-  consume tracking state but do not count live-camera repetitions yet.
+- Experimental live detectors: push-up, pull-up, crunch, lunge, jumping jack,
+  and plank. Every catalog exercise now has a movement-specific state machine
+  that can emit completed repetitions; plank applies one completed interval
+  every three seconds of a tracked hold.
+- Exercise geometry prefers MediaPipe world landmarks and falls back to
+  normalized `x/y/z`, allowing depth motion in a front-facing camera position
+  to contribute to joint angles.
+- Push-up and plank detection no longer require a horizontal screen-space body
+  line. They accept knee or ankle support, enabling knee-supported and inclined
+  variants when the relevant landmarks remain visible.
 - Encounter selection: after choosing an exercise, the player receives three
   random enemies and chooses one. The trio has no refresh action and is cached
   for that exercise during the current app session.
@@ -119,7 +124,8 @@ first:
 
 ## Important Domain Language
 
-- Pose frame: one timestamped set of normalized body landmarks.
+- Pose frame: one timestamped set of normalized body landmarks with optional
+  MediaPipe world coordinates.
 - Exercise detector: stateful logic that consumes pose frames and emits exercise
   events.
 - Repetition: a complete valid movement cycle, not a single pose.
@@ -152,23 +158,25 @@ first:
 
 ## Current Constraints And Risks
 
-- Exercise thresholds are fixed and not calibrated per player.
-- Squat detection uses 2D knee angles and landmark visibility only.
+- Most exercise thresholds are fixed and not yet calibrated per player; crunch
+  uses its first valid extended pose as a relative movement baseline.
+- Joint angles use 3D world coordinates when available and normalized depth as
+  a fallback, but monocular depth and occluded landmarks can still be noisy.
 - There is no temporal smoothing, minimum movement duration, cooldown, or form
   quality score.
 - Calorie estimates use configured MET-like intensity and assumed repetition
   duration because sessions do not yet track active exercise time precisely.
 - Local statistics use SharedPreferences daily aggregates and have no export,
   backup UI, or migration to Room yet.
-- Only squat has a calibrated movement state machine. Push-up, lunge, and plank
-  have uncalibrated experimental state machines for live testing.
-- Experimental detectors report tracking feedback but require exercise-specific
-  recognition and calibration.
+- Only squat has a previously calibrated movement state machine. The other six
+  detectors are functional experimental paths intended for immediate live
+  testing and threshold calibration, especially in front-facing positions.
 - Dependencies are manually constructed; there is no DI framework.
 - Enemy and exercise configurations are in memory.
 - Enemy attack timing is fixed at 15 seconds. The policy boundary exists, but
   exercise difficulty and player fitness are not yet inputs.
-- Automated coverage is currently limited to generated placeholder tests.
+- Detector coverage includes project-specific state-machine and 3D geometry
+  tests; ViewModel and Compose navigation coverage remains limited.
 - Camera, rotation, mirroring, video decoding, and MediaPipe behavior require
   device or emulator validation.
 - `VideoFileFrameSource` expects `assets/raw/test_video.mp4`; the file may be
@@ -179,7 +187,7 @@ first:
 The next useful milestone is reliable detection beyond the menu/combat slice:
 
 - count squats reliably across common camera positions;
-- implement and calibrate one experimental detector at a time;
+- calibrate each experimental detector against front-facing and side-view video;
 - validate the same flow with deterministic recorded video;
 - add ViewModel and Compose navigation tests.
 
