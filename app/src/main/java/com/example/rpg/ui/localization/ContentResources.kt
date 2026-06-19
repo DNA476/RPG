@@ -59,9 +59,15 @@ fun exerciseFeedbackResource(feedback: ExerciseFeedback): Int = when (feedback) 
     ExerciseFeedback.READY_TO_SQUAT -> R.string.feedback_ready_to_squat
     ExerciseFeedback.STRAIGHTEN_LEGS -> R.string.feedback_straighten_legs
     ExerciseFeedback.BOTTOM_REACHED -> R.string.feedback_bottom_reached
+    ExerciseFeedback.TARGET_REACHED -> R.string.feedback_target_reached
     ExerciseFeedback.LOWER_MORE -> R.string.feedback_lower_more
     ExerciseFeedback.REPETITION_COUNTED -> R.string.feedback_repetition_counted
     ExerciseFeedback.RETURN_TO_STANCE -> R.string.feedback_return_to_stance
+    ExerciseFeedback.EXTEND_ARMS -> R.string.feedback_extend_arms
+    ExerciseFeedback.PULL_HIGHER -> R.string.feedback_pull_higher
+    ExerciseFeedback.CURL_UP -> R.string.feedback_curl_up
+    ExerciseFeedback.OPEN_ARMS_AND_LEGS -> R.string.feedback_open_arms_and_legs
+    ExerciseFeedback.CLOSE_ARMS_AND_LEGS -> R.string.feedback_close_arms_and_legs
     ExerciseFeedback.EXPERIMENTAL_DETECTOR -> R.string.feedback_experimental_detector
     ExerciseFeedback.POSE_TRACKED -> R.string.feedback_pose_tracked
     ExerciseFeedback.TRACKING_INITIALIZING -> R.string.feedback_tracking_initializing

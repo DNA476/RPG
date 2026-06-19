@@ -19,7 +19,13 @@ sealed interface ExerciseEvent {
     data class RepetitionCompleted(
         override val exerciseType: ExerciseType,
         val repetitionCount: Int,
-    ) : ExerciseEvent
+        val activeSeconds: Int = 0,
+    ) : ExerciseEvent {
+        constructor(
+            exerciseType: ExerciseType,
+            repetitionCount: Int,
+        ) : this(exerciseType, repetitionCount, activeSeconds = 0)
+    }
 
     /**
      * User returned to the resting phase after an active movement.

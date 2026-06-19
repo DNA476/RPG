@@ -64,6 +64,8 @@ data class StatisticsUiState(
     val totalRepetitions: Int = 0,
     val totalActiveSeconds: Int = 0,
     val estimatedCalories: Int = 0,
+    val playerLevel: Int = 0,
+    val maximumPlayerLevel: Int = 12,
     val activeDays: Int = 0,
     val usesDefaultWeight: Boolean = true,
 )

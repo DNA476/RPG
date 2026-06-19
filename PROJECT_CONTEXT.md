@@ -1,0 +1,207 @@
+# Project Context
+
+## Purpose
+
+This repository contains an Android fitness game. The core interaction is:
+
+1. The device camera observes the player.
+2. On-device pose estimation converts frames into body landmarks.
+3. Exercise detectors recognize valid repetitions.
+4. A completed repetition becomes a game attack.
+5. The attack damages an enemy and updates the battle UI.
+
+The product goal is to make exercise sessions feel like short RPG battles rather
+than passive repetition counters.
+
+## Current Product State
+
+The repository is an MVP/prototype, not a production-ready application.
+
+- Platform: Android.
+- UI: Jetpack Compose.
+- Camera: CameraX with the front camera.
+- Pose estimation: MediaPipe Pose Landmarker, processed locally on the device.
+- App entry point: exercise selection menu.
+- Exercise catalog: squat, push-up, pull-up, crunch, lunge, jumping jack, and
+  plank.
+- Ready detector: squat.
+- Experimental live detectors: push-up, pull-up, crunch, lunge, jumping jack,
+  and plank. Every catalog exercise now has a movement-specific state machine
+  that can emit completed repetitions; plank applies one completed interval
+  every three seconds of a tracked hold.
+- Exercise geometry prefers MediaPipe world landmarks and falls back to
+  normalized `x/y/z`, allowing depth motion in a front-facing camera position
+  to contribute to joint angles.
+- Push-up and plank detection no longer require a horizontal screen-space body
+  line. They accept knee or ankle support, enabling knee-supported and inclined
+  variants when the relevant landmarks remain visible.
+- Encounter selection: after choosing an exercise, the player receives three
+  random enemies and chooses one. The trio has no refresh action and is cached
+  for that exercise during the current app session.
+- Enemy catalog: four goblin roles and two hound variants with distinct HP,
+  portraits, weaknesses, resistances, and weakening abilities.
+- Lifetime approximate calories determine player level from 0 to 12. Level 1
+  unlocks at 200 kcal and each following threshold doubles through 409,600 kcal
+  for level 12; the statistics screen displays the current level.
+- Enemy catalog HP is the level-1 baseline. Enemy HP follows a cubic curve from
+  `1x` at level 1 to `3x` at level 12, with little growth at early levels and
+  larger increases near the maximum. Level 0 uses level-1 HP.
+- Matchmaking guarantees at least one offered enemy is not resistant to the
+  selected exercise.
+- Current combat rule: one valid repetition applies exercise base damage,
+  enemy affinity, and any active attack debuff. Final damage is never below 1.
+- Enemy weakness multiplier: `1.5x`; resistance multiplier: `0.75x`.
+- Enemies attack every 15 seconds and reduce outgoing player damage by 25% for
+  10 seconds. Player HP and defeat are not implemented.
+- Current end state: victory after the boss reaches zero HP.
+- A valid hit shakes the goblin, flashes it red, and overlays a white sword slash.
+- The first launch offers an optional local profile with weight, height, and sex.
+- A statistics screen shows daily exercise activity for 7, 30, or 90 days,
+  supports exercise filtering, and displays approximate calories.
+- The main menu exposes profile, statistics, and settings through a top-left
+  navigation drawer. A clickable card shows today's approximate calories and
+  opens the seven-day statistics view.
+- The app keeps its Compose screens above the Android navigation bar so bottom
+  actions remain visible on devices with three-button or gesture navigation.
+- Settings allow the player to follow the device language or explicitly choose
+  Russian, English, German, Spanish, French, or Portuguese. Unsupported device
+  locales fall back to Russian.
+- A white backpack button in the main-menu header opens a test inventory with
+  20 locally available non-artifact equipment and weapon items. The player
+  starts with zero artifacts. Inventory and equipment are swipe-connected
+  views; equipment uses a white player outline, body slots, a weapon slot, and
+  one artifact slot. Item cards and equipped slots use item-specific scalable
+  outline icons drawn in Compose.
+- A white sword-in-shield button beside the backpack opens the active weekly
+  quest set. The prototype includes three weekly sets: the current ISO week and
+  two future weeks. Each set contains regular, resistant-matchup, and
+  resistant-matchup-without-artifact quests with required exercise, progress,
+  restrictions, and exact item reward.
+- Weekly quest progress and reward state persist locally and reset on the next
+  ISO week. Starting a resistance quest guarantees that the offered encounter
+  contains both a resistant target and a fair non-resistant choice.
+- The full test catalog contains 36 common, rare, epic, or legendary items and
+  seven preview tactical bonus types. Equipped items persist locally, but
+  bonuses do not affect combat yet. Most non-quest artifacts are awarded one at
+  a time after victories over enemies resistant to the selected exercise. Rare,
+  epic, and legendary quest rewards are added to inventory automatically when
+  their test quest reaches its target.
+- The APK uses a custom adaptive launcher icon with a strong goblin holding a
+  shield.
+- Valid live-detector repetitions are persisted immediately as daily local
+  aggregates. Debug-simulated repetitions are intentionally excluded.
+- Accounts, randomized reward rarity rolls, active equipment bonuses, audio,
+  analytics, and backend are absent.
+- Debug builds can switch between live camera input and a looping video asset.
+- Debug builds expose `Simulate repetition` to test every exercise, damage,
+  counters, and victory without camera input.
+
+## Source Of Truth
+
+When documentation and code disagree, code is authoritative. Read these files
+first:
+
+- `settings.gradle.kts` for the module list.
+- `app/src/main/java/com/example/rpg/ui/viewmodel/BattleViewModel.kt` for runtime
+  orchestration.
+- `pose/src/main/java/com/example/rpg/pose/PoseAnalyzer.kt` for pose inference.
+- `data/src/main/java/com/example/rpg/data/exercise/ExerciseCatalog.kt` for
+  exercise content and base damage.
+- `data/src/main/java/com/example/rpg/data/enemy/InMemoryEnemyRepository.kt` for
+  enemy content and random encounter selection.
+- `domain/src/main/java/com/example/rpg/domain/exercise/ExerciseDetectorFactory.kt`
+  for detector construction.
+- `domain/src/main/java/com/example/rpg/domain/exercise/SquatDetector.kt` for
+  ready repetition recognition.
+- `game/src/main/java/com/example/rpg/game/battle/BattleSession.kt` for combat.
+- `data/src/main/java/com/example/rpg/data` for current content/config sources.
+- `data/src/main/java/com/example/rpg/data/statistics` for fitness history
+  contracts, calorie estimation, and level progression.
+- `game/src/main/java/com/example/rpg/game/enemy/EnemyHealthScaling.kt` for the
+  enemy HP progression curve.
+- `app/src/main/java/com/example/rpg/data/local/SharedPreferencesFitnessRepository.kt`
+  for current Android-local persistence.
+
+## Important Domain Language
+
+- Pose frame: one timestamped set of normalized body landmarks with optional
+  MediaPipe world coordinates.
+- Exercise detector: stateful logic that consumes pose frames and emits exercise
+  events.
+- Repetition: a complete valid movement cycle, not a single pose.
+- Attack mapping: conversion from an exercise type to an attack type.
+- Battle session: game state for one enemy encounter.
+- Affinity: an exercise-specific weakness or resistance multiplier.
+- Enemy ability: a timed action that currently applies a temporary attack
+  reduction instead of damaging player HP.
+- Frame source: producer of bitmaps for pose analysis, currently camera or debug
+  video.
+
+## Product And Engineering Invariants
+
+- Exercise recognition must remain independent from UI and combat.
+- Combat must consume domain exercise events, not camera or MediaPipe objects.
+- MediaPipe and CameraX types must not leak into `:domain` or `:game`.
+- Damage is applied only for `ExerciseEvent.RepetitionCompleted`.
+- Enemy selection must never offer only resistant enemies.
+- Resistances reduce damage but never create full immunity.
+- A squat is counted only after the sequence standing -> bottom -> standing.
+- Pose processing is local; do not introduce a server dependency without an
+  explicit product decision.
+- Debug-only input controls must not appear in release builds.
+- False positive repetitions are more harmful than occasionally missed
+  repetitions because they break trust in both fitness tracking and combat.
+- Existing user changes in the worktree must not be discarded.
+- Debug-simulated repetitions must not affect user fitness statistics.
+- Calorie values must be presented as estimates, not measurements or medical
+  claims.
+
+## Current Constraints And Risks
+
+- Most exercise thresholds are fixed and not yet calibrated per player; crunch
+  uses its first valid extended pose as a relative movement baseline.
+- Joint angles use 3D world coordinates when available and normalized depth as
+  a fallback, but monocular depth and occluded landmarks can still be noisy.
+- There is no temporal smoothing, minimum movement duration, cooldown, or form
+  quality score.
+- Calorie estimates use configured MET-like intensity and assumed repetition
+  duration because sessions do not yet track active exercise time precisely.
+- Local statistics use SharedPreferences daily aggregates and have no export,
+  backup UI, or migration to Room yet.
+- Only squat has a previously calibrated movement state machine. The other six
+  detectors are functional experimental paths intended for immediate live
+  testing and threshold calibration, especially in front-facing positions.
+- Dependencies are manually constructed; there is no DI framework.
+- Enemy and exercise configurations are in memory.
+- Enemy attack timing is fixed at 15 seconds. The policy boundary exists, but
+  exercise difficulty and player fitness are not yet inputs.
+- Detector coverage includes project-specific state-machine and 3D geometry
+  tests; ViewModel and Compose navigation coverage remains limited.
+- Camera, rotation, mirroring, video decoding, and MediaPipe behavior require
+  device or emulator validation.
+- `VideoFileFrameSource` expects `assets/raw/test_video.mp4`; the file may be
+  intentionally absent from source control.
+
+## Near-Term Direction
+
+The next useful milestone is reliable detection beyond the menu/combat slice:
+
+- count squats reliably across common camera positions;
+- calibrate each experimental detector against front-facing and side-view video;
+- validate the same flow with deterministic recorded video;
+- add ViewModel and Compose navigation tests.
+
+Progression systems and content breadth should follow reliability, not precede
+it.
+
+## Context Maintenance Rules
+
+Future agents should update these files when behavior or direction changes:
+
+- `PROJECT_CONTEXT.md`: product truth, current state, invariants, major risks.
+- `ARCHITECTURE.md`: module ownership, data flow, contracts, technical decisions.
+- `GAME_DESIGN.md`: player loop, rules, balance assumptions, design principles.
+- `ROADMAP.md`: completed work, current priorities, deferred work, open decisions.
+
+Do not use these files as release notes. Keep them concise, factual, and aligned
+with the current repository.

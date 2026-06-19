@@ -117,8 +117,8 @@ class InMemoryEnemyRepository(
         return choices.distinctBy { it.id }
     }
 
-    override fun createBoss(id: String): Boss {
-        val config = enemies.first { it.id == id }
+    override fun createBoss(id: String, playerLevel: Int): Boss {
+        val config = enemies.first { it.id == id }.scaledForLevel(playerLevel)
         return Boss(
             id = config.id,
             name = config.name,

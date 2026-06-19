@@ -34,6 +34,16 @@ class InMemoryEnemyRepositoryTest {
     }
 
     @Test
+    fun createsEnemyWithHealthScaledForPlayerLevel() {
+        val repository = InMemoryEnemyRepository(Random(17))
+        val selected = repository.getRandomChoices(ExerciseType.SQUAT).first()
+
+        val boss = repository.createBoss(selected.id, playerLevel = 12)
+
+        assertEquals(selected.maxHp * 3, boss.maxHp)
+    }
+
+    @Test
     fun questChoicesContainResistantAndFairMatchups() {
         val repository = InMemoryEnemyRepository(Random(11))
 
