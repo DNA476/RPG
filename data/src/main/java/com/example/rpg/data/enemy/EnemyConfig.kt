@@ -2,6 +2,7 @@ package com.example.rpg.data.enemy
 
 import com.example.rpg.domain.exercise.ExerciseType
 import com.example.rpg.game.enemy.EnemyAbility
+import com.example.rpg.game.enemy.EnemyHealthScaling
 import com.example.rpg.game.enemy.ExerciseAffinity
 
 /**
@@ -19,4 +20,8 @@ data class EnemyConfig(
 ) {
     fun isResistantTo(exerciseType: ExerciseType): Boolean =
         resistance.exerciseType == exerciseType
+
+    fun scaledForLevel(level: Int): EnemyConfig = copy(
+        maxHp = EnemyHealthScaling.maxHpForLevel(maxHp, level),
+    )
 }

@@ -117,6 +117,7 @@
     <string name="all_exercises">Alle Übungen</string>
     <string name="repetitions_label">Wiederholungen</string>
     <string name="calories_approx_label">ca. kcal</string>
+    <string name="player_level_label">Stufe</string>
     <string name="active_days_label">aktive Tage</string>
     <string name="default_weight_long">Die Kalorien werden mit einem Standardgewicht von 70 kg berechnet. Trage dein Gewicht im Profil ein, um die Schätzung zu personalisieren.</string>
     <string name="by_type_for_period">Nach Typ im Zeitraum</string>

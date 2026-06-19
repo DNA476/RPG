@@ -90,6 +90,13 @@ fun StatisticsScreen(
             }
         }
         item {
+            StatCard(
+                value = "${statistics.playerLevel} / ${statistics.maximumPlayerLevel}",
+                label = stringResource(R.string.player_level_label),
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+        item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

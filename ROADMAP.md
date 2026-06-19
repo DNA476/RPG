@@ -1,7 +1,7 @@
 # Roadmap
 
 This roadmap is ordered by dependency and risk, not by marketing priority.
-Statuses describe repository state as of 2026-06-17.
+Statuses describe repository state as of 2026-06-19.
 
 ## Completed Foundation
 
@@ -39,6 +39,10 @@ Statuses describe repository state as of 2026-06-17.
 - [x] Add statistics with 7/30/90-day periods, exercise filtering, per-type
   totals, and a daily chart.
 - [x] Add approximate calorie estimation with optional weight personalization.
+- [x] Add 12 calorie-based progression levels and show the current level in
+  statistics.
+- [x] Scale enemy HP on a cubic curve from the level-1 baseline to `3x` at
+  level 12.
 - [x] Keep debug-simulated repetitions out of fitness statistics.
 - [x] Move profile and statistics navigation into a main-menu drawer.
 - [x] Add a clickable main-menu card for today's approximate calories.
@@ -153,6 +157,10 @@ changes across the ViewModel and UI.
 
 ## Decision Log
 
+- 2026-06-19: Derive player level from lifetime approximate calories using
+  `100 * 2^level` thresholds; use level 0 before 200 kcal and cap at level 12.
+- 2026-06-19: Treat catalog enemy HP as the level-1 baseline and use cubic
+  scaling to reach exactly triple HP at level 12.
 - 2026-06-10: Keep pose inference on device.
 - 2026-06-10: Preserve strict module boundaries between capture, pose,
   exercise, combat, and UI.

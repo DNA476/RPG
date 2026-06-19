@@ -12,5 +12,5 @@ interface EnemyRepository {
         count: Int = 3,
     ): List<EnemyConfig>
 
-    fun createBoss(id: String): Boss
+    fun createBoss(id: String, playerLevel: Int = 1): Boss
 }

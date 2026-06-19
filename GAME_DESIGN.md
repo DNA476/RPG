@@ -57,6 +57,12 @@ Current rules:
 - Statistics can be viewed for 7, 30, or 90 days and filtered by exercise.
 - Calories are explicitly approximate. Weight personalizes the estimate when
   available; otherwise the UI states that a 70 kg default is used.
+- Lifetime approximate calories define levels 0-12. Threshold for level `n` is
+  `100 * 2^n` kcal, so levels 1 and 12 begin at 200 and 409,600 kcal. Statistics
+  show the current level independently of the selected period or exercise.
+- Enemy catalog HP represents level 1. A cubic progression curve keeps early
+  levels close to that baseline and reaches exactly `3x` HP at level 12; level
+  0 also uses baseline HP. A level earned during battle affects the next enemy.
 - The main menu has a top-left drawer containing profile, statistics, and
   settings.
 - Bottom action buttons should remain above the Android system navigation bar on

@@ -35,6 +35,12 @@ The repository is an MVP/prototype, not a production-ready application.
   for that exercise during the current app session.
 - Enemy catalog: four goblin roles and two hound variants with distinct HP,
   portraits, weaknesses, resistances, and weakening abilities.
+- Lifetime approximate calories determine player level from 0 to 12. Level 1
+  unlocks at 200 kcal and each following threshold doubles through 409,600 kcal
+  for level 12; the statistics screen displays the current level.
+- Enemy catalog HP is the level-1 baseline. Enemy HP follows a cubic curve from
+  `1x` at level 1 to `3x` at level 12, with little growth at early levels and
+  larger increases near the maximum. Level 0 uses level-1 HP.
 - Matchmaking guarantees at least one offered enemy is not resistant to the
   selected exercise.
 - Current combat rule: one valid repetition applies exercise base damage,
@@ -105,7 +111,9 @@ first:
 - `game/src/main/java/com/example/rpg/game/battle/BattleSession.kt` for combat.
 - `data/src/main/java/com/example/rpg/data` for current content/config sources.
 - `data/src/main/java/com/example/rpg/data/statistics` for fitness history
-  contracts and calorie estimation.
+  contracts, calorie estimation, and level progression.
+- `game/src/main/java/com/example/rpg/game/enemy/EnemyHealthScaling.kt` for the
+  enemy HP progression curve.
 - `app/src/main/java/com/example/rpg/data/local/SharedPreferencesFitnessRepository.kt`
   for current Android-local persistence.
 

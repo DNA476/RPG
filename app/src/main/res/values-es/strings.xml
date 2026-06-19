@@ -117,6 +117,7 @@
     <string name="all_exercises">Todos los ejercicios</string>
     <string name="repetitions_label">repeticiones</string>
     <string name="calories_approx_label">kcal aprox.</string>
+    <string name="player_level_label">Nivel</string>
     <string name="active_days_label">días activos</string>
     <string name="default_weight_long">Las calorías se calculan con un peso predeterminado de 70 kg. Añade tu peso al perfil para obtener una estimación más personal.</string>
     <string name="by_type_for_period">Por tipo en el periodo</string>

@@ -115,6 +115,8 @@ Responsibilities:
 - Exercise-to-attack mapping.
 - Damage calculation from exercise config, enemy affinity, and temporary player
   attack modifiers.
+- Cubic enemy-health scaling from the level-1 catalog baseline to triple HP at
+  player level 12.
 - Replaceable enemy attack timing policy.
 - Battle state transitions and immutable snapshots.
 
@@ -137,7 +139,8 @@ Responsibilities:
   pool.
 - Weekly quest models, three-week rotation catalog, progress rules, and
   repository contract.
-- Framework-light daily statistics models and calorie estimation.
+- Framework-light daily statistics models, calorie estimation, and exponential
+  lifetime-calorie level thresholds.
 - `ExerciseCatalog`, the single source of truth for names, descriptions, base
   damage, difficulty, and detector status.
 
@@ -181,8 +184,9 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
    `ExerciseCatalog`.
 6. `BattleViewModel.openEnemySelection()` obtains and caches three random enemy
    configs for the selected exercise.
-7. The player chooses one enemy; `startBattle()` creates its `Boss`, detector,
-   and `BattleSession`.
+7. The player chooses one enemy; `BattleViewModel` derives the player level from
+   lifetime estimated calories, scales the enemy's catalog HP for that level,
+   and `startBattle()` creates its `Boss`, detector, and `BattleSession`.
 8. `CameraPreview` selects a `FrameSource`.
 9. `CameraFrameSource` converts CameraX frames to correctly oriented/mirrored
    bitmaps, or `VideoFileFrameSource` decodes a test video.
@@ -216,8 +220,8 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 - `BattleSession` owns enemy HP, repetition total, and game state.
 - `BattleSession` owns the active player attack multiplier.
 - `BattleViewModel` owns navigation, encounter choices, timer jobs,
-  presentation messages, profile form state, statistics filters, and the
-  aggregated UI model.
+  presentation messages, profile form state, statistics filters, the current
+  calorie-derived level, and the aggregated UI model.
 - `MainMenuScreen` owns only transient drawer open/closed state.
 - `SharedPreferencesFitnessRepository` owns the persisted profile, onboarding
   completion flag, and daily exercise aggregates.

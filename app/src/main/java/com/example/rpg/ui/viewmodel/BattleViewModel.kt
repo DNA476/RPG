@@ -29,6 +29,7 @@ import com.example.rpg.data.quest.WeeklyQuestRepository
 import com.example.rpg.data.quest.WeeklyQuestState
 import com.example.rpg.data.statistics.ExerciseCalorieEstimator
 import com.example.rpg.data.statistics.ExerciseStatisticsAggregator
+import com.example.rpg.data.statistics.PlayerLevelProgression
 import com.example.rpg.domain.exercise.DetectorStatus
 import com.example.rpg.domain.exercise.ExerciseConfig
 import com.example.rpg.domain.exercise.ExerciseDetector
@@ -99,6 +100,7 @@ class BattleViewModel(
     private var rewardedItemIds = emptySet<String>()
     private var todayEstimatedCalories = 0
     private var todayHasActivity = false
+    private var playerLevel = PlayerLevelProgression.MIN_LEVEL
     private var screen = if (fitnessRepository.isOnboardingCompleted()) {
         AppScreen.MAIN_MENU
     } else {
@@ -334,7 +336,10 @@ class BattleViewModel(
     fun startBattle() {
         val enemyConfig = selectedEnemy ?: return
         stopBattleRuntime()
-        val boss = enemyRepository.createBoss(enemyConfig.id)
+        val boss = enemyRepository.createBoss(
+            id = enemyConfig.id,
+            playerLevel = playerLevel.coerceAtLeast(1),
+        )
         battleSession = BattleSession(
             boss = boss,
             exercise = selectedExercise,
@@ -610,7 +615,8 @@ class BattleViewModel(
     private fun publishUiState() {
         refreshWeeklyQuestState()
         val battle = battleSession?.state?.value
-        val enemy = selectedEnemy
+        val effectiveEnemyLevel = playerLevel.coerceAtLeast(1)
+        val enemy = selectedEnemy?.scaledForLevel(effectiveEnemyLevel)
         mutableUiState.value = BattleUiState(
             screen = screen,
             exercises = exercises,
@@ -638,7 +644,7 @@ class BattleViewModel(
             rewardedItemIds = rewardedItemIds,
             todayEstimatedCalories = todayEstimatedCalories,
             todayHasActivity = todayHasActivity,
-            enemyChoices = enemyChoices,
+            enemyChoices = enemyChoices.map { it.scaledForLevel(effectiveEnemyLevel) },
             selectedEnemy = enemy,
             gameState = battle?.gameState ?: GameState.IDLE,
             bossName = battle?.boss?.name ?: enemy?.name.orEmpty(),
@@ -668,6 +674,11 @@ class BattleViewModel(
             selectedExercise = statisticsExercise,
         )
         val todayEntries = allEntries.filter { it.date == today }
+        val lifetimeEstimatedCalories = ExerciseCalorieEstimator.estimateCalories(
+            statistics = allEntries,
+            weightKg = userProfile.weightKg,
+        )
+        playerLevel = PlayerLevelProgression.levelForCalories(lifetimeEstimatedCalories)
         todayEstimatedCalories = ExerciseCalorieEstimator.estimateCalories(
             statistics = todayEntries,
             weightKg = userProfile.weightKg,
@@ -701,6 +712,8 @@ class BattleViewModel(
                 statistics = report.selectedEntries,
                 weightKg = userProfile.weightKg,
             ),
+            playerLevel = playerLevel,
+            maximumPlayerLevel = PlayerLevelProgression.MAX_LEVEL,
             activeDays = report.activeDays,
             usesDefaultWeight = userProfile.weightKg == null,
         )

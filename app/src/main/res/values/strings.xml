@@ -126,6 +126,7 @@
     <string name="all_exercises">Все упражнения</string>
     <string name="repetitions_label">повторов</string>
     <string name="calories_approx_label">ккал примерно</string>
+    <string name="player_level_label">Уровень</string>
     <string name="active_days_label">активных дней</string>
     <string name="default_weight_long">Калории рассчитаны для условного веса 70 кг. Добавьте вес в профиле для более персональной оценки.</string>
     <string name="by_type_for_period">По видам за период</string>
