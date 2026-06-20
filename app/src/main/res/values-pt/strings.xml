@@ -19,8 +19,9 @@
     <string name="inventory">Inventário</string>
     <string name="equipment">Equipamento</string>
     <string name="open_inventory">Abrir inventário</string>
-    <string name="inventory_subtitle">Um conjunto de teste. Toca num item para ver os bónus e equipá-lo.</string>
-    <string name="equipment_subtitle">Toca num espaço junto à silhueta para escolher um item compatível.</string>
+    <string name="inventory_subtitle">Ganha equipamento através de vitórias. Toca num item para ver os bónus e equipá-lo.</string>
+    <string name="inventory_progress">Coleção: %1$d de %2$d</string>
+    <string name="equipment_subtitle">Toca num espaço junto à figura para escolher um item compatível.</string>
     <string name="inventory_all">Tudo</string>
     <string name="inventory_equipment">Equipamento</string>
     <string name="inventory_artifacts">Artefactos</string>
@@ -37,7 +38,7 @@
     <string name="empty_slot">Vazio</string>
     <string name="loadout_bonuses">Bónus do equipamento</string>
     <string name="no_equipment_bonuses">Equipa itens para reunir bónus.</string>
-    <string name="bonuses_preview_only">Versão de teste: os bónus ainda não afectam o combate.</string>
+    <string name="bonuses_active_note">Os bónus dos itens equipados estão ativos em combate.</string>
     <string name="slot_head">Cabeça</string>
     <string name="slot_chest">Tronco</string>
     <string name="slot_hands">Mãos</string>

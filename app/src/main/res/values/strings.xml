@@ -25,8 +25,9 @@
     <string name="inventory">Инвентарь</string>
     <string name="equipment">Снаряжение</string>
     <string name="open_inventory">Открыть инвентарь</string>
-    <string name="inventory_subtitle">Тестовый набор предметов. Нажмите на предмет, чтобы увидеть бонусы и надеть его.</string>
-    <string name="equipment_subtitle">Нажмите на слот возле силуэта, чтобы выбрать подходящий предмет.</string>
+    <string name="inventory_subtitle">Собирайте снаряжение за победы. Нажмите на предмет, чтобы увидеть бонусы и надеть его.</string>
+    <string name="inventory_progress">Коллекция: %1$d из %2$d</string>
+    <string name="equipment_subtitle">Нажмите на слот возле фигуры, чтобы выбрать подходящий предмет.</string>
     <string name="inventory_all">Все</string>
     <string name="inventory_equipment">Вещи</string>
     <string name="inventory_artifacts">Артефакты</string>
@@ -43,7 +44,7 @@
     <string name="empty_slot">Пусто</string>
     <string name="loadout_bonuses">Бонусы комплекта</string>
     <string name="no_equipment_bonuses">Наденьте предметы, чтобы собрать комплект бонусов.</string>
-    <string name="bonuses_preview_only">Тестовая версия: бонусы пока не влияют на бой.</string>
+    <string name="bonuses_active_note">Бонусы надетого снаряжения действуют в бою.</string>
     <string name="slot_head">Голова</string>
     <string name="slot_chest">Корпус</string>
     <string name="slot_hands">Руки</string>

@@ -45,8 +45,9 @@ Responsibilities:
 - SharedPreferences adapter for the optional user profile and daily fitness
   aggregates.
 - SharedPreferences adapter for owned inventory IDs, equipped slot mappings,
-  and the one-time removal of legacy demo-owned artifacts from local saves.
+  and one-time migrations from prototype ownership rules.
 - Scalable Compose Canvas icons for individual inventory item silhouettes.
+- Generated Vitruvian-style raster art for the equipment loadout board.
 - SharedPreferences adapter for weekly quest progress and granted rewards.
 
 Key files:
@@ -120,6 +121,8 @@ Responsibilities:
 - Exercise-to-attack mapping.
 - Damage calculation from exercise config, enemy affinity, and temporary player
   attack modifiers.
+- Bounded equipment modifiers for attack power, matchup bonuses, opening and
+  three-repetition attacks, enemy ability delay, and debuff duration.
 - Cubic enemy-health scaling from the level-1 catalog baseline to triple HP at
   player level 12.
 - Replaceable enemy attack timing policy.
@@ -140,8 +143,8 @@ Responsibilities:
   implementation.
 - User profile and exercise statistics repository contracts.
 - Inventory models, equipment slots, icon types, repository contract, 36-item
-  test catalog, starting equipment pool, and resistant-victory artifact reward
-  pool.
+  catalog, six-item starter loadout, regular-victory equipment progression, and
+  resistant-victory artifact reward pool.
 - Weekly quest models, three-week rotation catalog, progress rules, and
   repository contract.
 - Framework-light daily statistics models, calorie estimation, and exponential
@@ -177,9 +180,9 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
    the current screen.
 3. Inventory and equipment share a horizontal pager. Slot selection filters the
    inventory, while equip/unequip changes are saved locally. Fresh players start
-   with non-artifact test equipment only; legacy local saves have the old demo
-   artifact pool removed once. Newly added non-quest equipment items are merged
-   into existing local inventories on load.
+   with one common item for each non-artifact slot. A versioned migration removes
+   automatically seeded prototype ownership while preserving starter items,
+   earned rewards, artifacts, quest items, and currently equipped items.
 4. Weekly quests select the active three-quest set from a three-week ISO-week
    rotation. Each set has one regular, one resistant-matchup, and one
    resistant-matchup-without-artifact objective. Starting a quest selects its
@@ -191,7 +194,8 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
    configs for the selected exercise.
 7. The player chooses one enemy; `BattleViewModel` derives the player level from
    lifetime estimated calories, scales the enemy's catalog HP for that level,
-   and `startBattle()` creates its `Boss`, detector, and `BattleSession`.
+   aggregates the equipped inventory into `EquipmentCombatBonuses`, and
+   `startBattle()` creates its `Boss`, detector, and `BattleSession`.
 8. `CameraPreview` selects a `FrameSource`.
 9. `CameraFrameSource` converts CameraX frames to correctly oriented/mirrored
    bitmaps, or `VideoFileFrameSource` decodes a test video.
@@ -208,11 +212,11 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
    it in the local daily aggregate. Debug simulation bypasses this write.
 16. A ViewModel timer uses `EnemyAttackTimingPolicy`; every 15 seconds it applies
    the selected enemy's 25% attack reduction for 10 seconds.
-17. On victory, a resistant matchup grants the next unowned non-quest artifact
-   from `InventoryCatalog.resistantVictoryArtifactItemIds`. `WeeklyQuestProgress`
-   then evaluates exercise, resistance, and the artifact state captured at
-   battle start. Completed quest rewards are added to the persisted inventory
-   once.
+17. Every victory grants the next unowned item from the regular equipment
+   progression pool. A resistant matchup can additionally grant the next
+   unowned non-quest artifact. `WeeklyQuestProgress` then evaluates exercise,
+   resistance, and the artifact state captured at battle start. Completed quest
+   rewards are added once, and the victory screen names all granted items.
 18. `BattleViewModel` increments `hitEventId` for every completed attack and
    combines pose, detector, battle, and presentation information into
    `BattleUiState`.
@@ -231,10 +235,10 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 - `SharedPreferencesFitnessRepository` owns the persisted profile, onboarding
   completion flag, and daily exercise aggregates.
 - `SharedPreferencesInventoryRepository` owns persisted inventory, equipped slot
-  IDs, and the one-time artifact-start migration; `InventoryCatalog` owns test
-  item definitions, bonuses, icon types, starting ownership, and the
-  resistant-victory artifact pool. `InventoryItemIcon` renders those icon types
-  without bitmap assets.
+  IDs, and versioned prototype-save migrations; `InventoryCatalog` owns item
+  definitions, bonuses, icon types, starter ownership, and deterministic victory
+  reward pools. `InventoryItemIcon` renders item icons without bitmap assets;
+  `vitruvian_loadout.png` is the generated loadout-board illustration.
 - `SharedPreferencesWeeklyQuestRepository` owns persisted week progress;
   `WeeklyQuestCatalog` owns the three-week quest rotation, and
   `WeeklyQuestProgress` owns quest matching and ISO-week reset rules.
@@ -251,9 +255,10 @@ Do not introduce reverse edges. In particular, `:game` must not depend on
 4. Register it in `ExerciseDetectorFactory`.
 5. Add synthetic pose-frame tests before tuning against real video.
 
-Base damage is configured only in `ExerciseCatalog`. Future critical hits,
-equipment, combos, player stats, and enemy weaknesses belong in
-`DamageCalculator`, not in detectors or Compose.
+Base damage is configured only in `ExerciseCatalog`. `BattleSession` composes
+enemy affinity, temporary debuffs, and bounded `EquipmentCombatBonuses` before
+calling `DamageCalculator`. Future critical hits, combos, and player stats
+belong in this `:game` path, not in detectors or Compose.
 
 ### Add an enemy
 

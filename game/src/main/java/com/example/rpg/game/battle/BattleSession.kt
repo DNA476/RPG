@@ -8,6 +8,7 @@ import com.example.rpg.game.attack.ExerciseAttackMapper
 import com.example.rpg.game.attack.FlatDamageCalculator
 import com.example.rpg.game.enemy.Boss
 import com.example.rpg.game.player.PlayerStats
+import com.example.rpg.game.player.EquipmentCombatBonuses
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +21,7 @@ class BattleSession(
     private var boss: Boss,
     private val exercise: ExerciseConfig,
     private val playerStats: PlayerStats = PlayerStats(),
+    private val equipmentBonuses: EquipmentCombatBonuses = EquipmentCombatBonuses(),
     private val exerciseAttackMapper: ExerciseAttackMapper = DefaultExerciseAttackMapper(),
     private val damageCalculator: DamageCalculator = FlatDamageCalculator(),
 ) {
@@ -56,11 +58,15 @@ class BattleSession(
         if (event.exerciseType != exercise.type) return
 
         val attackType = exerciseAttackMapper.map(event.exerciseType)
+        val equipmentMultiplier = equipmentBonuses.damageMultiplier(
+            enemyAffinityMultiplier = boss.damageMultiplierFor(exercise.type),
+            repetitionCount = event.repetitionCount,
+        )
         val damage = damageCalculator.calculate(
             exercise = exercise,
             playerStats = playerStats,
             enemy = boss,
-            playerAttackMultiplier = playerAttackMultiplier,
+            playerAttackMultiplier = playerAttackMultiplier * equipmentMultiplier,
         )
         boss.receiveDamage(damage)
         completedRepetitions = event.repetitionCount

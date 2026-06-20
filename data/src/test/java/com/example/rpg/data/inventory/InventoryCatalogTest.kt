@@ -18,24 +18,48 @@ class InventoryCatalogTest {
     }
 
     @Test
-    fun legendaryItemsAreQuestExclusiveAndNotDemoOwned() {
+    fun legendaryItemsAreQuestExclusiveAndNotStarterOwned() {
         val legendaryItems = InventoryCatalog.items.filter {
             it.rarity == ItemRarity.LEGENDARY
         }
 
         assertFalse(legendaryItems.isEmpty())
         assertTrue(legendaryItems.all(InventoryItem::questExclusive))
-        assertTrue(legendaryItems.none { it.id in InventoryCatalog.demoOwnedItemIds })
+        assertTrue(legendaryItems.none { it.id in InventoryCatalog.starterItemIds })
     }
 
     @Test
-    fun demoOwnedItemsDoNotIncludeArtifacts() {
-        val demoOwnedItems = InventoryCatalog.items.filter {
-            it.id in InventoryCatalog.demoOwnedItemIds
+    fun starterLoadoutCoversEveryNonArtifactSlotWithoutQuestRewards() {
+        val starterItems = InventoryCatalog.items.filter {
+            it.id in InventoryCatalog.starterItemIds
         }
 
-        assertFalse(demoOwnedItems.isEmpty())
-        assertTrue(demoOwnedItems.none { it.slot == EquipmentSlot.ARTIFACT })
+        assertEquals(6, starterItems.size)
+        assertTrue(starterItems.none { it.slot == EquipmentSlot.ARTIFACT })
+        assertTrue(starterItems.none(InventoryItem::questExclusive))
+        EquipmentSlot.entries.filterNot { it == EquipmentSlot.ARTIFACT }.forEach { slot ->
+            assertEquals(1, starterItems.count { it.slot == slot })
+        }
+    }
+
+    @Test
+    fun regularVictoriesUnlockTheNonStarterEquipmentPoolInOrder() {
+        val rewardItems = InventoryCatalog.victoryEquipmentItemIds.mapNotNull(InventoryCatalog::get)
+
+        assertEquals(14, rewardItems.size)
+        assertTrue(rewardItems.none { it.id in InventoryCatalog.starterItemIds })
+        assertTrue(rewardItems.none(InventoryItem::questExclusive))
+        assertTrue(rewardItems.none { it.slot == EquipmentSlot.ARTIFACT })
+        assertEquals(
+            InventoryCatalog.victoryEquipmentItemIds.first(),
+            InventoryCatalog.nextVictoryEquipmentReward(InventoryCatalog.starterItemIds),
+        )
+        assertEquals(
+            null,
+            InventoryCatalog.nextVictoryEquipmentReward(
+                InventoryCatalog.starterItemIds + InventoryCatalog.victoryEquipmentItemIds,
+            ),
+        )
     }
 
     @Test
@@ -47,7 +71,7 @@ class InventoryCatalogTest {
         assertEquals(7, rewardItems.size)
         assertTrue(rewardItems.all { it.slot == EquipmentSlot.ARTIFACT })
         assertTrue(rewardItems.none(InventoryItem::questExclusive))
-        assertTrue(rewardItems.none { it.id in InventoryCatalog.demoOwnedItemIds })
+        assertTrue(rewardItems.none { it.id in InventoryCatalog.starterItemIds })
     }
 
     @Test

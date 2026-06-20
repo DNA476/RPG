@@ -104,7 +104,7 @@ fun FitnessRpgApp(viewModel: BattleViewModel) {
                 completedRepetitions = uiState.completedRepetitions,
                 totalDamage = uiState.totalDamage,
                 questProgressAdvanced = uiState.advancedQuestIds.isNotEmpty(),
-                inventoryRewardGranted = uiState.rewardedItemIds.isNotEmpty(),
+                rewardedItemIds = uiState.rewardedItemIds,
                 onBackToMenu = viewModel::returnToMenu,
             )
         }

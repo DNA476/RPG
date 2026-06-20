@@ -355,11 +355,31 @@ object InventoryCatalog {
         ),
     )
 
-    val demoOwnedItemIds: Set<String> = items
+    val starterItemIds: Set<String> = linkedSetOf(
+        "novice_headband",
+        "wanderer_cloak",
+        "steady_wraps",
+        "pathfinder_trousers",
+        "novice_sandals",
+        "oak_training_blade",
+    )
+
+    /** Items that older prototype builds granted automatically. Used only for save migration. */
+    val legacyDemoOwnedItemIds: Set<String> = items
         .filter { item ->
             !item.questExclusive && item.slot != EquipmentSlot.ARTIFACT
         }
         .mapTo(linkedSetOf(), InventoryItem::id)
+
+    val victoryEquipmentItemIds: List<String> = items
+        .withIndex()
+        .filter { (_, item) ->
+            !item.questExclusive &&
+                item.slot != EquipmentSlot.ARTIFACT &&
+                item.id !in starterItemIds
+        }
+        .sortedWith(compareBy({ it.value.rarity.ordinal }, { it.index }))
+        .map { it.value.id }
 
     val resistantVictoryArtifactItemIds: Set<String> = items
         .filter { item ->
@@ -368,4 +388,7 @@ object InventoryCatalog {
         .mapTo(linkedSetOf(), InventoryItem::id)
 
     fun get(id: String): InventoryItem? = items.firstOrNull { it.id == id }
+
+    fun nextVictoryEquipmentReward(ownedItemIds: Set<String>): String? =
+        victoryEquipmentItemIds.firstOrNull { it !in ownedItemIds }
 }

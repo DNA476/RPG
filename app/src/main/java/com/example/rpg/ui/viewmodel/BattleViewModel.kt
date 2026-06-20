@@ -20,6 +20,7 @@ import com.example.rpg.data.inventory.EquipmentSlot
 import com.example.rpg.data.inventory.InventoryCatalog
 import com.example.rpg.data.inventory.InventoryRepository
 import com.example.rpg.data.inventory.InventoryState
+import com.example.rpg.data.inventory.ItemBonusType
 import com.example.rpg.data.profile.UserProfile
 import com.example.rpg.data.profile.UserSex
 import com.example.rpg.data.quest.QuestBattleResult
@@ -42,6 +43,7 @@ import com.example.rpg.game.battle.BattleSession
 import com.example.rpg.game.battle.FixedEnemyAttackTimingPolicy
 import com.example.rpg.game.battle.GameState
 import com.example.rpg.game.player.PlayerStats
+import com.example.rpg.game.player.EquipmentCombatBonuses
 import com.example.rpg.pose.PoseAnalyzer
 import com.example.rpg.ui.localization.exerciseFeedbackResource
 import java.time.LocalDate
@@ -84,6 +86,7 @@ class BattleViewModel(
     private var enemyAttackJob: Job? = null
     private var debuffJob: Job? = null
     private var battleSession: BattleSession? = null
+    private var battleEquipmentBonuses = EquipmentCombatBonuses()
     private var userProfile = fitnessRepository.loadProfile()
     private var profileForm = userProfile.toForm()
     private var statisticsPeriod = StatisticsPeriod.LAST_7_DAYS
@@ -340,9 +343,11 @@ class BattleViewModel(
             id = enemyConfig.id,
             playerLevel = playerLevel.coerceAtLeast(1),
         )
+        battleEquipmentBonuses = currentEquipmentCombatBonuses()
         battleSession = BattleSession(
             boss = boss,
             exercise = selectedExercise,
+            equipmentBonuses = battleEquipmentBonuses,
         )
         activeDetector = detectorFactory.create(selectedExercise.type).also {
             it.reset()
@@ -446,10 +451,12 @@ class BattleViewModel(
     }
 
     private fun startEnemyAttackLoop(enemy: com.example.rpg.game.enemy.Enemy) {
-        val intervalSeconds = enemyAttackTimingPolicy.intervalSeconds(
-            exercise = selectedExercise,
-            playerStats = PlayerStats(),
-            enemy = enemy,
+        val intervalSeconds = battleEquipmentBonuses.adjustedEnemyAbilityInterval(
+            enemyAttackTimingPolicy.intervalSeconds(
+                exercise = selectedExercise,
+                playerStats = PlayerStats(),
+                enemy = enemy,
+            ),
         )
         enemyAttackJob = viewModelScope.launch {
             while (screen == AppScreen.BATTLE) {
@@ -471,7 +478,10 @@ class BattleViewModel(
         session.setPlayerAttackMultiplier(ability.attackMultiplier)
         debuffJob?.cancel()
         debuffJob = viewModelScope.launch {
-            for (seconds in ability.debuffDurationSeconds downTo 1) {
+            val durationSeconds = battleEquipmentBonuses.adjustedDebuffDuration(
+                ability.debuffDurationSeconds,
+            )
+            for (seconds in durationSeconds downTo 1) {
                 debuffSecondsRemaining = seconds
                 publishUiState()
                 delay(1_000)
@@ -513,9 +523,10 @@ class BattleViewModel(
         hitEventId += 1
         showDamageMessage("-$damage")
         if (battle.gameState == GameState.VICTORY) {
+            val equipmentRewardIds = grantVictoryEquipmentReward()
             val battleRewardIds = grantResistantVictoryArtifactReward()
             val questRewardIds = recordQuestVictory()
-            rewardedItemIds = battleRewardIds + questRewardIds
+            rewardedItemIds = equipmentRewardIds + battleRewardIds + questRewardIds
             exerciseStatusResource = R.string.status_enemy_defeated
             activeDetector?.stop()
             enemyAttackJob?.cancel()
@@ -591,6 +602,37 @@ class BattleViewModel(
         return setOf(rewardItemId)
     }
 
+    private fun grantVictoryEquipmentReward(): Set<String> {
+        val rewardItemId = InventoryCatalog.nextVictoryEquipmentReward(inventoryState.ownedItemIds)
+            ?: return emptySet()
+        inventoryState = inventoryState.addItem(rewardItemId)
+        inventoryRepository.saveInventory(inventoryState)
+        return setOf(rewardItemId)
+    }
+
+    private fun currentEquipmentCombatBonuses(): EquipmentCombatBonuses {
+        val equippedBonuses = inventoryState.equippedItemIds.values
+            .mapNotNull(InventoryCatalog::get)
+            .flatMap { it.bonuses }
+        fun total(type: ItemBonusType): Int = equippedBonuses
+            .filter { it.type == type }
+            .sumOf { it.value }
+
+        return EquipmentCombatBonuses(
+            attackPowerPercent = total(ItemBonusType.ATTACK_POWER_PERCENT),
+            debuffDurationReductionPercent = total(
+                ItemBonusType.DEBUFF_DURATION_REDUCTION_PERCENT,
+            ),
+            enemyAbilityDelaySeconds = total(ItemBonusType.ENEMY_ABILITY_DELAY_SECONDS),
+            resistantMatchupDamagePercent = total(
+                ItemBonusType.RESISTANT_MATCHUP_DAMAGE_PERCENT,
+            ),
+            weaknessMatchupDamagePercent = total(ItemBonusType.WEAKNESS_MATCHUP_DAMAGE_PERCENT),
+            openingAttackDamagePercent = total(ItemBonusType.OPENING_ATTACK_DAMAGE_PERCENT),
+            streakDamagePercent = total(ItemBonusType.STREAK_DAMAGE_PERCENT),
+        )
+    }
+
     private fun grantPendingQuestRewards(): Set<String> {
         val grantedItemIds = linkedSetOf<String>()
         val newlyRewardedQuestIds = linkedSetOf<String>()
@@ -629,6 +671,7 @@ class BattleViewModel(
                     it.id in inventoryState.ownedItemIds
                 },
                 equippedItemIds = inventoryState.equippedItemIds,
+                totalItemCount = InventoryCatalog.items.size,
             ),
             weeklyQuests = WeeklyQuestsUiState(
                 entries = currentWeeklyQuests().map { quest ->

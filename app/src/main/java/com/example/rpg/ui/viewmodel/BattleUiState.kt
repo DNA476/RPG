@@ -73,6 +73,7 @@ data class StatisticsUiState(
 data class InventoryUiState(
     val items: List<InventoryItem> = emptyList(),
     val equippedItemIds: Map<EquipmentSlot, String> = emptyMap(),
+    val totalItemCount: Int = 0,
 )
 
 data class QuestUiEntry(

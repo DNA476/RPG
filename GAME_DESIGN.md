@@ -79,16 +79,16 @@ Current rules:
 - Interface text can follow the device language or use an explicit in-app
   choice. The current supported set is Russian, English, German, Spanish,
   French, and Portuguese.
-- A backpack button opens a 36-item test catalog containing equipment, weapons,
-  and artifacts across common, rare, epic, and legendary rarities. Twenty
-  non-artifact equipment and weapon items are immediately available for testing.
-  The player starts with zero artifacts.
+- A backpack button opens a 36-item persistent collection containing equipment,
+  weapons, and artifacts across common, rare, epic, and legendary rarities.
+  The player starts with one common item for each non-artifact slot and zero
+  artifacts. Every victory unlocks the next regular equipment item.
 - The player can equip one item per body/weapon slot and one artifact. The
-  equipment view uses a white body outline and is reachable by button or swipe.
-- Item bonuses are visible for design testing but do not modify combat yet.
-  Current previews cover attack power, debuff reduction, enemy ability delay,
-  resistant-matchup damage, weakness damage, opening attack damage, and
-  three-repetition streak damage.
+  equipment view uses a dark Vitruvian-style figure and is reachable by button
+  or swipe.
+- Equipped bonuses actively modify combat within fixed caps. They cover attack
+  power, debuff reduction, enemy ability delay, resistant-matchup damage,
+  weakness damage, opening attack damage, and every third repetition.
 - A sword-in-shield button opens the active set from a three-week test quest
   rotation. Each week contains:
   - regular: defeat two opponents with the listed exercise for a rare item;
@@ -97,7 +97,8 @@ Current rules:
   - challenge: defeat two or three resistant opponents without an artifact for
     a legendary item.
 - Defeating an enemy resistant to the selected exercise grants the next unowned
-  non-quest artifact from the resistant-victory pool.
+  non-quest artifact from the resistant-victory pool in addition to the normal
+  victory equipment reward.
 - Quest progress resets each ISO week. Completing a quest automatically adds
   its fixed reward to inventory; the highest current rarity remains
   quest-exclusive.

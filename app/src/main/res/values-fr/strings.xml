@@ -19,8 +19,9 @@
     <string name="inventory">Inventaire</string>
     <string name="equipment">Équipement</string>
     <string name="open_inventory">Ouvrir l’inventaire</string>
-    <string name="inventory_subtitle">Un ensemble d’objets de test. Touche un objet pour voir ses bonus et l’équiper.</string>
-    <string name="equipment_subtitle">Touche un emplacement près de la silhouette pour choisir un objet compatible.</string>
+    <string name="inventory_subtitle">Gagne de l’équipement en remportant des combats. Touche un objet pour voir ses bonus et l’équiper.</string>
+    <string name="inventory_progress">Collection : %1$d sur %2$d</string>
+    <string name="equipment_subtitle">Touche un emplacement près de la figure pour choisir un objet compatible.</string>
     <string name="inventory_all">Tout</string>
     <string name="inventory_equipment">Équipement</string>
     <string name="inventory_artifacts">Artefacts</string>
@@ -37,7 +38,7 @@
     <string name="empty_slot">Vide</string>
     <string name="loadout_bonuses">Bonus d’équipement</string>
     <string name="no_equipment_bonuses">Équipe des objets pour réunir des bonus.</string>
-    <string name="bonuses_preview_only">Version de test : les bonus n’affectent pas encore le combat.</string>
+    <string name="bonuses_active_note">Les bonus des objets équipés sont actifs en combat.</string>
     <string name="slot_head">Tête</string>
     <string name="slot_chest">Torse</string>
     <string name="slot_hands">Mains</string>

@@ -8,6 +8,7 @@ import com.example.rpg.domain.exercise.ExerciseType
 import com.example.rpg.game.enemy.Boss
 import com.example.rpg.game.enemy.EnemyAbility
 import com.example.rpg.game.enemy.ExerciseAffinity
+import com.example.rpg.game.player.EquipmentCombatBonuses
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -63,6 +64,25 @@ class BattleSessionTest {
         assertEquals(5, session.state.value.completedRepetitions)
         assertEquals(10, session.state.value.totalDamage)
         assertEquals(0, session.state.value.boss.currentHp)
+    }
+
+    @Test
+    fun equipmentDamageBonusesAreAppliedByTheBattleEngine() {
+        val session = BattleSession(
+            boss = boss(maxHp = 20),
+            exercise = pushUp,
+            equipmentBonuses = EquipmentCombatBonuses(
+                openingAttackDamagePercent = 50,
+            ),
+        )
+        session.startBattle()
+
+        session.handleExerciseEvent(repetition(1))
+        session.handleExerciseEvent(repetition(2))
+
+        assertEquals(3, session.state.value.totalDamage - session.state.value.lastDamage!!)
+        assertEquals(2, session.state.value.lastDamage)
+        assertEquals(5, session.state.value.totalDamage)
     }
 
     private fun repetition(count: Int) =

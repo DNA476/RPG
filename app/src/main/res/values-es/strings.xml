@@ -19,8 +19,9 @@
     <string name="inventory">Inventario</string>
     <string name="equipment">Equipo</string>
     <string name="open_inventory">Abrir inventario</string>
-    <string name="inventory_subtitle">Un conjunto de prueba. Toca un objeto para ver sus bonificaciones y equiparlo.</string>
-    <string name="equipment_subtitle">Toca una ranura junto a la silueta para elegir un objeto compatible.</string>
+    <string name="inventory_subtitle">Consigue equipo al ganar combates. Toca un objeto para ver sus bonificaciones y equiparlo.</string>
+    <string name="inventory_progress">Colección: %1$d de %2$d</string>
+    <string name="equipment_subtitle">Toca una ranura junto a la figura para elegir un objeto compatible.</string>
     <string name="inventory_all">Todo</string>
     <string name="inventory_equipment">Equipo</string>
     <string name="inventory_artifacts">Artefactos</string>
@@ -37,7 +38,7 @@
     <string name="empty_slot">Vacío</string>
     <string name="loadout_bonuses">Bonificaciones del equipo</string>
     <string name="no_equipment_bonuses">Equipa objetos para reunir bonificaciones.</string>
-    <string name="bonuses_preview_only">Versión de prueba: las bonificaciones aún no afectan al combate.</string>
+    <string name="bonuses_active_note">Las bonificaciones de los objetos equipados se aplican en combate.</string>
     <string name="slot_head">Cabeza</string>
     <string name="slot_chest">Torso</string>
     <string name="slot_hands">Manos</string>

@@ -21,7 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.rpg.R
+import com.example.rpg.data.inventory.InventoryCatalog
 import com.example.rpg.domain.exercise.ExerciseType
+import com.example.rpg.ui.localization.inventoryItemNameResource
 import com.example.rpg.ui.localization.enemyNameResource
 import com.example.rpg.ui.localization.exerciseNameResource
 
@@ -32,7 +34,7 @@ fun VictoryScreen(
     completedRepetitions: Int,
     totalDamage: Int,
     questProgressAdvanced: Boolean,
-    inventoryRewardGranted: Boolean,
+    rewardedItemIds: Set<String>,
     onBackToMenu: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -79,7 +81,7 @@ fun VictoryScreen(
                 textAlign = TextAlign.Center,
             )
             val rewardMessageResource = when {
-                inventoryRewardGranted -> R.string.battle_reward_added_to_inventory
+                rewardedItemIds.isNotEmpty() -> R.string.battle_reward_added_to_inventory
                 questProgressAdvanced -> R.string.quest_progress_updated
                 else -> null
             }
@@ -89,6 +91,14 @@ fun VictoryScreen(
                     color = Color(0xFFFFD166),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            rewardedItemIds.mapNotNull(InventoryCatalog::get).forEach { item ->
+                Text(
+                    text = "• ${stringResource(inventoryItemNameResource(item))}",
+                    color = Color.White.copy(alpha = 0.84f),
+                    style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                 )
             }

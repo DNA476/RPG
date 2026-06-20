@@ -19,7 +19,8 @@
     <string name="inventory">Inventar</string>
     <string name="equipment">Ausrüstung</string>
     <string name="open_inventory">Inventar öffnen</string>
-    <string name="inventory_subtitle">Ein Testset von Gegenständen. Tippe auf einen Gegenstand, um Boni zu sehen und ihn anzulegen.</string>
+    <string name="inventory_subtitle">Verdiene Ausrüstung durch Siege. Tippe auf einen Gegenstand, um seine Boni zu sehen und ihn anzulegen.</string>
+    <string name="inventory_progress">Sammlung: %1$d von %2$d</string>
     <string name="equipment_subtitle">Tippe auf einen Platz neben der Figur, um einen passenden Gegenstand auszuwählen.</string>
     <string name="inventory_all">Alle</string>
     <string name="inventory_equipment">Ausrüstung</string>
@@ -37,7 +38,7 @@
     <string name="empty_slot">Leer</string>
     <string name="loadout_bonuses">Ausrüstungsboni</string>
     <string name="no_equipment_bonuses">Lege Gegenstände an, um Boni zu sammeln.</string>
-    <string name="bonuses_preview_only">Testversion: Boni wirken sich noch nicht auf Kämpfe aus.</string>
+    <string name="bonuses_active_note">Boni angelegter Gegenstände sind im Kampf aktiv.</string>
     <string name="slot_head">Kopf</string>
     <string name="slot_chest">Körper</string>
     <string name="slot_hands">Hände</string>

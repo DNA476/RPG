@@ -1,6 +1,7 @@
 package com.example.rpg.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,7 +57,6 @@ import com.example.rpg.data.inventory.InventoryItem
 import com.example.rpg.data.inventory.ItemRarity
 import com.example.rpg.ui.components.EquipmentItemIcon
 import com.example.rpg.ui.components.InventoryItemIcon
-import com.example.rpg.ui.components.PlayerOutline
 import com.example.rpg.ui.localization.equipmentSlotResource
 import com.example.rpg.ui.localization.inventoryItemNameResource
 import com.example.rpg.ui.localization.itemBonusResource
@@ -228,6 +230,17 @@ private fun InventoryPage(
             text = stringResource(R.string.inventory_subtitle),
             color = Color.White.copy(alpha = 0.72f),
             style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(horizontal = 20.dp),
+        )
+        Text(
+            text = stringResource(
+                R.string.inventory_progress,
+                inventory.items.size,
+                inventory.totalItemCount,
+            ),
+            color = Color(0xFFFFD166),
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 20.dp),
         )
         Row(
@@ -448,12 +461,15 @@ private fun LoadoutBoard(
                 .height(590.dp)
                 .padding(12.dp),
         ) {
-            PlayerOutline(
+            Image(
+                painter = painterResource(R.drawable.vitruvian_loadout),
+                contentDescription = null,
                 modifier = Modifier
-                    .width(170.dp)
-                    .height(430.dp)
+                    .width(300.dp)
+                    .height(500.dp)
                     .align(Alignment.Center),
-                color = Color.White.copy(alpha = 0.82f),
+                contentScale = ContentScale.Fit,
+                alpha = 0.9f,
             )
             EquipmentSlotCard(
                 slot = EquipmentSlot.HEAD,
@@ -602,7 +618,7 @@ private fun EquipmentBonusSummary(inventory: InventoryUiState) {
                     }
             }
             Text(
-                text = stringResource(R.string.bonuses_preview_only),
+                text = stringResource(R.string.bonuses_active_note),
                 color = Color.White.copy(alpha = 0.5f),
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -649,7 +665,7 @@ private fun ItemDetailsDialog(
                     Text(text = stringResource(itemBonusResource(bonus.type), bonus.value))
                 }
                 Text(
-                    text = stringResource(R.string.bonuses_preview_only),
+                    text = stringResource(R.string.bonuses_active_note),
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     style = MaterialTheme.typography.bodySmall,
                 )

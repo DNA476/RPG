@@ -66,12 +66,15 @@ The repository is an MVP/prototype, not a production-ready application.
 - Settings allow the player to follow the device language or explicitly choose
   Russian, English, German, Spanish, French, or Portuguese. Unsupported device
   locales fall back to Russian.
-- A white backpack button in the main-menu header opens a test inventory with
-  20 locally available non-artifact equipment and weapon items. The player
-  starts with zero artifacts. Inventory and equipment are swipe-connected
-  views; equipment uses a white player outline, body slots, a weapon slot, and
-  one artifact slot. Item cards and equipped slots use item-specific scalable
-  outline icons drawn in Compose.
+- A white backpack button in the main-menu header opens the persistent
+  inventory. A fresh player starts with one common item for each non-artifact
+  slot and zero artifacts. Every normal victory grants the next unowned regular
+  equipment item; resistant victories can additionally grant an artifact, and
+  weekly quests grant their fixed rare, epic, or legendary rewards.
+- Inventory and equipment are swipe-connected views. Equipment uses a generated
+  Vitruvian-style loadout figure, body slots, a weapon slot, and one artifact
+  slot. Item cards and equipped slots use item-specific scalable outline icons
+  drawn in Compose.
 - A white sword-in-shield button beside the backpack opens the active weekly
   quest set. The prototype includes three weekly sets: the current ISO week and
   two future weeks. Each set contains regular, resistant-matchup, and
@@ -80,18 +83,17 @@ The repository is an MVP/prototype, not a production-ready application.
 - Weekly quest progress and reward state persist locally and reset on the next
   ISO week. Starting a resistance quest guarantees that the offered encounter
   contains both a resistant target and a fair non-resistant choice.
-- The full test catalog contains 36 common, rare, epic, or legendary items and
-  seven preview tactical bonus types. Equipped items persist locally, but
-  bonuses do not affect combat yet. Most non-quest artifacts are awarded one at
-  a time after victories over enemies resistant to the selected exercise. Rare,
-  epic, and legendary quest rewards are added to inventory automatically when
-  their test quest reaches its target.
+- The catalog contains 36 common, rare, epic, or legendary items and seven
+  active tactical bonus types: base attack, debuff duration, enemy ability
+  delay, resistant and weak matchup damage, opening attack damage, and every
+  third repetition. Ownership and equipped slots persist locally. Combat
+  effects are bounded in `:game`; rewards are shown by name after victory.
 - The APK uses a custom adaptive launcher icon with a strong goblin holding a
   shield.
 - Valid live-detector repetitions are persisted immediately as daily local
   aggregates. Debug-simulated repetitions are intentionally excluded.
-- Accounts, randomized reward rarity rolls, active equipment bonuses, audio,
-  analytics, and backend are absent.
+- Accounts, randomized reward rarity rolls, audio, analytics, and backend are
+  absent.
 - Debug builds can switch between live camera input and a looping video asset.
 - Debug builds expose `Simulate repetition` to test every exercise, damage,
   counters, and victory without camera input.
@@ -174,7 +176,10 @@ first:
 - Dependencies are manually constructed; there is no DI framework.
 - Enemy and exercise configurations are in memory.
 - Enemy attack timing is fixed at 15 seconds. The policy boundary exists, but
-  exercise difficulty and player fitness are not yet inputs.
+  exercise difficulty and player fitness are not yet inputs; equipped items can
+  add a bounded delay.
+- Equipment values are a first production pass and have unit coverage, but
+  long-term acquisition pacing and combat balance still need playtesting.
 - Detector coverage includes project-specific state-machine and 3D geometry
   tests; ViewModel and Compose navigation coverage remains limited.
 - Camera, rotation, mirroring, video decoding, and MediaPipe behavior require

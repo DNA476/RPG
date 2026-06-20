@@ -19,8 +19,9 @@
     <string name="inventory">Inventory</string>
     <string name="equipment">Equipment</string>
     <string name="open_inventory">Open inventory</string>
-    <string name="inventory_subtitle">A test set of items. Tap an item to view its bonuses and equip it.</string>
-    <string name="equipment_subtitle">Tap a slot near the player outline to choose a matching item.</string>
+    <string name="inventory_subtitle">Earn equipment through victories. Tap an item to view its bonuses and equip it.</string>
+    <string name="inventory_progress">Collection: %1$d of %2$d</string>
+    <string name="equipment_subtitle">Tap a slot near the figure to choose a matching item.</string>
     <string name="inventory_all">All</string>
     <string name="inventory_equipment">Gear</string>
     <string name="inventory_artifacts">Artifacts</string>
@@ -37,7 +38,7 @@
     <string name="empty_slot">Empty</string>
     <string name="loadout_bonuses">Loadout bonuses</string>
     <string name="no_equipment_bonuses">Equip items to build a set of bonuses.</string>
-    <string name="bonuses_preview_only">Test version: bonuses do not affect combat yet.</string>
+    <string name="bonuses_active_note">Bonuses from equipped items are active in combat.</string>
     <string name="slot_head">Head</string>
     <string name="slot_chest">Chest</string>
     <string name="slot_hands">Hands</string>

@@ -4,7 +4,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -52,7 +51,6 @@ fun BackpackOutlineIcon(
         )
     }
 }
-
 @Composable
 fun InventoryItemIcon(
     item: InventoryItem,
@@ -493,7 +491,6 @@ fun InventoryItemIcon(
         }
     }
 }
-
 private fun DrawScope.drawHeadband(color: Color, stroke: Stroke, lineWidth: Float) {
     drawArc(
         color = color,
@@ -732,83 +729,5 @@ fun EquipmentItemIcon(
                 drawCircle(color, radius = size.minDimension * 0.09f, center = center)
             }
         }
-    }
-}
-
-@Composable
-fun PlayerOutline(
-    modifier: Modifier = Modifier,
-    color: Color = Color.White,
-) {
-    Canvas(modifier = modifier) {
-        val strokeWidth = size.minDimension * 0.035f
-        val stroke = Stroke(
-            width = strokeWidth,
-            cap = StrokeCap.Round,
-            join = StrokeJoin.Round,
-        )
-        drawOval(
-            color = color,
-            topLeft = Offset(size.width * 0.37f, size.height * 0.04f),
-            size = Size(size.width * 0.26f, size.height * 0.18f),
-            style = stroke,
-        )
-        val body = Path().apply {
-            moveTo(size.width * 0.38f, size.height * 0.23f)
-            cubicTo(
-                size.width * 0.28f,
-                size.height * 0.3f,
-                size.width * 0.28f,
-                size.height * 0.48f,
-                size.width * 0.34f,
-                size.height * 0.59f,
-            )
-            lineTo(size.width * 0.25f, size.height * 0.94f)
-            moveTo(size.width * 0.62f, size.height * 0.23f)
-            cubicTo(
-                size.width * 0.72f,
-                size.height * 0.3f,
-                size.width * 0.72f,
-                size.height * 0.48f,
-                size.width * 0.66f,
-                size.height * 0.59f,
-            )
-            lineTo(size.width * 0.75f, size.height * 0.94f)
-            moveTo(size.width * 0.34f, size.height * 0.3f)
-            lineTo(size.width * 0.13f, size.height * 0.61f)
-            moveTo(size.width * 0.66f, size.height * 0.3f)
-            lineTo(size.width * 0.87f, size.height * 0.61f)
-            moveTo(size.width * 0.38f, size.height * 0.23f)
-            cubicTo(
-                size.width * 0.43f,
-                size.height * 0.31f,
-                size.width * 0.57f,
-                size.height * 0.31f,
-                size.width * 0.62f,
-                size.height * 0.23f,
-            )
-            moveTo(size.width * 0.34f, size.height * 0.59f)
-            cubicTo(
-                size.width * 0.42f,
-                size.height * 0.64f,
-                size.width * 0.58f,
-                size.height * 0.64f,
-                size.width * 0.66f,
-                size.height * 0.59f,
-            )
-        }
-        drawPath(body, color, style = stroke)
-        drawArc(
-            color = color.copy(alpha = 0.5f),
-            startAngle = 200f,
-            sweepAngle = 140f,
-            useCenter = false,
-            topLeft = Rect(
-                Offset(size.width * 0.31f, size.height * 0.25f),
-                Size(size.width * 0.38f, size.height * 0.3f),
-            ).topLeft,
-            size = Size(size.width * 0.38f, size.height * 0.3f),
-            style = Stroke(strokeWidth * 0.65f),
-        )
     }
 }

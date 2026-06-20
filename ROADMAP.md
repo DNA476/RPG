@@ -53,10 +53,10 @@ Statuses describe repository state as of 2026-06-19.
 - [x] Move profile and statistics navigation into a main-menu drawer.
 - [x] Add a clickable main-menu card for today's approximate calories.
 - [x] Add settings with an in-app language selector.
-- [x] Add a locally persisted test inventory and equipment screen with body,
+- [x] Add a locally persisted inventory and equipment screen with body,
   weapon, and artifact slots.
 - [x] Add button and swipe navigation between inventory and equipment.
-- [x] Expand the test catalog to 30 items with seven bonus types and
+- [x] Expand the catalog to 36 items with seven bonus types and
   item-specific scalable Compose icons.
 - [x] Add three locally persisted weekly quest categories with required
   exercises, progress, restrictions, and fixed rare/epic/legendary rewards.
@@ -69,6 +69,12 @@ Statuses describe repository state as of 2026-06-19.
 - [x] Keep bottom UI actions above the Android system navigation bar.
 - [x] Add experimental live detectors for push-up, lunge, and plank so they can
   produce battle attacks during real camera sessions.
+- [x] Promote inventory into the main progression loop with a six-item starter
+  loadout, deterministic victory rewards, named loot on victory, and save
+  migration from prototype ownership.
+- [x] Apply all seven bounded equipment bonus types to combat damage and timing.
+- [x] Replace the equipment mannequin with original generated Vitruvian-style
+  loadout art.
 
 ## Current Priority: Make The Vertical Slice Reliable
 
@@ -135,8 +141,8 @@ changes across the ViewModel and UI.
   rewards.
 - [ ] Define production quest rotation, reward pools, duplicate handling, and
   long-term balance.
-- [ ] Apply bounded equipment bonuses to combat after balance rules are set.
-- [ ] Expand the test inventory into the full inventory/equipment/skills loop.
+- [ ] Playtest equipment acquisition pacing and tune bonus values/caps.
+- [ ] Expand inventory into a broader equipment/skills build loop.
 - [ ] Add audio, haptics, animation, and accessibility settings.
 
 ## Production Readiness
@@ -173,6 +179,11 @@ changes across the ViewModel and UI.
   `100 * 2^level` thresholds; use level 0 before 200 kcal and cap at level 12.
 - 2026-06-19: Treat catalog enemy HP as the level-1 baseline and use cubic
   scaling to reach exactly triple HP at level 12.
+- 2026-06-19: Make inventory a persistent progression system: six starter
+  items, one regular equipment reward per victory, existing resistant/quest
+  rewards, and versioned migration from prototype ownership.
+- 2026-06-19: Activate all seven equipment bonus types with caps in `:game` and
+  freeze the equipped loadout at battle start.
 - 2026-06-10: Keep pose inference on device.
 - 2026-06-10: Preserve strict module boundaries between capture, pose,
   exercise, combat, and UI.
