@@ -1,7 +1,7 @@
 # Roadmap
 
 This roadmap is ordered by dependency and risk, not by marketing priority.
-Statuses describe repository state as of 2026-06-19.
+Statuses describe repository state as of 2026-06-20.
 
 ## Completed Foundation
 
@@ -128,22 +128,42 @@ changes across the ViewModel and UI.
 
 ## Content And Game Expansion
 
-- [ ] Calibrate and validate lunge, push-up, and plank detection against real
-  camera sessions and recorded video.
-- [ ] Implement and validate pull-up, crunch, and jumping-jack detection.
-- [ ] Add distinct attack feedback for basic, heavy, and critical attacks.
+- [ ] Calibrate and validate all six experimental detectors against real camera
+  sessions and deterministic recorded video; promote an exercise to ready only
+  after representative front-facing and side-view checks pass without duplicate
+  repetitions.
+- [ ] Surface the existing basic, heavy, and critical attack types in battle UI
+  with distinct animation, color, and optional haptic feedback; support reduced
+  motion and do not change exercise workload or damage rules for spectacle.
 - [x] Add multiple enemies and configurable encounters.
-- [ ] Add enemy phases or exercise prompts.
-- [ ] Define fair player damage/defeat rules, if defeat remains in scope.
-- [ ] Add rewards, experience, levels, and achievements.
+- [ ] Add additional enemy ability archetypes that work within the currently
+  selected exercise and remain configurable in content rather than UI branches.
+- [ ] Add first enemy phases that change tactics without switching exercises;
+  require `BattleSession` unit coverage for every phase transition.
+- [x] Add persistent rewards and calorie-based player levels.
+- [ ] Add local cosmetic achievements for exercise milestones, active-day
+  streaks, resistant victories, quest completion, and inventory collection;
+  achievements must not alter repetition validity or required movement.
 - [x] Connect resistant-matchup victories to prototype artifact rewards.
 - [x] Prototype weekly quests and reserve the highest item rarity for quest
   rewards.
-- [ ] Define production quest rotation, reward pools, duplicate handling, and
-  long-term balance.
-- [ ] Playtest equipment acquisition pacing and tune bonus values/caps.
-- [ ] Expand inventory into a broader equipment/skills build loop.
-- [ ] Add audio, haptics, animation, and accessibility settings.
+- [ ] Define and implement a data-driven production quest rotation with finite
+  reward pools, explicit duplicate and exhausted-pool behavior, difficulty
+  bounds, migration rules, and deterministic tests.
+- [ ] Playtest equipment acquisition pacing and tune bonus values/caps across
+  neutral, weak, and resistant encounters; keep the physical repetition as the
+  source of every attack.
+- [ ] Define the contract for a broader equipment/skills build loop before
+  implementation: skill ownership, activation, stacking limits, respec rules,
+  and the boundary that prevents progression from bypassing exercise work.
+- [ ] Complete an accessibility pass for battle and progression screens,
+  including TalkBack semantics, scalable text, non-color tactical cues, reduced
+  motion, optional haptics, and exercise alternatives where product rules allow.
+
+Exit condition: all seven exercises have validated counting paths, attack types
+are visually and haptically distinguishable without changing workload, reward
+progression has no duplicate dead ends, and accessibility settings cover the
+main menu-to-victory flow.
 
 ## Production Readiness
 
@@ -160,6 +180,14 @@ changes across the ViewModel and UI.
 
 ## Deferred Until Product Decisions Exist
 
+- Separate combat XP or a second leveling track; calorie-based levels already
+  exist, so another progression axis needs a distinct purpose.
+- Player HP and defeat rules; failure must not encourage unsafe speed or punish
+  a player for pausing, resting, or losing camera tracking.
+- Enemy prompts that switch exercises during one encounter; require session
+  configuration, safe pause/rest transitions, and detector switching first.
+- Audio system and sound assets; revisit after visual and haptic combat feedback
+  is stable.
 - Backend/accounts/cloud sync.
 - Social competition and leaderboards.
 - Monetization.
@@ -170,6 +198,11 @@ changes across the ViewModel and UI.
 
 ## Decision Log
 
+- 2026-06-20: Prioritize validation of all experimental detectors, distinct
+  attack feedback, equipment balance, cosmetic achievements, and production
+  quest rules before adding broader progression systems.
+- 2026-06-20: Defer separate XP, player defeat, mixed-exercise enemy prompts,
+  and audio until their session, safety, and product purposes are defined.
 - 2026-06-19: Prefer MediaPipe world landmarks for detector geometry while
   retaining normalized coordinates for UI overlays and as a fallback.
 - 2026-06-19: Optimize experimental detectors for front-facing tests without
